@@ -1,0 +1,57 @@
+.selector-container {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.selector-container h2 {
+  font-size: 24px;
+  color: #0099a8;
+  margin-bottom: 20px;
+}
+
+.selector-box-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+/* The box (button) style */
+.selector-box {
+  padding: 65px 50px; /* increased padding */
+  border: none;
+  cursor: pointer;
+  border-radius: 20px; /* slightly bigger radius */
+  font-size: 28px; /* increased font size */
+  color: white;
+  background: linear-gradient(145deg, #10e0d3, #0f7d8d);
+  background-size: 100% 200%; /* for wave animation */
+  background-position: bottom; /* start from bottom */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.18);
+  transition: all 0.4s ease;
+  min-width: 180px; /* bigger box width */
+}
+
+/* Hover wave effect */
+.selector-box:hover {
+  background: linear-gradient(145deg, #0fc8bd, #0b6e7c); /* new hover gradient */
+  background-size: 100% 200%;
+  background-position: top; /* animate wave from bottom to top */
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* Selected state */
+.selector-box.selected {
+  background: linear-gradient(145deg, #0fc8bd, #0b6e7c);
+  transform: scale(1.05);
+}
+
+/* ---------- Mobile View ---------- */
+@media (max-width: 600px) {
+  .selector-box {
+    min-width: 150px;
+    padding: 28px 35px;
+    font-size: 20px;
+  }
+}

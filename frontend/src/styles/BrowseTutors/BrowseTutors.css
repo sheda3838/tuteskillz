@@ -1,0 +1,62 @@
+/* ---------- Page Wrapper ---------- */
+.browse-tutors-page {
+  padding: 30px 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Main heading */
+.browse-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: var(--primary-color);
+}
+
+/* ---------- Step Section Wrapper ---------- */
+.step-wrapper {
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
+
+/* ---------- Back Button ---------- */
+.back-btn {
+  background: #17c7c0;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: 0.2s ease;
+}
+
+.back-btn:hover {
+  background: #129e98;
+}
+
+/* Center selectors */
+.selector-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+}
+
+/* Space between selectors and headings */
+.selector-container h2 {
+  margin-bottom: 15px;
+}
+
+/* ---------- Mobile Responsive ---------- */
+@media (max-width: 600px) {
+  .browse-tutors-page {
+    padding: 20px;
+  }
+
+  .browse-title {
+    font-size: 26px;
+  }
+}

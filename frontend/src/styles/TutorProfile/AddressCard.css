@@ -1,0 +1,59 @@
+/* Card Wrapper */
+.address-card {
+  background: #ffffff;
+  border: 2px solid var(--border-light);
+  border-radius: 18px;
+  padding: 24px;
+  margin-top: 20px;
+  box-shadow: var(--shadow);
+}
+
+/* Title */
+.card-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-bottom: 18px;
+}
+
+/* Content Container */
+.address-content {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-row-gap: 14px;
+  grid-column-gap: 20px;
+}
+
+/* Address Row */
+.address-item {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Label */
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-light);
+  margin-bottom: 3px;
+}
+
+/* Value */
+.value {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+/* ===============================
+   MOBILE RESPONSIVE
+================================= */
+@media (max-width: 768px) {
+  .address-content {
+    grid-template-columns: 1fr;
+  }
+
+  .card-title {
+    text-align: center;
+  }
+}

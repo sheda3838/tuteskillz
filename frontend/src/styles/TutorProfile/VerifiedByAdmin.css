@@ -1,0 +1,44 @@
+.verified-by-admin {
+  padding: 20px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: var(--shadow);
+  margin-bottom: 25px;
+}
+
+.verified-by-admin h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-bottom: 14px;
+}
+
+/* Admin name box */
+.verified-admin-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 1px solid var(--primary-color);
+  background: var(--background-light);
+  border-radius: 12px;
+}
+
+.verified-admin-icon {
+  font-size: 22px;
+  color: var(--primary-color);
+}
+
+.verified-admin-box p {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .verified-admin-box {
+    padding: 10px 12px;
+  }
+}

@@ -1,0 +1,140 @@
+/* ===============================
+   WRAPPER
+================================= */
+.profile-header-wrapper {
+  width: 100%;
+  background: #fff;
+  border: 2px solid #1bb7a6; /* Teal outline similar to Figma */
+  border-radius: 18px;
+  padding: 24px;
+  box-sizing: border-box;
+  margin-bottom: 24px;
+}
+
+/* ===============================
+   HEADER MAIN LAYOUT
+================================= */
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+/* ===============================
+   LEFT SIDE (Photo + Name)
+================================= */
+.profile-header-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.profile-photo {
+  width: 150px;
+  height: 150px;        /* same as width */
+  border-radius: 50%;   /* makes it circle */
+  object-fit: cover;    /* prevents stretching */
+  border: 3px solid #1bb7a6;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  flex-shrink: 0;
+}
+
+/* ===============================
+   NAME + EMAIL
+================================= */
+.profile-basic-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-name {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  color: #00857a; /* Figma teal */
+}
+
+.profile-email {
+  margin-top: 6px;
+  font-size: 16px;
+  color: #444;
+}
+
+/* ===============================
+   STATUS BADGE
+================================= */
+.profile-verification-status {
+  display: flex;
+  align-items: center;
+}
+
+.status-badge {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: capitalize;
+}
+
+/* Colors for statuses */
+.status-badge.approved {
+  background: #d1fde6;
+  color: #0c7a42;
+}
+
+.status-badge.pending {
+  background: #fff5d5;
+  color: #c28a00;
+}
+
+.status-badge.rejected {
+  background: #ffe1e1;
+  color: #c73636;
+}
+
+/* .status-badge["not verified"],
+.status-badge.not {
+  background: #eaeaea;
+  color: #555;
+} */
+
+/* ===============================
+   MOBILE RESPONSIVE
+================================= */
+@media (max-width: 768px) {
+  .profile-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .profile-header-left {
+    flex-direction: column;
+  }
+
+  .profile-verification-status {
+    margin-top: 10px;
+  }
+
+  .profile-photo {
+    width: 120px;
+    height: 120px;
+  }
+
+  .profile-name {
+    font-size: 22px;
+  }
+
+  .profile-bio {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-photo {
+    width: 100px;
+    height: 100px;
+  }
+}

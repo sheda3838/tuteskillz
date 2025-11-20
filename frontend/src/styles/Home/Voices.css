@@ -1,0 +1,178 @@
+.voices-section {
+  padding: 40px 20px;
+  text-align: center;
+  background: linear-gradient(145deg, #10e0d3, #0f7d8d);
+  color: white;
+}
+
+.voices-title {
+  font-size: 2.4rem;
+  margin-bottom: 50px;
+  font-weight: 600;
+}
+
+/* ---- Carousel Layout ---- */
+.carousel-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  gap: 15px;
+}
+
+.carousel-container {
+  overflow: hidden;
+  width: 75%;
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.6s ease;
+}
+
+/* ---- Voice Cards ---- */
+.voice-card {
+  background: transparent;
+  text-align: center;
+  padding: 10px;
+  min-width: calc(100% / 3);
+}
+
+.image-wrapper {
+  width: 220px;
+  height: 220px;
+  margin: 0 auto 15px;
+  overflow: hidden;
+  border-radius: 40% 60% 60% 40% / 50% 40% 60% 50%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.voice-card h4 {
+  margin: 10px 0;
+  font-size: 1.2rem;
+  color: white;
+}
+
+.voice-card p {
+  color: #e5e5e5;
+  font-size: 0.9rem;
+  max-width: 260px;
+  margin: 0 auto 10px;
+}
+
+/* ---- Stars ---- */
+.stars {
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+  margin-top: 8px;
+}
+
+/* ---- Arrows ---- */
+.arrow {
+  background: white;
+  color: var(--primary-color);
+  border: none;
+  padding: 10px 15px;
+  font-size: 25px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.arrow:hover {
+  background: #e5e5e5;
+}
+
+/* ---- Dots ---- */
+.dots {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  background: #d8f5f5;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.dot.active {
+  background: white;
+}
+
+/* ---------------------------
+      RESPONSIVE DESIGN
+----------------------------*/
+
+/* Tablets: show 2 cards */
+@media (max-width: 900px) {
+  .carousel-container {
+    width: 90%;
+  }
+
+  .voice-card {
+    min-width: calc(100% / 2);
+  }
+
+  .image-wrapper {
+    width: 180px;
+    height: 180px;
+  }
+}
+
+/* Mobile: show 1 card */
+@media (max-width: 600px) {
+  .voices-section {
+    padding: 30px 10px;
+  }
+
+  .voices-title {
+    font-size: 1.8rem;
+    margin-bottom: 35px;
+  }
+
+  .voice-card {
+    min-width: 100%;
+    padding: 0px;
+  }
+
+  .image-wrapper {
+    width: 150px;
+    height: 150px;
+  }
+
+  .voice-card h4 {
+    font-size: 1rem;
+  }
+
+  .voice-card p {
+    font-size: 0.8rem;
+    max-width: 80%;
+  }
+
+  /* Smaller arrows */
+  .arrow {
+    padding: 6px 10px;
+    font-size: 18px;
+  }
+
+  /* Smaller dots */
+  .dot {
+    width: 10px;
+    height: 10px;
+  }
+}

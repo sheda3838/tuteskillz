@@ -1,0 +1,91 @@
+/* ======= Stats Section ======= */
+
+.stats-section {
+  padding: 80px 20px;
+  text-align: center;
+  background: #f8ffff;
+}
+
+.stats-title {
+  font-size: 2.6rem;
+  font-weight: 700;
+  margin-bottom: 50px;
+  color: var(--primary-color);
+}
+
+/* ---- Grid ---- */
+.stats-grid {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  flex-wrap: wrap;
+}
+
+/* ---- Big Card ---- */
+.stats-card {
+  background: white;
+  text-align: center;
+  padding: 40px 35px;
+  width: 320px;
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  transition: 0.3s ease;
+}
+
+.stats-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.13);
+}
+
+/* ---- Bigger Illustration Icon ---- */
+.icon {
+  width: 170px;
+  height: 170px;
+  margin: 0 auto 20px;
+
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  border-radius: 40% 60% 60% 40% / 50% 40% 60% 50%;
+  background-color: #ffffff;
+}
+
+/* Custom icons */
+.tutors-icon {
+  background-image: url("/src/assets/tutor.png");
+}
+
+.students-icon {
+  background-image: url("/src/assets/student.png");
+}
+
+.sessions-icon {
+  background-image: url("/src/assets/session.png");
+}
+
+/* ---- Text ---- */
+.stats-card h3 {
+  font-size: 3rem;
+  color: var(--primary-color);
+  margin-bottom: 8px;
+  font-weight: 900;
+}
+
+.stats-card p {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #444;
+}
+
+@media (max-width: 600px) {
+  .stats-grid {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .stats-card {
+    width: 85%;
+  }
+}
+  

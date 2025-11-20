@@ -1,0 +1,82 @@
+.tutor-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  border: 2px solid #17c7c0;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 25px;
+  background: #ffffff;
+  transition: 0.3s ease;
+  margin: 0 auto;
+  border-bottom-right-radius: 100px;
+}
+
+.tutor-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Image container */
+.tutor-card-img img {
+  width: 130px;
+  height: 130px;
+  border-radius: 15px;
+  object-fit: cover;
+}
+
+/* Details */
+.tutor-card-details {
+  flex: 1;
+}
+
+.tutor-name {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.tutor-bio {
+  font-size: 15px;
+  line-height: 1.5;
+  color: #555;
+  margin-bottom: 12px;
+}
+
+/* ---------- Mobile Responsive ---------- */
+@media (max-width: 600px) {
+  .tutor-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 15px;
+  }
+
+  .tutor-card-img img {
+    width: 100%;
+    height: 180px;
+    border-radius: 12px;
+  }
+
+  .tutor-name {
+    margin-top: 10px;
+  }
+}
+
+/* Tutor list container */
+.tutor-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: flex-start; /* Fix centering issue */
+  text-align: left; /* Override global center alignment */
+}
+
+/* Small screens */
+@media (max-width: 600px) {
+  .tutor-list {
+    justify-content: center; /* Mobile looks better centered */
+  }
+}
+

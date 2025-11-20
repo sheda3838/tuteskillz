@@ -1,0 +1,228 @@
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { notifySuccess, notifyError } from "../../utils/toast";
+import "../../styles/BrowseTutors/RequestSession.css";
+
+const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
+  const [tutorInfo, setTutorInfo] = useState(null);
+  const [selectedDate, setSelectedDate] = useState("");
+  const [availability, setAvailability] = useState([]);
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [studentNote, setStudentNote] = useState("");
+
+  const student = JSON.parse(localStorage.getItem("student"));
+  const studentId = student?.userId;
+  const navigate = useNavigate();
+  if (!studentId) {
+    notifyError("Student not logged in!");
+    return;
+  }
+
+  // Fetch tutor static info when modal opens
+  useEffect(() => {
+    if (!visible) return;
+
+    axios
+      .get(`/api/session/tutor-info/${tutorSubjectId}`)
+      .then((res) => {
+        if (res.data.success) setTutorInfo(res.data.data);
+      })
+      .catch((err) => {
+        console.error(err);
+        notifyError("Failed to fetch tutor info");
+      });
+  }, [visible, tutorSubjectId]);
+
+  // Fetch availability when date is selected
+  useEffect(() => {
+    if (!selectedDate || !tutorInfo) return;
+
+    const dayOfWeek = new Date(selectedDate).toLocaleDateString("en-US", {
+      weekday: "long",
+    });
+
+    axios
+      .get(`/api/tutor/availability/${tutorInfo.tutorId}`)
+      .then((res) => {
+        if (res.data.success) {
+          const slots = res.data.availability.filter(
+            (slot) => slot.dayOfWeek === dayOfWeek
+          );
+          setAvailability(slots);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        notifyError("Failed to fetch availability");
+      });
+  }, [selectedDate, tutorInfo]);
+
+  // Auto calculate end time
+  useEffect(() => {
+    if (!startTime) return;
+    const [h, m] = startTime.split(":").map(Number);
+    let endH = h + 2;
+    let endM = m;
+    if (endH >= 24) endH -= 24;
+    const formattedEnd = `${String(endH).padStart(2, "0")}:${String(
+      endM
+    ).padStart(2, "0")}`;
+    setEndTime(formattedEnd);
+  }, [startTime]);
+
+  const handleSubmit = () => {
+    if (!selectedDate || !startTime || !studentNote) {
+      return notifyError("Please fill all required fields");
+    }
+
+    // Check if startTime fits in available slots
+    const startInMinutes =
+      parseInt(startTime.split(":")[0]) * 60 +
+      parseInt(startTime.split(":")[1]);
+    const endInMinutes =
+      parseInt(endTime.split(":")[0]) * 60 + parseInt(endTime.split(":")[1]);
+
+    const validSlot = availability.some((slot) => {
+      const slotStart =
+        parseInt(slot.startTime.split(":")[0]) * 60 +
+        parseInt(slot.startTime.split(":")[1]);
+      const slotEnd =
+        parseInt(slot.endTime.split(":")[0]) * 60 +
+        parseInt(slot.endTime.split(":")[1]);
+      return startInMinutes >= slotStart && endInMinutes <= slotEnd;
+    });
+
+    if (!validSlot) {
+      return notifyError("Selected time is not within tutor availability");
+    }
+
+    console.log({ selectedDate, startTime, tutorSubjectId, studentId });
+
+    axios
+      .post("/api/session/request", {
+        tutorSubjectId,
+        studentId,
+        date: selectedDate,
+        startTime,
+        duration: 2,
+        studentNote,
+      })
+      .then((res) => {
+        if (res.data.success) {
+          notifySuccess("Session requested successfully");
+          onClose();
+          navigate("/my-classes")
+        } else {
+          notifyError(res.data.message || "Failed to request session");
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        notifyError("Failed to request session");
+      });
+  };
+
+  if (!visible) return null;
+
+  const amount = [6, 7].includes(Number(tutorInfo?.grade)) ? 500 : 700;
+
+  return (
+    <div className="request-session-modal">
+      <div className="modal-content">
+        <h2>Request Session</h2>
+        <button className="close-btn" onClick={onClose}>
+          X
+        </button>
+
+        {tutorInfo && (
+          <div className="static-info">
+            <div className="static-info-grid">
+              <div className="static-info-item">
+                <span className="static-info-label">Tutor</span>
+                <span className="static-info-value">{tutorInfo.tutorName}</span>
+              </div>
+
+              <div className="static-info-item">
+                <span className="static-info-label">Duration</span>
+                <span className="static-info-value">2 Hours</span>
+              </div>
+
+              <div className="static-info-item">
+                <span className="static-info-label">Amount</span>
+                <span className="static-info-value">LKR {amount}.00</span>
+              </div>
+
+              <div className="static-info-item">
+                <span className="static-info-label">Medium</span>
+                <span className="static-info-value">
+                  {tutorInfo.teachingMedium}
+                </span>
+              </div>
+
+              <div className="static-info-item">
+                <span className="static-info-label">Grade</span>
+                <span className="static-info-value">{tutorInfo.grade}</span>
+              </div>
+
+              <div className="static-info-item">
+                <span className="static-info-label">Subject</span>
+                <span className="static-info-value">
+                  {tutorInfo.subjectName}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="form-grp">
+          <label>Date:</label>
+          <input
+            type="date"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+          />
+        </div>
+
+        {availability.length > 0 && (
+          <div className="form-grp">
+            <div className="time-row">
+              <label>Start Time:</label>
+              <input
+                type="time"
+                value={startTime}
+                onChange={(e) => setStartTime(e.target.value)}
+              />
+              <p>End Time: {endTime}</p>
+            </div>
+
+            <p>Available Slots:</p>
+            <ul>
+              {availability.map((slot, idx) => (
+                <li key={idx}>
+                  {slot.startTime} - {slot.endTime}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <div className="form-grp">
+          <label>Student Note:</label>
+          <textarea
+            placeholder="Please focus on matrices and determinants for my upcoming exam."
+            value={studentNote}
+            onChange={(e) => setStudentNote(e.target.value)}
+          />
+        </div>
+
+        <button className="submit-btn" onClick={handleSubmit}>
+          Request Session
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default RequestSessionModal;

@@ -1,0 +1,17 @@
+.profile-header {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+.profile-pic-large {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.profile-info h2 {
+  margin: 0 0 0.5rem 0;
+}
+.profile-info p {
+  margin: 0.3rem 0;
+}

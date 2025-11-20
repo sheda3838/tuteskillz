@@ -1,0 +1,44 @@
+// src/Pages/Admin/NotesPage.jsx
+import React, { useEffect, useState } from "react";
+import AdminTable from "../../layout/AdminTable";
+import adminTableConfig from "../../../config/adminTableConfig";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
+const NotesPage = () => {
+  const [notes, setNotes] = useState([]);
+  const navigate = useNavigate();
+
+  const handleViewNote = (noteId) => {
+    // Navigate to Note details page (implement later)
+    navigate(`/note-details/${noteId}`);
+  };
+
+  useEffect(() => {
+    axios
+      .get("/api/admin/allNotes", { responseType: "json" })
+      .then((res) => {
+        const processedNotes = res.data.notes.map((n) => ({
+          ...n,
+          tutorName: n.tutorName || "-",
+          date: n.sessionDate || "-",
+          status: n.status || "-",
+        }));
+        setNotes(processedNotes);
+      })
+      .catch((err) => console.error(err));
+  }, []);
+
+  const { title, columns } = adminTableConfig.notes;
+
+  return (
+    <AdminTable
+      title={title}
+      columns={columns}
+      data={notes}
+      onActionClick={handleViewNote}
+    />
+  );
+};
+
+export default NotesPage;

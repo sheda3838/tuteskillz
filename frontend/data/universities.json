@@ -1,0 +1,202 @@
+[
+  {
+    "id": 1,
+    "name": "University of Colombo"
+  },
+  {
+    "id": 2,
+    "name": "University of Peradeniya"
+  },
+  {
+    "id": 3,
+    "name": "University of Sri Jayewardenepura"
+  },
+  {
+    "id": 4,
+    "name": "University of Kelaniya"
+  },
+  {
+    "id": 5,
+    "name": "University of Moratuwa"
+  },
+  {
+    "id": 6,
+    "name": "University of Ruhuna"
+  },
+  {
+    "id": 7,
+    "name": "University of Jaffna"
+  },
+  {
+    "id": 8,
+    "name": "Wayamba University of Sri Lanka"
+  },
+  {
+    "id": 9,
+    "name": "Rajarata University of Sri Lanka"
+  },
+  {
+    "id": 10,
+    "name": "South Eastern University of Sri Lanka"
+  },
+  {
+    "id": 11,
+    "name": "Uva Wellassa University of Sri Lanka"
+  },
+  {
+    "id": 12,
+    "name": "Sabaragamuwa University of Sri Lanka"
+  },
+  {
+    "id": 13,
+    "name": "University of the Visual & Performing Arts"
+  },
+  {
+    "id": 14,
+    "name": "The Open University of Sri Lanka"
+  },
+  {
+    "id": 15,
+    "name": "University of Vocational Technology"
+  },
+  {
+    "id": 16,
+    "name": "University of Vavuniya"
+  },
+  {
+    "id": 17,
+    "name": "Eastern University, Sri Lanka"
+  },
+  {
+    "id": 18,
+    "name": "University of the West (example placeholder)"
+  },
+  {
+    "id": 19,
+    "name": "General Sir John Kotelawala Defence University (KDU)"
+  },
+  {
+    "id": 20,
+    "name": "Buddhist and Pali University of Sri Lanka"
+  },
+  {
+    "id": 21,
+    "name": "Bhiksu University of Sri Lanka"
+  },
+  {
+    "id": 22,
+    "name": "Sri Lanka Institute of Information Technology (SLIIT)"
+  },
+  {
+    "id": 23,
+    "name": "NSBM Green University"
+  },
+  {
+    "id": 24,
+    "name": "Horizon Campus"
+  },
+  {
+    "id": 25,
+    "name": "Saegis Campus"
+  },
+  {
+    "id": 26,
+    "name": "ICBT Campus"
+  },
+  {
+    "id": 27,
+    "name": "APIIT Sri Lanka (Asia Pacific Institute of Information Technology)"
+  },
+  {
+    "id": 28,
+    "name": "SLTC Research University"
+  },
+  {
+    "id": 29,
+    "name": "South Asian Institute of Technology and Medicine (SAITM)"
+  },
+  {
+    "id": 30,
+    "name": "Esoft Metro Campus"
+  },
+  {
+    "id": 31,
+    "name": "Aquinas College of Higher Studies"
+  },
+  {
+    "id": 32,
+    "name": "Colombo International Nautical & Engineering College (CINEC)"
+  },
+  {
+    "id": 33,
+    "name": "International College of Business and Technology (ICBT) - degree arm"
+  },
+  {
+    "id": 34,
+    "name": "AUB (American University of Beirut partnership) - placeholder"
+  },
+  {
+    "id": 35,
+    "name": "Horizon Campus - Degree Awarding Institute"
+  },
+  {
+    "id": 36,
+    "name": "National School of Business Management (NSBM) - Degree"
+  },
+  {
+    "id": 37,
+    "name": "Rajarata University - Campus Example"
+  },
+  {
+    "id": 38,
+    "name": "Saegis Campus - Degree Institute"
+  },
+  {
+    "id": 39,
+    "name": "Institute of Chartered Accountants of Sri Lanka (ICASL) - degree awarding (professional)"
+  },
+  {
+    "id": 40,
+    "name": "Colombo Academy of Aesthetic Education - placeholder"
+  },
+  {
+    "id": 41,
+    "name": "South Eastern University - Campus Example"
+  },
+  {
+    "id": 42,
+    "name": "Open University - Distance Education"
+  },
+  {
+    "id": 43,
+    "name": "Aquinas College - Higher Studies"
+  },
+  {
+    "id": 44,
+    "name": "Saegis Campus - Colombo"
+  },
+  {
+    "id": 45,
+    "name": "APIIT - Malabe"
+  },
+  {
+    "id": 46,
+    "name": "SLIIT - Malabe"
+  },
+  {
+    "id": 47,
+    "name": "NSBM - Homagama"
+  },
+  {
+    "id": 48,
+    "name": "Horizon Campus - Malabe"
+  },
+  {
+    "id": 49,
+    "name": "CINEC - Malabe"
+  },
+  {
+    "id": 50,
+    "name": "ICBT - Nugegoda"
+  }
+]
