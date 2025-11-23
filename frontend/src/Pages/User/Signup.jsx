@@ -83,7 +83,7 @@ function Signup() {
       <div className="auth-image">
         <h1>Join the TuteSkillz Family</h1>
         {/* ✅ Use relative public path for assets */}
-        <img src="/src/assets/signup.png" alt="Signup illustration" />
+        <img src="/signup.png" alt="Signup illustration" />
       </div>
 
       <div className="auth-box">

@@ -5,61 +5,61 @@ import "../../styles/Home/Voices.css";
 const voicesData = [
   { 
     name: "Yusuf", 
-    image: "/src/assets/p1.jpg", 
+    image: "/p1.jpg", 
     comment: "The platform makes teaching organized and stress-free. I can focus on helping students.", 
     stars: 5 
   },
   { 
     name: "Rimzy", 
-    image: "/src/assets/p2.jpg", 
+    image: "/p2.jpg", 
     comment: "I finally understand math better with one-to-one support. The notes and recordings help a lot.", 
     stars: 5 
   },
   { 
     name: "Faraj", 
-    image: "/src/assets/p3.jpg", 
+    image: "/p3.jpg", 
     comment: "The tutors are supportive and always make concepts easy to understand.", 
     stars: 4 
   },
   { 
     name: "Malik", 
-    image: "/src/assets/p4.jpg", 
+    image: "/p4.jpg", 
     comment: "Amazing learning environment. Very interactive and useful!", 
     stars: 5 
   },
   { 
     name: "Imthi", 
-    image: "/src/assets/p5.jpg", 
+    image: "/p5.jpg", 
     comment: "I enjoy every session. Very professional tutors.", 
     stars: 5 
   },
   { 
     name: "Muheed", 
-    image: "/src/assets/p6.jpg", 
+    image: "/p6.jpg", 
     comment: "Everything is well structured and easy to follow.", 
     stars: 4 
   },
   { 
     name: "Rayan", 
-    image: "/src/assets/p7.jpg", 
+    image: "/p7.jpg", 
     comment: "The support team and tutors genuinely care about progress.", 
     stars: 5 
   },
   { 
     name: "Onija", 
-    image: "/src/assets/p8.jpg", 
+    image: "/p8.jpg", 
     comment: "The platform keeps me motivated and makes learning fun.", 
     stars: 5 
   },
   { 
     name: "Sai", 
-    image: "/src/assets/p9.jpg", 
+    image: "/p9.jpg", 
     comment: "Simple, clean, and very effective for learning.", 
     stars: 4 
   },
   { 
     name: "Nethan", 
-    image: "/src/assets/p10.jpg", 
+    image: "/p10.jpg", 
     comment: "Outstanding tutoring experience. Highly recommended!", 
     stars: 5 
   }

@@ -114,7 +114,7 @@ function Signin() {
 
       <div className="auth-image">
         <h1>Welcome Back</h1>
-        <img src="/src/assets/signin.png" alt="Signin illustration" />
+        <img src="/signin.png" alt="Signin illustration" />
       </div>
     </motion.div>
   );
