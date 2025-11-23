@@ -53,15 +53,15 @@
 
 /* Custom icons */
 .tutors-icon {
-  background-image: url("/src/assets/tutor.png");
+  background-image: url("/tutor.png");
 }
 
 .students-icon {
-  background-image: url("/src/assets/student.png");
+  background-image: url("/student.png");
 }
 
 .sessions-icon {
-  background-image: url("/src/assets/session.png");
+  background-image: url("/session.png");
 }
 
 /* ---- Text ---- */

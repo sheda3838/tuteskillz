@@ -44,7 +44,7 @@ function VerifyEmail() {
   return (
     <div className="verify-container">
       <div className="verify-box">
-        <img src="/src/assets/email-verify.png" alt="verify-eamil" />
+        <img src="/email-verify.png" alt="verify-eamil" />
         <h2 
           className={`verify-title ${
             isSuccess === null ? "" : isSuccess ? "success" : "error"

@@ -89,14 +89,14 @@ function Home() {
     >
       {status === "pending_verification" && (
         <div className="tutor-status">
-          <img src="/src/assets/pending.png" alt="Pending image" />
+          <img src="/pending.png" alt="Pending image" />
           <h2>Waiting for admin approval...</h2>
         </div>
       )}
 
       {status === "verification_rejected" && (
         <div className="tutor-status">
-          <img src="/src/assets/rejected.png" alt="Rejected image" />
+          <img src="/rejected.png" alt="Rejected image" />
           <h2>Your verification was rejected. Please contact support.</h2>
         </div>
       )}

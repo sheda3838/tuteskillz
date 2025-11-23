@@ -172,7 +172,7 @@ const MyClassesPage = () => {
           <Loading />
         ) : filteredSessions.length === 0 ? (
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="no-sessions">
-            <img className="no-sessions" src="/src/assets/no-sessions.png" alt="No Sessions" />
+            <img className="no-sessions" src="/no-sessions.png" alt="No Sessions" />
           </motion.p>
         ) : (
           <div className="my-classes-grid">
