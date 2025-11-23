@@ -1,6 +1,6 @@
 import React from "react";
 import { AiOutlineClose } from "react-icons/ai";   // ← import close icon
-import "../styles/Modal.css";
+import "../styles/Utils/Modal.css";
 
 const Modal = ({ children, onClose }) => {
   return (

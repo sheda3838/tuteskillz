@@ -15,6 +15,17 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
   const navigate = useNavigate();
   const [studentId, setStudentId] = useState(null);
 
+  function formatTime(timeString) {
+    const [h, m] = timeString.split(":").map(Number);
+    const d = new Date();
+    d.setHours(h, m, 0, 0);
+
+    return d.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  }
+
   useEffect(() => {
     const fetchUser = async () => {
       const user = await authGuard(navigate); // your own logic, unchanged
@@ -235,7 +246,7 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
             <ul>
               {availability.map((slot, idx) => (
                 <li key={idx}>
-                  {slot.startTime} - {slot.endTime}
+                  {formatTime(slot.startTime)} – {formatTime(slot.endTime)}
                 </li>
               ))}
             </ul>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../../styles/MyClasses.css";
+import "../../styles/User/MyClasses.css";
 import { notifyError, notifySuccess } from "../../utils/toast";
 
 const SessionActions = ({

@@ -10,7 +10,7 @@ import {
   FaPlus,
 } from "react-icons/fa";
 import axios from "axios";
-import "../../styles/admin.css";
+import "../../styles/Admin/admin.css";
 
 function HomePage() {
   const navigate = useNavigate();

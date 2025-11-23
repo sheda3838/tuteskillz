@@ -6,7 +6,7 @@ import SetBankDetailsModal from "../../components/TutorProfile/SetBankDetails";
 import { notifyError } from "../../utils/toast";
 import { motion } from "framer-motion";
 import { authGuard } from "../../utils/authGuard";
-import "../../styles/TutorHome.css"
+import "../../styles/Tutor/TutorHome.css"
 
 function Home() {
   const navigate = useNavigate();

@@ -96,7 +96,7 @@ body {
 .Toastify__toast {
   width: auto !important;        /* auto width based on content */
   max-width: 80vw !important;    /* prevent overflowing on mobile */
-  min-width: 200px;              /* optional: minimum for readability */
+  min-width: 400px;              /* optional: minimum for readability */
   min-height: 60px;              /* optional */
   font-size: 0.95rem;            /* optional */
   padding: 14px 18px;

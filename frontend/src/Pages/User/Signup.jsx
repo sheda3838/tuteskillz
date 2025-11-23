@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { GoogleLogin } from "@react-oauth/google";
 import { Link, useNavigate } from "react-router-dom";
-import "../../styles/auth.css";
-import "../../styles/formElements.css";
+import "../../styles/Utils/auth.css";
+import "../../styles/Utils/formElements.css";
 import axios from "axios";
 import { notifySuccess, notifyError, notifyInfo } from "../../utils/toast";
 import { motion } from "framer-motion";

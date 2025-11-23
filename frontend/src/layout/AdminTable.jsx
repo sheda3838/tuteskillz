@@ -1,6 +1,6 @@
 // src/components/AdminTable.jsx
 import React from "react";
-import "../styles/admin.css";
+import "../styles/Admin/admin.css";
 
 const AdminTable = ({ title, columns, data, onActionClick }) => {
   return (
@@ -60,6 +60,16 @@ const AdminTable = ({ title, columns, data, onActionClick }) => {
                         </button>
                       </td>
                     );
+                  } else if (col.key === "date") {
+                    const formatted = new Date(row[col.key]).toLocaleDateString(
+                      "en-US",
+                      {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      }
+                    );
+                    return <td key={col.key}>{formatted}</td>;
                   } else {
                     return <td key={col.key}>{row[col.key] || "-"}</td>;
                   }

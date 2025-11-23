@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { notifyError, notifySuccess } from "../../utils/toast";
-import "../../styles/register.css";
+import "../../styles/User/register.css";
 import { Plus, XCircle, Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { FileHelper } from "../../utils/fileHelper";

@@ -1,7 +1,7 @@
 import React from "react";
 import ProfileInfo from "./ProfileInfo";
 import SessionActions from "./SessionActions";
-import "../../styles/MyClasses.css";
+import "../../styles/User/MyClasses.css";
 
 const SessionCard = ({ sessionData, role, onAccept, onReject, onView }) => {
   const {
@@ -32,7 +32,7 @@ const SessionCard = ({ sessionData, role, onAccept, onReject, onView }) => {
       <ProfileInfo
         name={displayProfile.name}
         profilePic={displayProfile.profilePic}
-        status={sessionData.sessionStatus} // <- pass it here
+        status={sessionData.sessionStatus}
       />
 
       {/* Tags Row */}
@@ -46,20 +46,20 @@ const SessionCard = ({ sessionData, role, onAccept, onReject, onView }) => {
 
       {/* Date & Time Pill */}
       <div className="session-time-pill">
-        {new Date(date).toLocaleDateString()} | {startTime} –{" "}
-        {calculateEndTime(startTime, duration)}
+        {formatDate(date)} | {formatTime(startTime)} –{" "}
+        {formatTime(calculateEndTime(startTime, duration))}
       </div>
 
       {/* Student Notes */}
       <div className="notes-section">
         <label className="notes-label">Student Notes</label>
-        <div className="note-box">{studentNote || "No note provided"}</div>
+        {studentNote && <div className="note-box">{studentNote}</div>}
       </div>
 
       {/* Tutor Notes */}
       <div className="notes-section">
         <label className="notes-label">Tutor Notes</label>
-        <div className="note-box">{tutorNote || "No note provided"}</div>
+        {tutorNote && <div className="note-box">{tutorNote}</div>}
       </div>
 
       {/* Buttons */}
@@ -68,7 +68,7 @@ const SessionCard = ({ sessionData, role, onAccept, onReject, onView }) => {
           role={role}
           sessionStatus={sessionData.sessionStatus}
           tutorNote={tutorNote}
-          onAccept={(note) => onAccept(sessionId, note, date, startTime)} // <- important
+          onAccept={(note) => onAccept(sessionId, note, date, startTime)}
           onReject={() => onReject(sessionId)}
           onView={() => onView(sessionId)}
         />
@@ -77,11 +77,35 @@ const SessionCard = ({ sessionData, role, onAccept, onReject, onView }) => {
   );
 };
 
+// ---------- Formatting Helpers ---------- //
+
+function formatDate(dateString) {
+  return new Date(dateString).toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+function formatTime(timeString) {
+  const [h, m] = timeString.split(":");
+  const d = new Date();
+  d.setHours(h, m);
+
+  return d.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 function calculateEndTime(startTime, duration) {
   if (!startTime || !duration) return "-";
   const [hours, minutes] = startTime.split(":").map(Number);
+
   const end = new Date();
   end.setHours(hours + duration, minutes);
+
   return `${end.getHours().toString().padStart(2, "0")}:${end
     .getMinutes()
     .toString()

@@ -1,6 +1,6 @@
 import React from "react";
 import { FaPencilAlt } from "react-icons/fa";
-import "../styles/Loading.css";
+import "../styles/Utils/Loading.css";
 
 function Loading() {
   return (

@@ -10,7 +10,7 @@ import {
   FaUserCircle, 
   FaSignOutAlt 
 } from "react-icons/fa"; // ✅ Added icons for profile & logout
-import '../styles/admin.css';
+import '../../styles/Admin/admin.css';
 import axios from "axios";
 
 const AdminSidebar = () => {

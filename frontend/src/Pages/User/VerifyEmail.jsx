@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { notifySuccess, notifyError } from "../../utils/toast";
-import "../../styles/VerifyEmai.css"
+import "../../styles/Utils/VerifyEmai.css"
 
 function VerifyEmail() {
   axios.defaults.withCredentials = true;

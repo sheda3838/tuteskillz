@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "../../styles/roleSelection.css";
+import "../../styles/User/roleSelection.css";
 import { motion } from "framer-motion";
 import { authGuard } from "../../utils/authGuard";
 import { notifyError } from "../../utils/toast";

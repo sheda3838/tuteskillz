@@ -1,9 +1,10 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import AdminSidebar from "../components/AdminSideBar";
+import AdminSidebar from "../components/Admin/AdminSideBar";
 import { authGuard } from "../utils/authGuard"; // your authGuard utility
-import '../styles/admin.css';
+import '../styles/Admin/admin.css';
 import Loading from "../utils/Loading"
+
 const AdminLayout = () => {
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(null);
