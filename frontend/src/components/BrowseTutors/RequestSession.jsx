@@ -83,39 +83,60 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
     setEndTime(formattedEnd);
   }, [startTime]);
 
-  const handleSubmit = () => {
-  if (!selectedDate || !startTime || !studentNote) {
-    return notifyError("Please fill all required fields");
-  }
+  const handleSubmit = async () => {
+    if (!selectedDate || !startTime || !studentNote) {
+      return notifyError("Please fill all required fields");
+    }
 
-  // --- Check if date + time is in the future ---
-  const now = new Date();
-  const selectedDateTime = new Date(`${selectedDate}T${startTime}`);
-  if (selectedDateTime <= now) {
-    return notifyError("Please select a date and time in the future");
-  }
+    // --- Check if date + time is in the future ---
+    const now = new Date();
+    const selectedDateTime = new Date(`${selectedDate}T${startTime}`);
+    if (selectedDateTime <= now) {
+      return notifyError("Please select a date and time in the future");
+    }
 
-  const startInMinutes =
-    parseInt(startTime.split(":")[0]) * 60 +
-    parseInt(startTime.split(":")[1]);
-  const endInMinutes =
-    parseInt(endTime.split(":")[0]) * 60 + parseInt(endTime.split(":")[1]);
+    const startInMinutes =
+      parseInt(startTime.split(":")[0]) * 60 +
+      parseInt(startTime.split(":")[1]);
+    const endInMinutes =
+      parseInt(endTime.split(":")[0]) * 60 + parseInt(endTime.split(":")[1]);
 
-  const validSlot = availability.some((slot) => {
-    const slotStart =
-      parseInt(slot.startTime.split(":")[0]) * 60 +
-      parseInt(slot.startTime.split(":")[1]);
-    const slotEnd =
-      parseInt(slot.endTime.split(":")[0]) * 60 +
-      parseInt(slot.endTime.split(":")[1]);
-    return startInMinutes >= slotStart && endInMinutes <= slotEnd;
-  });
+    const validSlot = availability.some((slot) => {
+      const slotStart =
+        parseInt(slot.startTime.split(":")[0]) * 60 +
+        parseInt(slot.startTime.split(":")[1]);
+      const slotEnd =
+        parseInt(slot.endTime.split(":")[0]) * 60 +
+        parseInt(slot.endTime.split(":")[1]);
+      return startInMinutes >= slotStart && endInMinutes <= slotEnd;
+    });
 
-  if (!validSlot) {
-    return notifyError("Selected time is not within tutor availability");
-  }
+    if (!validSlot) {
+      return notifyError("Selected time is not within tutor availability");
+    }
 
-  axios
+    // -----------------------------
+    //  CHECK STUDENT SESSION CONFLICT
+    // -----------------------------
+    try {
+      const conflictRes = await axios.get(
+        `/api/session/student/${studentId}/check-conflict`,
+        {
+          params: { date: selectedDate, startTime },
+        }
+      );
+      if (conflictRes.data.conflict) {
+        return notifyError("You already have a session at this time.");
+      }
+    } catch (err) {
+      console.error(err);
+      return notifyError("Failed to verify your schedule");
+    }
+
+    // -----------------------------
+    //  IF NO CONFLICT, REQUEST SESSION
+    // -----------------------------
+    axios
       .post("/api/session/request", {
         tutorSubjectId,
         studentId,
@@ -137,8 +158,7 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
         console.error(err);
         notifyError("Failed to request session");
       });
-};
-
+  };
 
   if (!visible) return null;
 

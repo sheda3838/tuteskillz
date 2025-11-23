@@ -1,16 +1,8 @@
-.modal-backdrop {
-  max-width: 800px;
-  width: 95%;
-  background: #fff;
-  padding: 30px;
-  border-radius: 16px;
-  box-shadow: var(--shadow);
-  margin: 40px auto;
-}
+
 
 .modal {
   max-width: 800px;
-  width: 95%;
+  width: 100%;
   background: #fff;
   padding: 30px;
   border-radius: 16px;

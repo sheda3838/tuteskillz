@@ -69,13 +69,13 @@ const AdminSidebar = () => {
 
       {/* Bottom Actions */}
       <div className="sidebar-bottom">
-        <NavLink 
+        {/* <NavLink 
           to="/admin/profile" 
           className="menu-item"
         >
           <span className="menu-icon"><FaUserCircle /></span>
           <span className="menu-text">My Profile</span>
-        </NavLink>
+        </NavLink> */}
 
         <button className="menu-item logout-btn" onClick={handleLogout}>
           <span className="menu-icon"><FaSignOutAlt /></span>

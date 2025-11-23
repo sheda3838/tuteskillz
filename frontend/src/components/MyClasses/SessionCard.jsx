@@ -68,7 +68,7 @@ const SessionCard = ({ sessionData, role, onAccept, onReject, onView }) => {
           role={role}
           sessionStatus={sessionData.sessionStatus}
           tutorNote={tutorNote}
-          onAccept={(note) => onAccept(sessionId, note)}
+          onAccept={(note) => onAccept(sessionId, note, date, startTime)} // <- important
           onReject={() => onReject(sessionId)}
           onView={() => onView(sessionId)}
         />

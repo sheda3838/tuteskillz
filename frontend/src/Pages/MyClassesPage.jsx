@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Footer from "../components/Home/Footer";
 import Header from "../components/Home/header";
-import Loading  from "../utils/Loading";
+import Loading from "../utils/Loading";
 import { authGuard } from "../utils/authGuard";
 
 // Toasts
@@ -29,31 +29,16 @@ const MyClassesPage = () => {
   useEffect(() => {
     if (!currentUser) return;
 
-    const fetchSessions = async () => {
-      try {
-        const endpoint =
-          currentUser.role === "tutor"
-            ? `/api/session/tutor/${currentUser.userId}/sessions`
-            : `/api/session/student/${currentUser.userId}/sessions`;
-
-        const res = await axios.get(endpoint);
-        setSessions(res.data?.data || []);
-      } catch (err) {
-        notifyError("Failed to load sessions");
-        setSessions([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchSessions();
   }, [currentUser]);
+
   const fetchSessions = async () => {
+    if (!currentUser) return;
     try {
       const endpoint =
-        role === "tutor"
-          ? `/api/session/tutor/${userId}/sessions`
-          : `/api/session/student/${userId}/sessions`;
+        currentUser.role === "tutor"
+          ? `/api/session/tutor/${currentUser.userId}/sessions`
+          : `/api/session/student/${currentUser.userId}/sessions`;
 
       const res = await axios.get(endpoint);
       setSessions(res.data?.data || []);
@@ -79,8 +64,38 @@ const MyClassesPage = () => {
     }
   };
 
-  const handleAccept = (sessionId, tutorNote) => {
-    updateSessionStatus(sessionId, "Accepted", tutorNote);
+  const handleAccept = async (
+    sessionId,
+    tutorNote,
+    sessionDate,
+    sessionStartTime
+  ) => {
+    try {
+      const formattedDate = new Date(sessionDate).toISOString().split("T")[0]; // "YYYY-MM-DD"
+
+      const conflictRes = await axios.get(
+        `/api/session/tutor/${currentUser.userId}/check-conflict`,
+        {
+          params: { date: formattedDate, startTime: sessionStartTime },
+        }
+      );
+
+      if (conflictRes.data.conflict) {
+        return notifyError(conflictRes.data.message);
+      }
+
+      // 2️⃣ No conflict → Accept session
+      await axios.put(`/api/session/${sessionId}/status`, {
+        status: "Accepted",
+        tutorNote,
+      });
+
+      notifySuccess("Session accepted successfully");
+      fetchSessions(); // refresh sessions
+    } catch (err) {
+      console.error(err);
+      notifyError("Failed to accept session");
+    }
   };
 
   const handleReject = (sessionId, tutorNote = null) => {
@@ -88,7 +103,7 @@ const MyClassesPage = () => {
   };
 
   const handleView = (sessionId) => {
-    navigate(`/session/${sessionId}`);
+    // navigate(`/session/${sessionId}`);
   };
 
   return (
@@ -110,7 +125,11 @@ const MyClassesPage = () => {
             animate={{ opacity: 1 }}
             className="no-sessions"
           >
-            <img className="no-sessions" src="/src/assets/no-sessions.png" alt="" />
+            <img
+              className="no-sessions"
+              src="/src/assets/no-sessions.png"
+              alt=""
+            />
           </motion.p>
         ) : (
           <div className="my-classes-grid">

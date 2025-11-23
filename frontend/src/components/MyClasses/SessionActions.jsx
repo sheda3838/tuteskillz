@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../../styles/MyClasses.css";
+import { notifyError, notifySuccess } from "../../utils/toast";
 
 const SessionActions = ({
   role,
@@ -13,7 +14,7 @@ const SessionActions = ({
 
   const handleAcceptClick = () => {
     if (!tutorNote.trim()) {
-      alert("Please enter a tutor note before accepting!");
+      notifyError("Please enter a tutor note before accepting!");
       return;
     }
     onAccept(tutorNote);

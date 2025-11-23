@@ -1,15 +1,4 @@
 /* Modal styling */
-.modal.form-modal {
-  max-width: 800px;
-  width: 95%;
-  background: #fff;
-  padding: 30px;
-  border-radius: 16px;
-  box-shadow: var(--shadow);
-  margin: 40px auto;
-}
-
-
 .bank-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -94,7 +83,7 @@
 }
 
 .cancel-btn {
-  padding: 12px 25px;
+  padding: 12px 12px;
   border-radius: 25px;
   border: 2px solid var(--text-dark);
   background: #fff;

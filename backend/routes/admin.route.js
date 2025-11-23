@@ -142,7 +142,7 @@ adminRouter.get("/counts", (req, resp) => {
       (SELECT COUNT(*) FROM users WHERE role = 'tutor') AS tutorCount,
       (SELECT COUNT(*) FROM users WHERE role = 'student') AS studentCount,
       (SELECT COUNT(*) FROM users WHERE role = 'admin') AS adminCount,
-      (SELECT COUNT(*) FROM session) AS sessionCount,
+      (SELECT COUNT(*) FROM session WHERE sessionStatus = 'completed') AS sessionCount,
       (SELECT COUNT(*) FROM notes) AS notesCount
   `;
 

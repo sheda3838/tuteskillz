@@ -13,7 +13,7 @@ const teamMembers = [
   {
     name: "Zaid Kamil",
     role: "CFO",
-    bio: "Oversees financial health, making education affordable and sustainable",
+    bio: "Leads the financial and strategic backbone of TuteSkillz, shaping a platform that grew from his vision.",
     image: "/src/assets/Me.jpg",
     linkedin: "https://www.linkedin.com/in/kamilzaid/",
   },
@@ -27,7 +27,7 @@ const teamMembers = [
   {
     name: "Sajad Niflar",
     role: "CIO",
-    bio: "Much love with middle school students specially with grade six.",
+    bio: "Grade Six tutor powered by magic, humor, and determination - Much love with middle school students.",
     image: "/src/assets/Sajad.jpg",
     linkedin: "https://www.linkedin.com/in/sajadniflar/",
   },

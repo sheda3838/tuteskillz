@@ -12,7 +12,7 @@ const AdminsPage = () => {
 
   const handleViewAdmin = (userId) => {
     // Navigate to Admin profile page
-    navigate(`/admin-profile/${userId}`);
+    // navigate(`/admin-profile/${userId}`);
   };
 
   useEffect(() => {

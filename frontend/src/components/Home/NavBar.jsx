@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import "../../styles/Home/NavBar.css";
 import UserSession from "../../utils/UserSession";
+import { notifySuccess } from "../../utils/toast";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -25,7 +26,8 @@ const Navbar = () => {
       const res = await axios.post("/api/logout");
       if (res.data.success) {
         setUser(null); // clear session state
-        navigate("/signin", { replace: true });
+        notifySuccess("Logged Out Success")
+        navigate("/", { replace: true });
       }
     } catch (err) {
       console.error(err);

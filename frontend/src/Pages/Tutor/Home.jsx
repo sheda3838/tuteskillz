@@ -103,8 +103,6 @@ function Home() {
 
       {status !== "pending_verification" && status !== "verification_rejected" && (
         <div>
-          <h1>Tutor Home</h1>
-
           {showAvailabilityModal && userId && (
             <SetAvailability
               existingSlots={existingSlots}

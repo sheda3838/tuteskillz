@@ -272,6 +272,120 @@ sessionRouter.get("/:id", (req, res) => {
   });
 });
 
+// ===========================
+// Check student session conflict (fixed 2-hour duration)
+// ===========================
+sessionRouter.get("/student/:studentId/check-conflict", (req, res) => {
+  const studentId = parseInt(req.params.studentId, 10);
+  const { date, startTime } = req.query;
+
+  if (!studentId || !date || !startTime) {
+    return res.status(400).json({
+      success: false,
+      message: "Missing required fields (studentId, date, startTime)"
+    });
+  }
+
+  // Fixed duration = 120 mins
+  const duration = 120;
+
+  // Convert new session time → minutes
+  const [sh, sm] = startTime.split(":").map(Number);
+  const newStart = sh * 60 + sm;
+  const newEnd = newStart + duration;
+
+  const sql = `
+    SELECT sessionId, date, startTime, duration, sessionStatus
+    FROM session
+    WHERE studentId = ?
+      AND date = ?
+      AND sessionStatus IN ('Requested', 'Accepted', 'Submitted')
+  `;
+
+  db.query(sql, [studentId, date], (err, rows) => {
+    if (err) {
+      return res.status(500).json({ success: false, message: err.message });
+    }
+
+    if (rows.length === 0) {
+      return res.json({ success: true, conflict: false });
+    }
+
+    for (const session of rows) {
+      const [eh, em] = session.startTime.split(":").map(Number);
+      const existingStart = eh * 60 + em;
+      const existingEnd = existingStart + session.duration;
+
+      // Check overlap
+      const isOverlap = newStart < existingEnd && newEnd > existingStart;
+
+      if (isOverlap) {
+        return res.json({
+          success: true,
+          conflict: true,
+          message: "You already have a session at this time on the same date.",
+          conflictingSession: session
+        });
+      }
+    }
+
+    return res.json({ success: true, conflict: false });
+  });
+});
+
+// ===========================
+// Check tutor session conflict
+// ===========================
+sessionRouter.get("/tutor/:tutorId/check-conflict", (req, res) => {
+  const tutorId = parseInt(req.params.tutorId, 10);
+  const { date, startTime } = req.query;
+
+  if (!tutorId || !date || !startTime) {
+    return res.status(400).json({
+      success: false,
+      message: "Missing required fields (tutorId, date, startTime)"
+    });
+  }
+
+  const duration = 120; // fixed 2 hours
+
+  const [sh, sm] = startTime.split(":").map(Number);
+  const newStart = sh * 60 + sm;
+  const newEnd = newStart + duration;
+
+  const sql = `
+    SELECT sessionId, date, startTime, duration, sessionStatus
+    FROM session s
+    JOIN tutorSubject ts ON s.tutorSubjectId = ts.tutorSubjectId
+    WHERE ts.tutorId = ? 
+      AND s.date = ? 
+      AND s.sessionStatus = 'Accepted'
+  `;
+
+  db.query(sql, [tutorId, date], (err, rows) => {
+    if (err) return res.status(500).json({ success: false, message: err.message });
+
+    if (rows.length === 0) return res.json({ success: true, conflict: false });
+
+    for (const session of rows) {
+      const [eh, em] = session.startTime.split(":").map(Number);
+      const existingStart = eh * 60 + em;
+      const existingEnd = existingStart + session.duration;
+
+      const isOverlap = newStart < existingEnd && newEnd > existingStart;
+      if (isOverlap) {
+        return res.json({
+          success: true,
+          conflict: true,
+          message: "You already have an accepted session at this time.",
+          conflictingSession: session
+        });
+      }
+    }
+
+    return res.json({ success: true, conflict: false });
+  });
+});
 
 
 

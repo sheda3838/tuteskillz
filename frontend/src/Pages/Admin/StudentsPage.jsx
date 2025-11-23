@@ -12,7 +12,7 @@ const StudentsPage = () => {
 
   const handleViewProfile = (userId) => {
     // Navigate to StudentProfile page
-    navigate(`/student-profile/${userId}`);
+    // navigate(`/student-profile/${userId}`);
   };
 
   useEffect(() => {

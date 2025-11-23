@@ -16,6 +16,7 @@
 .tutor-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
 }
 
 /* Image container */
@@ -102,4 +103,28 @@
 /* Make the card clickable */
 .tutor-card {
   cursor: pointer;
+}
+
+.tutor-list-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.tutor-search-input {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px 15px;
+  margin-bottom: 25px;
+  border-radius: 12px;
+  border: 2px solid #17c7c0;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.tutor-search-input:focus {
+  border-color: #13a9a4;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }

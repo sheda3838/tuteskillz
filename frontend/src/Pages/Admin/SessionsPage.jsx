@@ -11,7 +11,7 @@ const SessionsPage = () => {
   const navigate = useNavigate();
 
   const handleViewSession = (row) => {
-  handleViewNavigation(navigate, row);
+  // handleViewNavigation(navigate, row);
 };
 
   useEffect(() => {
