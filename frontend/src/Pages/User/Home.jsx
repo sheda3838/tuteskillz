@@ -2,7 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import Header from "../../components/Home/Header";
 import Team from "../../components/Home/Team";
-import Voices from "../../components/Home/voices";
+import Voices from "../../components/Home/Voices";
 import Footer from "../../components/Home/Footer";
 import StatsSection from "../../components/Home/StatsSection";
 import Feature from "../../components/Home/Feature"

@@ -7,7 +7,7 @@ import SubjectSelector from "../../components/BrowseTutors/SubjectSelector";
 import TutorList from "../../components/BrowseTutors/TutorList";
 
 import "../../styles/BrowseTutors/BrowseTutors.css";
-import Header from "../../components/Home/header";
+import Header from "../../components/Home/Header";
 import Footer from "../../components/Home/Footer";
 
 import { motion, AnimatePresence } from "framer-motion";
