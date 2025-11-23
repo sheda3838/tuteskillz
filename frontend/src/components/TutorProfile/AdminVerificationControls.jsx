@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../../styles/TutorProfile/AdminVerificationControl";
+import "../../styles/TutorProfile/AdminverificationControl.css";
 
 const AdminVerificationControls = ({ onVerify, onRejectSubmit }) => {
   const [showRejectInput, setShowRejectInput] = useState(false);
