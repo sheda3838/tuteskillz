@@ -4,7 +4,7 @@ import SessionCard from "../components/MyClasses/SessionCard";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Footer from "../components/Home/Footer";
-import Header from "../components/Home/header";
+import Header from "../components/Home/Header";
 import Loading from "../utils/Loading";
 import { authGuard } from "../utils/authGuard";
 import { notifySuccess, notifyError } from "../utils/toast";
