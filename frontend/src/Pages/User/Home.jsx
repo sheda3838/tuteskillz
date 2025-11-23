@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import Header from "../../components/Home/header";
+import Header from "../../components/Home/Header";
 import Team from "../../components/Home/Team";
 import Voices from "../../components/Home/voices";
 import Footer from "../../components/Home/Footer";
