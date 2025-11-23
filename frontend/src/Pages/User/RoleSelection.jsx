@@ -2,12 +2,32 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/roleSelection.css";
 import { motion } from "framer-motion";
-import axios from "axios";
+import { authGuard } from "../../utils/authGuard";
+import { notifyError } from "../../utils/toast";
 
 const RoleSelection = () => {
-  axios.defaults.withCredentials = true;
-
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const validate = async () => {
+      const user = await authGuard(navigate);
+
+      // If null → already redirected
+      if (!user) return;
+
+      // 🟢 USER EXISTS BUT NOT NEW → Redirect them
+      if (user.role === "student") return navigate("/", { replace: true });
+      if (user.role === "tutor") return navigate("/tutor", { replace: true });
+      if (user.role === "admin") return navigate("/admin", { replace: true });
+
+      // ⚠️ Safety check: if somehow user has no role but not new → error
+      notifyError("Invalid access. Please sign in again.");
+      navigate("/signin", { replace: true });
+    };
+
+    validate();
+  }, [navigate]);
+
   return (
     <motion.div
       className="role-container"
@@ -23,20 +43,18 @@ const RoleSelection = () => {
             Choose whether you want to study or teach
           </p>
           <div className="role-cards">
-            {/* Student Card */}
             <div
               className="role-card"
-              onClick={() => navigate("/student-register")}
+              onClick={() => navigate("/student-register", { state: { role: "student" } })}
             >
               <img src="/src/assets/student.png" alt="Study" />
               <h2>Learn</h2>
               <p>Learn and grow with TuteSkillz</p>
             </div>
 
-            {/* Tutor Card */}
             <div
               className="role-card"
-              onClick={() => navigate("/tutor-register")}
+              onClick={() => navigate("/tutor-register", { state: { role: "tutor" } })}
             >
               <img src="/src/assets/tutor.png" alt="Teach" />
               <h2>Teach</h2>
@@ -50,3 +68,4 @@ const RoleSelection = () => {
 };
 
 export default RoleSelection;
+

@@ -105,7 +105,7 @@ userRouter.post("/signin", async (req, resp) => {
         if (err) return resp.json({ success: false, error: err.message });
 
         if (data.length === 0) {
-          return resp.json({ success: false, error: "User not found" });
+          return resp.json({ success: false, error: "Email or password is incorrect" });
         }
 
         const user = data[0];
@@ -251,50 +251,59 @@ userRouter.post("/google/token", async (req, resp) => {
 // ===========================
 //  Check if User Exists in Main Users Table
 // ===========================
+
 userRouter.get("/user", (req, res) => {
-  const email = req.session.email;
+  const email = req.session?.email;
 
   if (!email) {
-    return res.json({
+    return res.status(401).json({
       success: false,
-      message: "Unauthorized Access",
+      loggedin: false,
+      isNewUser: false,
+      message: "Unauthorized",
+      user: null,
     });
   }
 
-  // Check if this email exists in the main users table
-  const sql = "SELECT userId, fullName,role FROM users WHERE email = ?";
+  const sql = "SELECT userId, fullName, role FROM users WHERE email = ?";
   db.query(sql, [email], (err, result) => {
     if (err) {
-      console.error("Error checking user role:", err);
+      console.error("Error checking user:", err);
       return res.status(500).json({
         success: false,
-        message: "Server error while checking user role",
+        loggedin: false,
+        message: "Server error while checking user",
+        user: null,
       });
     }
 
-    // If no record found, means it's a new user
     if (result.length === 0) {
-      return res.json({
+      // email exists in session but user not in main table -> new user flow
+      return res.status(200).json({
         success: true,
         loggedin: true,
         isNewUser: true,
-        message: "Welcome to Tuteskillz - complete registration",
+        message: "Complete registration",
+        user: null,
       });
     }
 
-    // Found user - return their role
-    const role = result[0].role;
-    const fullName = result[0].fullName;
-    const userId = result[0].userId;
+    const row = result[0];
 
-    return res.json({
+    // Optionally update session with server-side userId and role
+    // req.session.userId = row.userId;
+    // req.session.role = row.role;
+
+    return res.status(200).json({
       success: true,
-      isNewUser: false,
-      role: role,
       loggedin: true,
-      userId: userId,
-      email: req.session.email,
-      fullName: fullName,
+      isNewUser: false,
+      user: {
+        userId: row.userId,
+        email: email,
+        fullName: row.fullName,
+        role: row.role,
+      },
     });
   });
 });

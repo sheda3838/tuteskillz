@@ -1,21 +1,29 @@
 /* ============================
-   NAVBAR WRAPPER
+   HEADER NAVBAR
 ============================ */
-.navbar {
+.header {
+  position: relative;
   width: 100%;
+}
+
+/* Navbar inside header (overlapping hero) */
+.header nav {
+  position: absolute;  /* fixed inside header */
+  top: 10px;           /* adjust vertical position inside header */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 95%;
   height: 95px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 5px 2rem;
-  position: fixed;
-  top: 0;
-  z-index: 999;
-  margin-top: 5px;
-  
+  padding: 15px 2rem;
+  color: white;
+  z-index: 1000;
+  border-radius: 20px;
 }
 
-/* FLEX TRICK → keep logo left, buttons right, links centered */
+/* Flex container */
 .navbar-inner {
   width: 100%;
   display: flex;
@@ -24,9 +32,7 @@
   position: relative;
 }
 
-/* ============================
-   LOGO + Background Box
-============================ */
+/* Logo */
 .logo-container {
   background: white;
   padding: 6px 10px;
@@ -42,9 +48,7 @@
   cursor: pointer;
 }
 
-/* ============================
-   NAV LINKS CENTERED
-============================ */
+/* Nav links centered */
 .navbar-links {
   position: absolute;
   left: 50%;
@@ -53,79 +57,69 @@
   align-items: center;
   gap: 2rem;
   z-index: 10;
+  color: white;
 }
 
 .nav-item {
-  color: var(--text-dark); /* changed from white */
+  color: white;
   text-decoration: none;
   font-weight: 700;
   position: relative;
   padding-bottom: 4px;
-  font-size: 1.05rem;
+  font-size: 1.2rem; /* increased font size */
 }
 
-/* Hover underline animation */
 .nav-item::after {
   content: "";
   position: absolute;
   width: 0%;
   height: 3px;
-  background: var(--primary-color); /* underline accent */
+  background: white;
   left: 50%;
   bottom: 0;
   transform: translateX(-50%);
   transition: width 0.3s ease;
 }
+
 .nav-item:hover::after,
 .nav-item.active::after {
   width: 100%;
 }
 
+/* Right buttons */
 .navbar-right {
   display: flex;
   align-items: center;
-  gap: 1rem; /* spacing between logo and Sign In */
+  gap: 1rem;
 }
 
-/* ============================
-   SIGN IN BUTTON (animated)
-============================ */
-/* ============================
-   NAVBAR BUTTONS (Primary → White hover)
-============================ */
-
-/* ============================
-   BUTTON (Swapped Colors)
-============================ */
+/* Sign in / Logout buttons */
 .signin-btn,
 .logout-btn {
-  width: 6.5em;
-  height: 2.3em;
+  width: 7.5em;
+  height: 2.5em;
   margin: 0.5em 0;
-  background: white; /* swapped: normal bg white */
-  color: var(--primary-color); /* swapped: text primary */
+  background: white;
+  color: var(--primary-color);
   border: 2px solid var(--primary-color);
   border-radius: 0.625em;
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
   position: relative;
-  z-index: 1;
   overflow: hidden;
   transition: all 0.3s ease;
 }
 
-/* Hover → primary bg + white text */
 .signin-btn:hover,
 .logout-btn:hover {
-  color: white; /* swapped */
+  color: white;
 }
 
-/* Highlight animation */
 .signin-btn::after,
 .logout-btn::after {
   content: "";
-  background: var(--primary-color); /* swapped highlight color */
+  background: var(--primary-color);
   position: absolute;
   z-index: -1;
   left: -20%;
@@ -141,9 +135,7 @@
   transform: skewX(-45deg) scale(1, 1);
 }
 
-/* ============================
-   HAMBURGER MENU
-============================ */
+/* Hamburger menu */
 .navbar-hamburger {
   display: none;
   flex-direction: column;
@@ -154,13 +146,11 @@
 .navbar-hamburger span {
   width: 25px;
   height: 3px;
-  background: var(--text-dark); /* now visible on white bg */
+  background: var(--text-dark);
   border-radius: 3px;
 }
 
-/* ============================
-   MOBILE RESPONSIVE
-============================ */
+/* Mobile responsive */
 @media (max-width: 820px) {
   .navbar-links {
     position: absolute;
@@ -183,7 +173,7 @@
   }
 
   .nav-item {
-    color: var(--text-dark); /* mobile links visible */
+    color: var(--text-dark);
   }
 
   .navbar-hamburger {

@@ -1,10 +1,11 @@
 // TutorVerification.jsx
-import React, { useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import "../../styles/TutorProfile/TutorVerification.css";
 import { notifyError, notifySuccess } from "../../utils/toast";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { authGuard } from "../../utils/authGuard";
 
 const TutorVerification = () => {
   const [olText, setOlText] = useState("");
@@ -15,9 +16,23 @@ const TutorVerification = () => {
   const { id: tutorId } = useParams();
 
   const grades = ["A", "B", "C", "F", "S", "W"];
-  const admin = JSON.parse(localStorage.getItem("admin"));
+  // const admin = JSON.parse(localStorage.getItem("admin"));
 
   const navigate = useNavigate();
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    const validate = async () => {
+      const user = await authGuard(navigate); // redirects if not logged in
+      if (!user || user.role !== "admin") {
+        navigate("/signin"); // extra safety
+        return;
+      }
+      setCurrentUser(user);
+    };
+    validate();
+  }, [navigate]);
+
   const dedupeResults = (results) => {
     const map = new Map();
     results.forEach((r) => {
@@ -72,36 +87,36 @@ const TutorVerification = () => {
   };
 
   // Approve button click
+  // Approve button click
   const handleApprove = async () => {
-    if (!admin || !admin.userId) return alert("Admin info missing");
+    if (!currentUser || currentUser.role !== "admin")
+      return alert("Admin info missing");
+
+    const adminId = currentUser.userId;
 
     try {
-      // Deduplicate before saving
       const dedupedOL = dedupeResults(olResults);
       const dedupedAL = dedupeResults(alResults);
 
-      // 1️⃣ Save OL results
       if (dedupedOL.length > 0) {
         await axios.post(`/api/admin/tutor/save-results/${tutorId}/OL`, {
           results: dedupedOL,
         });
       }
 
-      // 2️⃣ Save AL results
       if (dedupedAL.length > 0) {
         await axios.post(`/api/admin/tutor/save-results/${tutorId}/AL`, {
           results: dedupedAL,
         });
       }
 
-      // 3️⃣ Approve tutor
       await axios.post(`/api/admin/tutor/approve/${tutorId}`, {
-        adminId: admin.userId,
+        adminId,
         verifiedNotes: "Approved by admin",
       });
 
       notifySuccess("Tutor verified successfully!");
-      navigate("/admin/tutors")
+      navigate("/admin/tutors");
     } catch (err) {
       notifyError(
         "Error approving tutor: " + (err.response?.data?.message || err.message)

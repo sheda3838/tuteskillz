@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { notifySuccess, notifyError } from "../../utils/toast";
+import "../../styles/VerifyEmai.css"
 
 function VerifyEmail() {
   axios.defaults.withCredentials = true;
@@ -43,6 +44,7 @@ function VerifyEmail() {
   return (
     <div className="verify-container">
       <div className="verify-box">
+        <img src="/src/assets/email-verify.png" alt="verify-eamil" />
         <h2 
           className={`verify-title ${
             isSuccess === null ? "" : isSuccess ? "success" : "error"

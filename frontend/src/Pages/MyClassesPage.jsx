@@ -5,19 +5,49 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Footer from "../components/Home/Footer";
 import Header from "../components/Home/header";
+import Loading  from "../utils/Loading";
+import { authGuard } from "../utils/authGuard";
 
 // Toasts
 import { notifySuccess, notifyError } from "../utils/toast";
 
-const MyClassesPage = ({ role, userId }) => {
+const MyClassesPage = () => {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    fetchSessions();
-  }, []);
+    const validate = async () => {
+      const user = await authGuard(navigate); // redirect if not logged in
+      if (!user) return;
+      setCurrentUser(user);
+    };
+    validate();
+  }, [navigate]);
 
+  useEffect(() => {
+    if (!currentUser) return;
+
+    const fetchSessions = async () => {
+      try {
+        const endpoint =
+          currentUser.role === "tutor"
+            ? `/api/session/tutor/${currentUser.userId}/sessions`
+            : `/api/session/student/${currentUser.userId}/sessions`;
+
+        const res = await axios.get(endpoint);
+        setSessions(res.data?.data || []);
+      } catch (err) {
+        notifyError("Failed to load sessions");
+        setSessions([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSessions();
+  }, [currentUser]);
   const fetchSessions = async () => {
     try {
       const endpoint =
@@ -73,14 +103,14 @@ const MyClassesPage = ({ role, userId }) => {
         transition={{ duration: 0.4, ease: "easeOut" }}
       >
         {loading ? (
-          <p>Loading sessions...</p>
+          <Loading />
         ) : sessions.length === 0 ? (
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="no-sessions"
           >
-            No sessions available.
+            <img className="no-sessions" src="/src/assets/no-sessions.png" alt="" />
           </motion.p>
         ) : (
           <div className="my-classes-grid">
@@ -99,7 +129,7 @@ const MyClassesPage = ({ role, userId }) => {
                   <SessionCard
                     key={s.sessionId}
                     sessionData={s}
-                    role={role}
+                    role={currentUser?.role}
                     onAccept={handleAccept}
                     onReject={handleReject}
                     onView={handleView}

@@ -7,6 +7,7 @@ import { Plus, XCircle, Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { FileHelper } from "../../utils/fileHelper";
 import universityData from "../../../data/universities.json";
+import { useLocation } from "react-router-dom";
 
 /* ---------- Step 1 ---------- */
 const Step1 = ({ formData, handleChange, role }) => {
@@ -77,7 +78,6 @@ const Step1 = ({ formData, handleChange, role }) => {
               label="Grade"
               value={formData.grade}
               options={grades.map((g) => g)}
-
               onChange={handleChange}
             />
             <Input
@@ -147,7 +147,7 @@ const Step1 = ({ formData, handleChange, role }) => {
                 required
               />
               <label htmlFor="bio" className="label-bio">
-                Short Bio
+                Bio
               </label>
             </div>
           </>
@@ -377,11 +377,23 @@ const Step4_TutorSubjects = ({
 };
 
 /* ---------- Main Component ---------- */
-const Register = ({ role }) => {
+const Register = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const role = location.state?.role;
+
   const [step, setStep] = useState(1);
-  const isTutor = role === "tutor";
   const [subjects, setSubjects] = useState([]);
+
+  useEffect(() => {
+    if (!role) {
+      notifyError("Please select a role first.");
+      navigate("/role-selection", { replace: true });
+    }
+  }, [role, navigate]);
+
+  const isTutor = role === "tutor";
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -412,10 +424,50 @@ const Register = ({ role }) => {
       .catch(() => console.log("Failed to fetch subjects"));
   }, []);
 
+  // === File Size Limits ===
+const MAX_PROFILE_PIC_SIZE = 1 * 1024 * 1024; // 1MB
+const MAX_TRANSCRIPT_SIZE = 5 * 1024 * 1024; // 5MB
+
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: files ? files[0] : value }));
-  };
+  const { name, value, files } = e.target;
+
+  // Handle file input
+  if (files && files[0]) {
+    const file = files[0];
+
+    // ----- PROFILE PIC VALIDATION -----
+    if (name === "profilePic") {
+      if (file.size > MAX_PROFILE_PIC_SIZE) {
+        notifyError("Profile picture must be smaller than 1MB.");
+        return;
+      }
+      if (!file.type.startsWith("image/")) {
+        notifyError("Profile picture must be an image.");
+        return;
+      }
+    }
+
+    // ----- TRANSCRIPT VALIDATION (OL / AL) -----
+    if (name === "olTranscript" || name === "alTranscript") {
+      if (file.size > MAX_TRANSCRIPT_SIZE) {
+        notifyError("Transcript must be smaller than 5MB.");
+        return;
+      }
+
+      if (file.type !== "application/pdf") {
+        notifyError("Transcript must be a PDF file.");
+        return;
+      }
+    }
+
+    // If valid → update formData
+    setFormData((prev) => ({ ...prev, [name]: file }));
+    return;
+  }
+
+  // Normal inputs
+  setFormData((prev) => ({ ...prev, [name]: value }));
+};
 
   /* ---------- Step Validation ---------- */
   const validateStep = () => {
@@ -453,7 +505,7 @@ const Register = ({ role }) => {
       if (isTutor) {
         if (age < 18 || age > 30)
           return notifyError("Tutor age must be between 18 and 30.");
-        if (!school || !university)
+        if (!school)
           return notifyError("School and University are required.");
         if (!olTranscript || !alTranscript)
           return notifyError("OL and AL transcripts are required.");
@@ -494,7 +546,7 @@ const Register = ({ role }) => {
         ? "/api/tutor/register"
         : "/api/student/register";
       const prepared = await FileHelper.prepareFiles(formData);
-      console.log(prepared);
+      console.log("Prepared data:", prepared);
       const res = await axios.post(endpoint, prepared, {
         headers: { "Content-Type": "application/json" },
       });
@@ -622,7 +674,6 @@ const Select = ({ name, label, value, options, onChange }) => {
         value={value}
         onChange={onChange}
         placeholder={`Select ${label}`}
-        required
       />
       <datalist id={datalistId}>
         {options.map((opt) => (

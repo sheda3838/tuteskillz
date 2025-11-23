@@ -5,7 +5,8 @@ import SetAvailability from "../../components/TutorProfile/SetAvailability";
 import SetBankDetailsModal from "../../components/TutorProfile/SetBankDetails";
 import { notifyError } from "../../utils/toast";
 import { motion } from "framer-motion";
-
+import { authGuard } from "../../utils/authGuard";
+import "../../styles/TutorHome.css"
 
 function Home() {
   const navigate = useNavigate();
@@ -16,20 +17,20 @@ function Home() {
   const [status, setStatus] = useState(null);
 
   useEffect(() => {
-    const tutor = JSON.parse(localStorage.getItem("tutor"));
-    const id = tutor?.userId;
+    const validateTutor = async () => {
+      const user = await authGuard(navigate);
 
-    if (!id) {
-      notifyError("No tutor id found in localStorage");
-      return;
-    }
+      if (!user) return; // already redirected by authGuard
 
-    setUserId(id);
+      if (user.role !== "tutor") {
+        notifyError("Unauthorized access");
+        return navigate("/", { replace: true });
+      }
 
-    axios
-      .get(`/api/tutor/status/${id}`)
-      .then((res) => {
-        const data = res.data;
+      setUserId(user.userId);
+
+      try {
+        const { data } = await axios.get(`/api/tutor/status/${user.userId}`);
         setStatus(data.status);
 
         if (data.status === "complete") {
@@ -41,23 +42,23 @@ function Home() {
           if (needA) setShowAvailabilityModal(true);
           else if (needB) setShowBankModal(true);
         }
-      })
-      .catch((err) => {
+      } catch (err) {
         notifyError("Error fetching tutor status");
         console.error(err);
-      });
+      }
 
-    axios
-      .get(`/api/tutor/availability/${id}`)
-      .then((res) => {
+      try {
+        const res = await axios.get(`/api/tutor/availability/${user.userId}`);
         if (res.data.success && Array.isArray(res.data.availability)) {
           setExistingSlots(res.data.availability);
         }
-      })
-      .catch((err) => {
+      } catch (err) {
         notifyError("Error fetching availability");
         console.error(err);
-      });
+      }
+    };
+
+    validateTutor();
   }, [navigate]);
 
   const handleAvailabilitySaved = () => {
@@ -70,7 +71,7 @@ function Home() {
     navigate("/", { replace: true });
   };
 
-  // Framer Motion variants (optional, for more control)
+  // Framer Motion variants
   const pageVariants = {
     initial: { opacity: 0, x: -50 },
     animate: { opacity: 1, x: 0 },
@@ -79,7 +80,7 @@ function Home() {
 
   return (
     <motion.div
-      className="home-page-container"
+      className="home-page-container-tutor"
       initial="initial"
       animate="animate"
       exit="exit"

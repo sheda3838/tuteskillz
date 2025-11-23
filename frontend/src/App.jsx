@@ -33,8 +33,7 @@ import BrowseTutors from "./Pages/Student/Browsetutors";
 
 // BrowseClasses
 import MyClassesPage from "./Pages/MyClassesPage";
-import Home from "./Pages/User/Home"
-
+import Home from "./Pages/User/Home";
 
 function App() {
   const location = useLocation();
@@ -42,14 +41,14 @@ function App() {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<Home />}/>
+        <Route path="/" element={<Home />} />
         <Route path="/loggedin-home" element={<LoggedinHome />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/role-selection" element={<RoleSelection />} />
-        <Route path="/student-register" element={<Register role="student" />} />
-        <Route path="/tutor-register" element={<Register role="tutor" />} />
+        <Route path="/student-register" element={<Register />} />
+        <Route path="/tutor-register" element={<Register />} />
 
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminHome />} />
@@ -62,10 +61,7 @@ function App() {
 
         <Route path="/tutor-verification/:id" element={<TutorVerification />} />
 
-        <Route
-          path="/tutor-profile/:id"
-          element={<TutorProfile currentUserRole={getCurrentUser()?.role} />}
-        />
+        <Route path="/tutor-profile/:id" element={<TutorProfile />} />
 
         <Route path="/tutor" element={<TutorHome />} />
         <Route path="/browse-tutors" element={<BrowseTutors />} />
@@ -76,15 +72,8 @@ function App() {
           element={<SessionProfile userRole={getCurrentUser()?.role} />}
         /> */}
 
-        <Route
-          path="/my-classes"
-          element={
-            <MyClassesPage
-              role={getCurrentUser()?.role}
-              userId={getCurrentUser()?.userId}
-            />
-          }
-        />
+        <Route path="/my-classes" element={<MyClassesPage />} />
+
       </Routes>
     </AnimatePresence>
   );

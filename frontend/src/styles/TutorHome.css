@@ -1,0 +1,20 @@
+.home-page-container-tutor {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;   /* vertical center */
+  align-items: center;       /* horizontal center */
+  min-height: 100vh;         /* full screen height */
+  text-align: center;        /* centers text inside */
+}
+
+/* Optional – center the status blocks */
+.tutor-status {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.tutor-status h2{
+    color: var(--primary-color);
+}

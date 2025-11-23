@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { notifySuccess, notifyError } from "../../utils/toast";
 import "../../styles/BrowseTutors/RequestSession.css";
+import { authGuard } from "../../utils/authGuard";
 
 const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
   const [tutorInfo, setTutorInfo] = useState(null);
@@ -11,15 +12,22 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [studentNote, setStudentNote] = useState("");
-
-  const student = JSON.parse(localStorage.getItem("student"));
-  const studentId = student?.userId;
   const navigate = useNavigate();
-  if (!studentId) {
-    notifyError("Student not logged in!");
-    return;
-  }
+  const [studentId, setStudentId] = useState(null);
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      const user = await authGuard(navigate); // your own logic, unchanged
+      if (user && user.role === "student") {
+        setStudentId(user.userId);
+      } else {
+        notifyError("Only students can request sessions.");
+        onClose();
+      }
+    };
+
+    fetchUser();
+  }, []);
   // Fetch tutor static info when modal opens
   useEffect(() => {
     if (!visible) return;
@@ -37,7 +45,10 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
 
   // Fetch availability when date is selected
   useEffect(() => {
-    if (!selectedDate || !tutorInfo) return;
+    if (!selectedDate || !tutorInfo) {
+      setAvailability([]);
+      return;
+    }
 
     const dayOfWeek = new Date(selectedDate).toLocaleDateString("en-US", {
       weekday: "long",
@@ -73,34 +84,38 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
   }, [startTime]);
 
   const handleSubmit = () => {
-    if (!selectedDate || !startTime || !studentNote) {
-      return notifyError("Please fill all required fields");
-    }
+  if (!selectedDate || !startTime || !studentNote) {
+    return notifyError("Please fill all required fields");
+  }
 
-    // Check if startTime fits in available slots
-    const startInMinutes =
-      parseInt(startTime.split(":")[0]) * 60 +
-      parseInt(startTime.split(":")[1]);
-    const endInMinutes =
-      parseInt(endTime.split(":")[0]) * 60 + parseInt(endTime.split(":")[1]);
+  // --- Check if date + time is in the future ---
+  const now = new Date();
+  const selectedDateTime = new Date(`${selectedDate}T${startTime}`);
+  if (selectedDateTime <= now) {
+    return notifyError("Please select a date and time in the future");
+  }
 
-    const validSlot = availability.some((slot) => {
-      const slotStart =
-        parseInt(slot.startTime.split(":")[0]) * 60 +
-        parseInt(slot.startTime.split(":")[1]);
-      const slotEnd =
-        parseInt(slot.endTime.split(":")[0]) * 60 +
-        parseInt(slot.endTime.split(":")[1]);
-      return startInMinutes >= slotStart && endInMinutes <= slotEnd;
-    });
+  const startInMinutes =
+    parseInt(startTime.split(":")[0]) * 60 +
+    parseInt(startTime.split(":")[1]);
+  const endInMinutes =
+    parseInt(endTime.split(":")[0]) * 60 + parseInt(endTime.split(":")[1]);
 
-    if (!validSlot) {
-      return notifyError("Selected time is not within tutor availability");
-    }
+  const validSlot = availability.some((slot) => {
+    const slotStart =
+      parseInt(slot.startTime.split(":")[0]) * 60 +
+      parseInt(slot.startTime.split(":")[1]);
+    const slotEnd =
+      parseInt(slot.endTime.split(":")[0]) * 60 +
+      parseInt(slot.endTime.split(":")[1]);
+    return startInMinutes >= slotStart && endInMinutes <= slotEnd;
+  });
 
-    console.log({ selectedDate, startTime, tutorSubjectId, studentId });
+  if (!validSlot) {
+    return notifyError("Selected time is not within tutor availability");
+  }
 
-    axios
+  axios
       .post("/api/session/request", {
         tutorSubjectId,
         studentId,
@@ -113,7 +128,7 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
         if (res.data.success) {
           notifySuccess("Session requested successfully");
           onClose();
-          navigate("/my-classes")
+          navigate("/my-classes");
         } else {
           notifyError(res.data.message || "Failed to request session");
         }
@@ -122,7 +137,8 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
         console.error(err);
         notifyError("Failed to request session");
       });
-  };
+};
+
 
   if (!visible) return null;
 
@@ -143,29 +159,24 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
                 <span className="static-info-label">Tutor</span>
                 <span className="static-info-value">{tutorInfo.tutorName}</span>
               </div>
-
               <div className="static-info-item">
                 <span className="static-info-label">Duration</span>
                 <span className="static-info-value">2 Hours</span>
               </div>
-
               <div className="static-info-item">
                 <span className="static-info-label">Amount</span>
                 <span className="static-info-value">LKR {amount}.00</span>
               </div>
-
               <div className="static-info-item">
                 <span className="static-info-label">Medium</span>
                 <span className="static-info-value">
                   {tutorInfo.teachingMedium}
                 </span>
               </div>
-
               <div className="static-info-item">
                 <span className="static-info-label">Grade</span>
                 <span className="static-info-value">{tutorInfo.grade}</span>
               </div>
-
               <div className="static-info-item">
                 <span className="static-info-label">Subject</span>
                 <span className="static-info-value">
@@ -177,15 +188,18 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
         )}
 
         <div className="form-grp">
-          <label>Date:</label>
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-          />
+          <div className="form-row">
+            <label>Date:</label>
+            <input
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+            />
+          </div>
         </div>
 
-        {availability.length > 0 && (
+        {/* Availability */}
+        {selectedDate && availability.length > 0 ? (
           <div className="form-grp">
             <div className="time-row">
               <label>Start Time:</label>
@@ -206,7 +220,11 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
               ))}
             </ul>
           </div>
-        )}
+        ) : selectedDate ? (
+          <p className="no-availability-msg">
+            No available time slots for this tutor on the selected date.
+          </p>
+        ) : null}
 
         <div className="form-grp">
           <label>Student Note:</label>

@@ -1,93 +1,46 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import UserSession from "../../utils/UserSession";
 import axios from "axios";
 import { notifySuccess, notifyError } from "../../utils/toast";
+import {authGuard } from "../../utils/authGuard"
 
 function LoggedinHome() {
-  axios.defaults.withCredentials = true;
-
   const [name, setName] = useState("");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const checkUser = async () => {
-      try {
-        const res = await axios.get("/api/user");
-        const data = res.data;
+  axios.defaults.withCredentials = true;
 
-        if (!data.loggedin) {
-          notifyError(data.message);
-          navigate("/signin");
-          return;
-        }
+ useEffect(() => {
+  const validate = async () => {
+    const user = await authGuard(navigate);
 
-        // NEW USERS GO TO ROLE SELECTION
-        if (data.isNewUser) {
-          notifySuccess(data.message);
-          navigate("/role-selection");
-          return;
-        }
+    if (!user) return;
 
-        setName(data.fullName);
+    // Set name (optional visual)
+    setName(user.fullName);
 
-        // ROLE BASED NAVIGATION
-        switch (data.role) {
-          case "admin":
-            localStorage.setItem(
-              "admin",
-              JSON.stringify({
-                userId: data.userId,
-                email: data.email,
-                fullName: data.fullName,
-                role: data.role,
-              })
-            );
-            navigate("/admin");
-            break;
-
-          case "tutor":
-            localStorage.setItem(
-              "tutor",
-              JSON.stringify({
-                userId: data.userId,
-                email: data.email,
-                fullName: data.fullName,
-                role: data.role,
-              })
-            );
-            navigate("/tutor");
-            break;
-
-          case "student":
-            localStorage.setItem(
-              "student",
-              JSON.stringify({
-                userId: data.userId,
-                email: data.email,
-                fullName: data.fullName,
-                role: data.role,
-              })
-            );
-            navigate("/");
-            break;
-        }
-      } catch (err) {
-        console.error(err);
-        notifyError(err.message || "Error checking user session");
-        navigate("/signin");
-      }
+    // ROLE REDIRECT
+    if (user.role === "student") navigate("/", { replace: true });
+    if (user.role === "tutor") {
+      console.log(user.role);
+      navigate("/tutor", { replace: true })
     };
+    if (user.role === "admin") navigate("/admin", { replace: true });
+  };
 
-    checkUser();
-  }, []);
+  validate();
+}, []);
+
+
 
   const handleLogout = async () => {
     try {
       const res = await axios.post("/api/logout");
+
       if (res.data.success) {
-        localStorage.clear(); // <-- Add this
         notifySuccess("Logged out successfully!");
-        navigate("/signin");
+        navigate("/signin", { replace: true });
       }
     } catch (err) {
       notifyError(err.message || "Logout failed!");

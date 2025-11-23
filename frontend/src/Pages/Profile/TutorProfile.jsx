@@ -21,8 +21,10 @@ import RequestSessionModal from "../../components/BrowseTutors/RequestSession";
 import Modal from "../../components/Modal"; // your modal component
 import { notifySuccess } from "../../utils/toast";
 import { useLocation } from "react-router-dom";
+import { authGuard } from "../../utils/authGuard";
+import Loading from "../../utils/Loading";
 
-const TutorProfile = ({ currentUserRole }) => {
+const TutorProfile = ({}) => {
   const { id } = useParams();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -33,6 +35,17 @@ const TutorProfile = ({ currentUserRole }) => {
 
   const location = useLocation();
   const { tutorSubjectId } = location.state || {};
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    const validate = async () => {
+      const user = await authGuard(navigate); // checks login + redirects if not
+      if (!user) return;
+      setCurrentUser(user);
+    };
+
+    validate();
+  }, [navigate]);
 
   useEffect(() => {
     axios
@@ -47,12 +60,26 @@ const TutorProfile = ({ currentUserRole }) => {
       });
   }, [id]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading)
+    return (
+      <p>
+        <Loading />
+      </p>
+    );
   if (!profile) return <p>Tutor not found</p>;
 
-  const isAdmin = currentUserRole === "admin";
-  const isTutor = currentUserRole === "tutor";
-  const isStudent = currentUserRole === "student";
+  if (!currentUser)
+    return (
+      <p>
+        <Loading />
+      </p>
+    ); // temporary until authGuard finishes
+
+  const role = currentUser.role;
+  const isAdmin = role === "admin";
+  const isTutor = role === "tutor";
+  const isStudent = role === "student";
+
   const isPending = isAdmin && profile.verification.status === "Pending";
   const isVerified = isAdmin && profile.verification.status === "Approved";
 
@@ -61,7 +88,7 @@ const TutorProfile = ({ currentUserRole }) => {
       <div className="tutor-profile-page">
         {/* Header */}
         <div className="section header-section">
-          <ProfileHeader profile={profile} currentUserRole={currentUserRole} />
+          <ProfileHeader profile={profile} currentUserRole={role} />
         </div>
 
         {/* Personal + Address */}
@@ -99,15 +126,16 @@ const TutorProfile = ({ currentUserRole }) => {
             <AdminVerificationControls
               onVerify={() => navigate(`/tutor-verification/${profile.userId}`)}
               onRejectSubmit={(note) => {
-                const admin = JSON.parse(localStorage.getItem("admin"));
-                if (!admin?.userId) return notifyError("Admin info missing");
+                const adminId = currentUser?.userId;
+                if (!adminId) return notifyError("Admin info missing");
 
                 axios
                   .post(`/api/admin/reject-tutor/${profile.userId}`, {
                     note,
-                    adminId: admin.userId, // 🔥 include this
+                    adminId, // ✅ Correct
                   })
                   .then(() => notifySuccess("Tutor rejected"))
+                  navigate('/admin/tutors')
                   .catch((err) =>
                     notifyError(
                       "Error rejecting tutor: " +
@@ -129,7 +157,7 @@ const TutorProfile = ({ currentUserRole }) => {
         {/* Action Buttons */}
         <div className="section">
           <ActionButtons
-            role={currentUserRole}
+            role={role}
             onSubjects={() => setOpenModal("subjects")}
             onAvailability={() => setOpenModal("availability")}
             onBankDetails={() => setOpenModal("bank")}

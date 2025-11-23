@@ -139,7 +139,7 @@
 .form-group textarea:not(:placeholder-shown) + label,
 .file-input-mimic:focus + label,
 .file-input-mimic:not(:placeholder-shown) + label {
-  top: -10px;
+  top: -4px;
   font-size: 13px;
   color: var(--primary-color, #01a3a4);
   font-weight: 500;

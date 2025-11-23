@@ -5,10 +5,6 @@ import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const navigate = useNavigate();
-
-  const navigateFunction = () => {
-    navigate('/signup')
-  }
   return (
     <header className="header">
       {/* Fixed Navbar */}
@@ -25,12 +21,12 @@ const Header = () => {
             Access high-quality courses anytime, anywhere, and take control of your
             learning journey with ease.
           </p>
-          <button onClick={navigateFunction} className="hero-btn">Get Started Now</button>
         </div>
 
         {/* Hero Image Container (background handled in CSS) */}
         <div className="hero-image-container"></div>
       </section>
+
     </header>
   );
 };

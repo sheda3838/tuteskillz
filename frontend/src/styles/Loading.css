@@ -1,0 +1,56 @@
+.loading-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  gap: 12px;
+}
+
+/* Pencil Animation */
+.pencil-loader {
+  position: relative;
+  width: 120px;
+  height: 40px;
+}
+
+.pencil-icon {
+  font-size: 28px;
+  color: #00a6a6; /* TuteSkillz teal */
+  position: absolute;
+  top: 5px;
+  left: 0;
+  animation: pencil-move 1.2s ease-in-out infinite;
+}
+
+.loader-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 120px;
+  height: 4px;
+  background: linear-gradient(90deg, #00a6a6, transparent);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* Pencil movement animation */
+@keyframes pencil-move {
+  0% {
+    left: 0;
+  }
+  50% {
+    left: 90px;
+  }
+  100% {
+    left: 0;
+  }
+}
+
+.loading-wrapper p {
+  font-size: 1rem;
+  color: #4b4b4b;
+  margin: 0;
+  margin-top: 5px;
+  font-weight: 500;
+}

@@ -5,6 +5,7 @@ import Team from "../../components/Home/Team";
 import Voices from "../../components/Home/voices";
 import Footer from "../../components/Home/Footer";
 import StatsSection from "../../components/Home/StatsSection";
+import Feature from "../../components/Home/Feature"
 
 function Home() {
   const pageVariants = {
@@ -15,7 +16,6 @@ function Home() {
 
   return (
     <motion.div
-      className="home-page-container"
       initial="initial"
       animate="animate"
       exit="exit"
@@ -23,6 +23,7 @@ function Home() {
       transition={{ duration: 0.6, ease: "easeInOut" }}
     >
       <Header />
+      <Feature />
       <Team />
       <Voices />
       <StatsSection />

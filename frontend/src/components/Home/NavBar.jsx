@@ -1,25 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import "../../styles/Home/NavBar.css";
+import UserSession from "../../utils/UserSession";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [user, setUser] = useState(null); // store session user
 
-  const student = JSON.parse(localStorage.getItem("student"));
-  const tutor = JSON.parse(localStorage.getItem("tutor"));
+  const toggleMenu = () => setMenuOpen(!menuOpen);
 
-  const role = student?.role || tutor?.role;
-  const isLoggedIn = !!role;
+  useEffect(() => {
+    const fetchUser = async () => {
+      const s = await UserSession.get(); // returns session info without redirect
+      if (s.loggedin) setUser(s.user);
+    };
+    fetchUser();
+  }, []);
 
   const handleLogout = async () => {
     try {
       const res = await axios.post("/api/logout");
       if (res.data.success) {
-        localStorage.clear();
-        navigate("/signin");
+        setUser(null); // clear session state
+        navigate("/signin", { replace: true });
       }
     } catch (err) {
       console.error(err);
@@ -27,19 +33,19 @@ const Navbar = () => {
     }
   };
 
-  const toggleMenu = () => setMenuOpen(!menuOpen);
+  const isLoggedIn = !!user;
+  const role = user?.role;
 
   return (
     <nav className="navbar">
       <div className="navbar-inner" style={{ padding: "0 2rem" }}>
-        {/* Left: Logo */}
+        {/* Logo */}
         <div className="logo-container" onClick={() => navigate("/")}>
           <img src="/Logo.png" alt="TuteSkillz Logo" className="navbar-logo" />
         </div>
 
-        {/* Centered Nav Links */}
+        {/* Nav Links */}
         <div className={`navbar-links ${menuOpen ? "active" : ""}`}>
-          {/* Home always visible */}
           <Link
             to="/"
             className={`nav-item ${location.pathname === "/" ? "active" : ""}`}
@@ -47,8 +53,8 @@ const Navbar = () => {
             Home
           </Link>
 
-          {/* Browse Tutors visible only for guests and students */}
-          {(!isLoggedIn || student) && (
+          {/* Browse Tutors: guests & students */}
+          {(!isLoggedIn || role === "student") && (
             <Link
               to="/browse-tutors"
               className={`nav-item ${
@@ -59,8 +65,8 @@ const Navbar = () => {
             </Link>
           )}
 
-          {/* Student specific links */}
-          {student && (
+          {/* Student Links */}
+          {role === "student" && (
             <>
               <Link
                 to="/my-classes"
@@ -70,19 +76,19 @@ const Navbar = () => {
               >
                 My Sessions
               </Link>
-              <Link
+              {/* <Link
                 to="/profile"
                 className={`nav-item ${
                   location.pathname === "/profile" ? "active" : ""
                 }`}
               >
                 My Profile
-              </Link>
+              </Link> */}
             </>
           )}
 
-          {/* Tutor specific links */}
-          {tutor && (
+          {/* Tutor Links */}
+          {role === "tutor" && (
             <>
               <Link
                 to="/my-classes"
@@ -111,7 +117,7 @@ const Navbar = () => {
               Sign In
             </button>
           )}
-          {(student || tutor) && (
+          {isLoggedIn && (
             <button className="logout-btn" onClick={handleLogout}>
               Logout
             </button>

@@ -1,7 +1,7 @@
 /* --- Section Layout --- */
 .team-section {
   padding: 70px 0;
-  background-color: #f7eef7;  /* light pink background matching the image */
+  background-color: #f7eef7; /* light pink background matching the image */
   text-align: center;
 }
 
@@ -48,7 +48,7 @@
   padding: 25px;
   backface-visibility: hidden;
   border-radius: 25px;
-  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.10);
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.1);
   background: #fff;
   display: flex;
   flex-direction: column;
@@ -65,27 +65,26 @@
   height: 200px;
   border-radius: 22px; /* matches rounded rectangle images */
   object-fit: cover;
-  margin-bottom: 18px;
 }
 
 .card-name {
   font-size: 1.1rem;
   font-weight: 700;
-  margin-top: 5px;
 }
 
 .card-role {
   font-size: 0.9rem;
   font-weight: 700;
   color: #0094ba;
-  margin: 5px 0 12px;
   text-transform: uppercase;
+  margin: 0px;
 }
 
 .card-bio {
   font-size: 0.85rem;
   color: #555;
   max-width: 220px;
+  margin: 2px;
 }
 
 /* --- Back Side --- */
@@ -110,4 +109,26 @@
 
 .card-socials a:hover {
   color: #f8f11a;
+}
+
+/* --- LinkedIn Button --- */
+.linkedin-button {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 20px;
+  background: #0a66c2; /* LinkedIn blue */
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+  border-radius: 50px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transform: translateY(0);
+}
+
+.linkedin-button:hover {
+  background: #004182; /* darker blue on hover */
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
 }

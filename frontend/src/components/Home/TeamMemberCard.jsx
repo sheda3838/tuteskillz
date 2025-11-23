@@ -1,12 +1,11 @@
 import React from "react";
-import { FaLinkedin, FaEnvelope } from "react-icons/fa";
+import { FaLinkedin } from "react-icons/fa";
 import "../../styles/Home/Team.css";
 
-const TeamMemberCard = ({ image, name, role, bio, linkedin, gmail }) => {
+const TeamMemberCard = ({ image, name, role, bio, linkedin }) => {
   return (
     <div className="card-container">
       <div className="card">
-        
         {/* FRONT */}
         <div className="card-front">
           <img src={image} alt={name} className="card-image" />
@@ -19,17 +18,17 @@ const TeamMemberCard = ({ image, name, role, bio, linkedin, gmail }) => {
         {/* BACK */}
         <div className="card-back">
           <h3 className="back-title">Connect With Me</h3>
-          <div className="card-socials">
-            <a href={linkedin} target="_blank" rel="noopener noreferrer">
-              <FaLinkedin size={30} />
-            </a>
 
-            <a href={`mailto:${gmail}`}>
-              <FaEnvelope size={30} />
-            </a>
-          </div>
+          <a
+            href={linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="linkedin-button"
+          >
+            <FaLinkedin size={20} style={{ marginRight: "8px" }} />
+            LinkedIn
+          </a>
         </div>
-
       </div>
     </div>
   );
