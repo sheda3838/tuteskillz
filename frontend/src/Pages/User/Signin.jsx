@@ -20,13 +20,26 @@ function Signin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const r = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/signin`, values);
+      const r = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/signin`,
+        values
+      );
       if (r.data.error) {
         notifyError(r.data.error);
         return;
       }
       if (r.data.success) {
         notifySuccess("Signin successful! 🎉");
+
+        axios
+          .get(`${import.meta.env.VITE_BACKEND_URL}/test-session`, {
+            withCredentials: true,
+          })
+          .then((res) => console.log("Session response:", res.data))
+          .catch((err) =>
+            console.error("Session error:", err.response?.data || err.message)
+          );
+
         navigate("/loggedin-home");
       }
     } catch (err) {
@@ -36,9 +49,12 @@ function Signin() {
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
-      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/google/token`, {
-        token: credentialResponse.credential,
-      });
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/google/token`,
+        {
+          token: credentialResponse.credential,
+        }
+      );
       if (res.data.success) {
         notifySuccess("Signed in with Google successfully! 🚀");
         navigate("/loggedin-home");

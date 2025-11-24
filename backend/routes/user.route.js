@@ -105,7 +105,10 @@ userRouter.post("/signin", async (req, resp) => {
         if (err) return resp.json({ success: false, error: err.message });
 
         if (data.length === 0) {
-          return resp.json({ success: false, error: "Email or password is incorrect" });
+          return resp.json({
+            success: false,
+            error: "Email or password is incorrect",
+          });
         }
 
         const user = data[0];
@@ -320,6 +323,12 @@ userRouter.post("/logout", (req, res) => {
     res.clearCookie("connect.sid");
     return res.json({ success: true, message: "Logged out successfully" });
   });
+});
+
+app.get("/test-session", (req, res) => {
+  console.log("Session:", req.session);
+  if (!req.session.user) return res.status(401).json({ loggedin: false });
+  res.json({ loggedin: true, user: req.session.user });
 });
 
 export default userRouter;
