@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import UserSession from "../../utils/UserSession";
 import axios from "axios";
 import { notifySuccess, notifyError } from "../../utils/toast";
 import {authGuard } from "../../utils/authGuard"

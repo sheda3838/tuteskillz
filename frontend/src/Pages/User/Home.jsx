@@ -8,7 +8,6 @@ import StatsSection from "../../components/Home/StatsSection";
 import Feature from "../../components/Home/Feature"
 
 function Home() {
-  axios.defaults.withCredentials = true;
   const pageVariants = {
     initial: { opacity: 0, x: -50 },
     animate: { opacity: 1, x: 0 },
