@@ -47,7 +47,7 @@ const RoleSelection = () => {
               className="role-card"
               onClick={() => navigate("/student-register", { state: { role: "student" } })}
             >
-              <img src="/src/assets/student.png" alt="Study" />
+              <img src="/student.png" alt="Study" />
               <h2>Learn</h2>
               <p>Learn and grow with TuteSkillz</p>
             </div>
@@ -56,7 +56,7 @@ const RoleSelection = () => {
               className="role-card"
               onClick={() => navigate("/tutor-register", { state: { role: "tutor" } })}
             >
-              <img src="/src/assets/tutor.png" alt="Teach" />
+              <img src="/tutor.png" alt="Teach" />
               <h2>Teach</h2>
               <p>Share your knowledge and guide students</p>
             </div>
