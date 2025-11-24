@@ -30,7 +30,7 @@ function Home() {
       setUserId(user.userId);
 
       try {
-        const { data } = await axios.get(`/api/tutor/status/${user.userId}`);
+        const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/tutor/status/${user.userId}`);
         setStatus(data.status);
 
         if (data.status === "complete") {
@@ -48,7 +48,7 @@ function Home() {
       }
 
       try {
-        const res = await axios.get(`/api/tutor/availability/${user.userId}`);
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/tutor/availability/${user.userId}`);
         if (res.data.success && Array.isArray(res.data.availability)) {
           setExistingSlots(res.data.availability);
         }

@@ -17,7 +17,7 @@ const AdminsPage = () => {
 
   useEffect(() => {
     axios
-      .get("/api/admin/allAdmins", { responseType: "json" })
+      .get(`${import.meta.env.VITE_BACKEND_URL}/admin/allAdmins`, { responseType: "json" })
       .then((res) => {
         const processedAdmins = res.data.admins.map((a) => {
           let profilePic = "/default-avatar.png";

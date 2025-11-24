@@ -37,7 +37,7 @@ function Signup() {
     }
 
     try {
-      const r = await axios.post("/api/signup", {
+      const r = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/signup`, {
         email: values.email,
         password: values.password,
       });
@@ -60,7 +60,7 @@ function Signup() {
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
-      const res = await axios.post("/api/google/token", {
+      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/google/token`, {
         token: credentialResponse.credential,
       });
       if (res.data.success) {

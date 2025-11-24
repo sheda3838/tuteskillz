@@ -17,7 +17,7 @@ const TutorsPage = () => {
 
   useEffect(() => {
     axios
-      .get("/api/admin/allTutors", { responseType: "json" })
+      .get(`${import.meta.env.VITE_BACKEND_URL}/admin/allTutors`, { responseType: "json" })
       .then((res) => {
         const processedTutors = res.data.tutors.map((tutor) => {
           let profilePic = "/default-avatar.png";

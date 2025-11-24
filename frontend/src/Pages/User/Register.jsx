@@ -553,8 +553,8 @@ const handleChange = (e) => {
 
     try {
       const endpoint = isTutor
-        ? "/api/tutor/register"
-        : "/api/student/register";
+        ? `${import.meta.env.VITE_BACKEND_URL}/tutor/register`
+        : `${import.meta.env.VITE_BACKEND_URL}/student/register`;
       const prepared = await FileHelper.prepareFiles(formData);
       console.log("Prepared data:", prepared);
       const res = await axios.post(endpoint, prepared, {

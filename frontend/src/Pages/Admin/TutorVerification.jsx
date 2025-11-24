@@ -47,7 +47,7 @@ const TutorVerification = () => {
     if (!olText.trim()) return notifyError("Please enter OL transcript text");
 
     try {
-      const res = await axios.post("/api/admin/tutor/parse-text", {
+      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/admin/tutor/parse-text`, {
         transcriptText: olText,
       });
       const deduped = dedupeResults(res.data.results);
@@ -63,7 +63,7 @@ const TutorVerification = () => {
     if (!alText.trim()) return notifyError("Please enter AL transcript text");
 
     try {
-      const res = await axios.post("/api/admin/tutor/parse-text", {
+      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/admin/tutor/parse-text`, {
         transcriptText: alText,
       });
       const deduped = dedupeResults(res.data.results);
@@ -99,18 +99,18 @@ const TutorVerification = () => {
       const dedupedAL = dedupeResults(alResults);
 
       if (dedupedOL.length > 0) {
-        await axios.post(`/api/admin/tutor/save-results/${tutorId}/OL`, {
+        await axios.post(`${import.meta.env.VITE_BACKEND_URL}/admin/tutor/save-results/${tutorId}/OL`, {
           results: dedupedOL,
         });
       }
 
       if (dedupedAL.length > 0) {
-        await axios.post(`/api/admin/tutor/save-results/${tutorId}/AL`, {
+        await axios.post(`${import.meta.env.VITE_BACKEND_URL}/admin/tutor/save-results/${tutorId}/AL`, {
           results: dedupedAL,
         });
       }
 
-      await axios.post(`/api/admin/tutor/approve/${tutorId}`, {
+      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/admin/tutor/approve/${tutorId}`, {
         adminId,
         verifiedNotes: "Approved by admin",
       });

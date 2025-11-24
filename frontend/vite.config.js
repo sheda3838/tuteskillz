@@ -7,9 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://tuteskillz-production.up.railway.app/',
-        changeOrigin: true,
-        secure: true,
+        target: 'http://localhost:3000'
       }
     }
   },

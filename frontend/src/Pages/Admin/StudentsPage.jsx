@@ -17,7 +17,7 @@ const StudentsPage = () => {
 
   useEffect(() => {
     axios
-      .get("/api/admin/allStudents", { responseType: "json" })
+      .get(`${import.meta.env.VITE_BACKEND_URL}/admin/allStudents`, { responseType: "json" })
       .then((res) => {
         const processedStudents = res.data.students.map((student) => {
           // Default profile pic

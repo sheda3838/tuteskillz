@@ -39,7 +39,7 @@ const BrowseTutors = () => {
   };
 
   useEffect(() => {
-    axios.get("/api/student/tutors/mediums")
+    axios.get(`${import.meta.env.VITE_BACKEND_URL}/student/tutors/mediums`)
       .then(res => res.data.success && setMediums(res.data.data));
   }, []);
 
@@ -51,7 +51,7 @@ const BrowseTutors = () => {
     setTutors([]);
 
     axios
-      .get(`/api/student/tutors/grades?medium=${selectedMedium}`)
+      .get(`${import.meta.env.VITE_BACKEND_URL}/student/tutors/grades?medium=${selectedMedium}`)
       .then(res => res.data.success && setGrades(res.data.data));
   }, [selectedMedium]);
 
@@ -61,7 +61,7 @@ const BrowseTutors = () => {
     setTutors([]);
 
     axios
-      .get(`/api/student/tutors/subjects?medium=${selectedMedium}&grade=${selectedGrade}`)
+      .get(`${import.meta.env.VITE_BACKEND_URL}/student/tutors/subjects?medium=${selectedMedium}&grade=${selectedGrade}`)
       .then(res => res.data.success && setSubjects(res.data.data));
   }, [selectedGrade]);
 
@@ -69,7 +69,7 @@ const BrowseTutors = () => {
     if (!selectedMedium || !selectedGrade || !selectedSubject) return;
 
     axios
-      .get(`/api/student/tutors?medium=${selectedMedium}&grade=${selectedGrade}&subjectId=${selectedSubject}`)
+      .get(`${import.meta.env.VITE_BACKEND_URL}/student/tutors?medium=${selectedMedium}&grade=${selectedGrade}&subjectId=${selectedSubject}`)
       .then(res => res.data.success && setTutors(res.data.data));
   }, [selectedSubject]);
 

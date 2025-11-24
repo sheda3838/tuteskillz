@@ -23,7 +23,7 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      const res = await axios.post("/api/logout");
+      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/logout`);
       if (res.data.success) {
         setUser(null); // clear session state
         notifySuccess("Logged Out Success")

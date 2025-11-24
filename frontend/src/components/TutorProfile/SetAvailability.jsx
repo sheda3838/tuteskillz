@@ -153,7 +153,7 @@ const SetAvailability = ({ existingSlots = [], tutorId, onClose, onSaved }) => {
 
     // Call backend
     try {
-      const { data } = await axios.post(`/api/tutor/availability`, payload);
+      const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/tutor/availability`, payload);
       console.log("Debug: Backend response:", data);
 
       if (!data.success) {

@@ -38,8 +38,8 @@ const MyClassesPage = () => {
     try {
       const endpoint =
         currentUser.role === "tutor"
-          ? `/api/session/tutor/${currentUser.userId}/sessions`
-          : `/api/session/student/${currentUser.userId}/sessions`;
+          ? `${import.meta.env.VITE_BACKEND_URL}/session/tutor/${currentUser.userId}/sessions`
+          : `${import.meta.env.VITE_BACKEND_URL}/session/student/${currentUser.userId}/sessions`;
 
       const res = await axios.get(endpoint);
       setSessions(res.data?.data || []);
@@ -55,12 +55,12 @@ const MyClassesPage = () => {
     try {
       const formattedDate = new Date(sessionDate).toISOString().split("T")[0];
       const conflictRes = await axios.get(
-        `/api/session/tutor/${currentUser.userId}/check-conflict`,
+        `${import.meta.env.VITE_BACKEND_URL}/session/tutor/${currentUser.userId}/check-conflict`,
         { params: { date: formattedDate, startTime: sessionStartTime } }
       );
       if (conflictRes.data.conflict) return notifyError(conflictRes.data.message);
 
-      await axios.put(`/api/session/${sessionId}/status`, { status: "Accepted", tutorNote });
+      await axios.put(`${import.meta.env.VITE_BACKEND_URL}/session/${sessionId}/status`, { status: "Accepted", tutorNote });
       notifySuccess("Session accepted successfully");
       fetchSessions();
     } catch (err) {
@@ -70,7 +70,7 @@ const MyClassesPage = () => {
   };
 
   const handleReject = (sessionId, tutorNote = null) => {
-    axios.put(`/api/session/${sessionId}/status`, { status: "Declined", tutorNote })
+    axios.put(`${import.meta.env.VITE_BACKEND_URL}/session/${sessionId}/status`, { status: "Declined", tutorNote })
       .then(() => {
         notifySuccess("Session declined!");
         fetchSessions();

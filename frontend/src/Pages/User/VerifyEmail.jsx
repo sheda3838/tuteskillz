@@ -24,7 +24,7 @@ function VerifyEmail() {
       }
 
       try {
-        const res = await axios.get(`/api/verify-email?token=${token}`);
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/verify-email?token=${token}`);
         setStatus(res.data.message || "Email verified successfully!");
         setIsSuccess(true);
         notifySuccess("Email verified successfully! Please log in.");

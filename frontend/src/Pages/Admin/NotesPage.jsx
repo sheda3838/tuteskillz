@@ -16,7 +16,7 @@ const NotesPage = () => {
 
   useEffect(() => {
     axios
-      .get("/api/admin/allNotes", { responseType: "json" })
+      .get(`${import.meta.env.VITE_BACKEND_URL}/admin/allNotes`, { responseType: "json" })
       .then((res) => {
         const processedNotes = res.data.notes.map((n) => ({
           ...n,

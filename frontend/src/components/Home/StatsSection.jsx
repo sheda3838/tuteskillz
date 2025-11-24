@@ -41,7 +41,7 @@ const StatsSection = () => {
 
   useEffect(() => {
     axios
-      .get("/api/admin/counts")
+      .get(`${import.meta.env.VITE_BACKEND_URL}/admin/counts`)
       .then((res) => {
         if (res.data.success) {
           const { tutorCount, studentCount, sessionCount } = res.data.counts;

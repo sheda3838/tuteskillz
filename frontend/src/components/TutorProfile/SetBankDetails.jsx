@@ -115,7 +115,7 @@ const SetBankDetails = ({ tutorId, onClose, onSaved }) => {
       };
 
       console.log(payload);
-      const { data } = await axios.post("/api/tutor/bank-details", payload);
+      const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/tutor/bank-details`, payload);
       if (data.success) {
         notifySuccess("Bank details saved successfully!");
         onSaved();

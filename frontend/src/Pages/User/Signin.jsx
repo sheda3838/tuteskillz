@@ -20,7 +20,7 @@ function Signin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const r = await axios.post("/api/signin", values);
+      const r = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/signin`, values);
       if (r.data.error) {
         notifyError(r.data.error);
         return;
@@ -36,7 +36,7 @@ function Signin() {
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
-      const res = await axios.post("/api/google/token", {
+      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/google/token`, {
         token: credentialResponse.credential,
       });
       if (res.data.success) {

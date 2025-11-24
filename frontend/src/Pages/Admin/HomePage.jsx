@@ -24,7 +24,7 @@ function HomePage() {
 
   useEffect(() => {
     axios
-      .get("/api/admin/counts")
+      .get(`${import.meta.env.VITE_BACKEND_URL}/admin/counts`)
       .then((res) => {
         if (res.data.success) {
           setCounts(res.data.counts);

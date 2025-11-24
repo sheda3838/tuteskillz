@@ -49,7 +49,7 @@ const TutorProfile = ({}) => {
 
   useEffect(() => {
     axios
-      .get(`/api/profile/tutor/${id}`)
+      .get(`${import.meta.env.VITE_BACKEND_URL}/profile/tutor/${id}`)
       .then((res) => {
         setProfile(res.data.profile);
         setLoading(false);
@@ -130,7 +130,7 @@ const TutorProfile = ({}) => {
                 if (!adminId) return notifyError("Admin info missing");
 
                 axios
-                  .post(`/api/admin/reject-tutor/${profile.userId}`, {
+                  .post(`${import.meta.env.VITE_BACKEND_URL}/admin/reject-tutor/${profile.userId}`, {
                     note,
                     adminId, // ✅ Correct
                   })

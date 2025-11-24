@@ -16,7 +16,7 @@ const SessionsPage = () => {
 
   useEffect(() => {
     axios
-      .get("/api/admin/allSessions", { responseType: "json" })
+      .get(`${import.meta.env.VITE_BACKEND_URL}/admin/allSessions`, { responseType: "json" })
       .then((res) => {
         const processedSessions = res.data.sessions.map((s) => ({
           ...s,
