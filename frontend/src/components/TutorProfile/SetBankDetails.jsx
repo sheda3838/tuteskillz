@@ -79,9 +79,15 @@ const SetBankDetails = ({ tutorId, onClose, onSaved }) => {
         notifyError(`Row ${idx + 1}: All fields are required.`);
         hasError = true;
       }
-      if (!/^\d+$/.test(acc.accountNumber)) {
-        notifyError(`Row ${idx + 1}: Account number must be numeric.`);
-        hasError = true;
+      // 2️⃣ Bank Account Number — must be 5 or 6 digits minimum
+
+      if (!/^\d*$/.test(value)) {
+        notifyError("Bank account number must contain digits only.");
+        return;
+      }
+      if (value.length > 0 && value.length < 5) {
+        notifyError("Bank account number must be at least 5 digits.");
+        return;
       }
       if (acc.isPrimary) primaryCount++;
     });

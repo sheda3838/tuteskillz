@@ -428,14 +428,14 @@ const Register = () => {
 const MAX_PROFILE_PIC_SIZE = 1 * 1024 * 1024; // 1MB
 const MAX_TRANSCRIPT_SIZE = 5 * 1024 * 1024; // 5MB
 
-  const handleChange = (e) => {
+const handleChange = (e) => {
   const { name, value, files } = e.target;
 
-  // Handle file input
+  /* ---------- FILE INPUTS ---------- */
   if (files && files[0]) {
     const file = files[0];
 
-    // ----- PROFILE PIC VALIDATION -----
+    // PROFILE PIC VALIDATION
     if (name === "profilePic") {
       if (file.size > MAX_PROFILE_PIC_SIZE) {
         notifyError("Profile picture must be smaller than 1MB.");
@@ -447,7 +447,7 @@ const MAX_TRANSCRIPT_SIZE = 5 * 1024 * 1024; // 5MB
       }
     }
 
-    // ----- TRANSCRIPT VALIDATION (OL / AL) -----
+    // TRANSCRIPT VALIDATION
     if (name === "olTranscript" || name === "alTranscript") {
       if (file.size > MAX_TRANSCRIPT_SIZE) {
         notifyError("Transcript must be smaller than 5MB.");
@@ -460,14 +460,24 @@ const MAX_TRANSCRIPT_SIZE = 5 * 1024 * 1024; // 5MB
       }
     }
 
-    // If valid → update formData
     setFormData((prev) => ({ ...prev, [name]: file }));
     return;
   }
 
-  // Normal inputs
+  /* ---------- TEXT INPUT VALIDATIONS ---------- */
+
+  // 1️⃣ Full Name should not contain any numbers
+  if (name === "fullName") {
+    if (/\d/.test(value)) {
+      notifyError("Full name cannot contain numbers.");
+      return;
+    }
+  }
+
+  /* ---------- NORMAL INPUT UPDATE ---------- */
   setFormData((prev) => ({ ...prev, [name]: value }));
 };
+
 
   /* ---------- Step Validation ---------- */
   const validateStep = () => {

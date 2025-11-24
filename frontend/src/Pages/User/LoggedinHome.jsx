@@ -4,6 +4,7 @@ import UserSession from "../../utils/UserSession";
 import axios from "axios";
 import { notifySuccess, notifyError } from "../../utils/toast";
 import {authGuard } from "../../utils/authGuard"
+import Loading from "../../utils/Loading"
 
 function LoggedinHome() {
   const [name, setName] = useState("");
@@ -49,8 +50,7 @@ function LoggedinHome() {
 
   return (
     <div>
-      Hello {name}
-      <button onClick={handleLogout}>Logout</button>
+      <Loading />
     </div>
   );
 }
