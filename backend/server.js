@@ -15,21 +15,28 @@ import sessionRouter from "./routes/session.route.js";
 dotenv.config();
 const app = express();
 
-app.use(cors({
-  origin: function(origin, callback){
-    if(["http://localhost:5173","https://tuteskillz.vercel.app"].indexOf(origin) !== -1 || !origin){
-      callback(null, true)
-    } else {
-      callback(new Error("Not allowed by CORS"))
-    }
-  },
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (
+        ["http://localhost:5173", "https://tuteskillz.vercel.app"].indexOf(
+          origin
+        ) !== -1 ||
+        !origin
+      ) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
-
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb', extended: true }));
+app.set("trust proxy", 1);
 
 const MySQLSessionStore = MySQLStore(session);
 const sessionStore = new MySQLSessionStore({}, db.promise());
@@ -49,8 +56,7 @@ app.use(
   })
 );
 
-
-app.use("/api" ,userRouter);
+app.use("/api", userRouter);
 app.use("/api/student", studentRouter);
 app.use("/api/subjects", subjectRouter);
 app.use("/api/tutor", tutorRouter);
@@ -62,6 +68,6 @@ app.listen(3000, () => {
   console.log("Server is running on http://localhost:3000");
 });
 
-app.get('/', (req, res) => {
-    res.send('Backend is running!');
+app.get("/", (req, res) => {
+  res.send("Backend is running!");
 });
