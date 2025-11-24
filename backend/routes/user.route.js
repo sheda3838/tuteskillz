@@ -325,7 +325,7 @@ userRouter.post("/logout", (req, res) => {
   });
 });
 
-app.get("/test-session", (req, res) => {
+userRouter.get("/test-session", (req, res) => {
   console.log("Session:", req.session);
   if (!req.session.user) return res.status(401).json({ loggedin: false });
   res.json({ loggedin: true, user: req.session.user });
