@@ -433,59 +433,60 @@ const Register = () => {
   const MAX_PROFILE_PIC_SIZE = 1 * 1024 * 1024; // 1MB
   const MAX_TRANSCRIPT_SIZE = 5 * 1024 * 1024; // 5MB
 
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
+ const handleChange = (e) => {
+  const { name, value, files } = e.target;
 
-    /* ---------- FILE INPUTS ---------- */
-    if (files && files[0]) {
-      const file = files[0];
+  /* ---------- FILE INPUTS ---------- */
+  if (files && files[0]) {
+    const file = files[0];
 
-      // PROFILE PIC VALIDATION
-      if (name === "profilePic") {
-        if (file.size > MAX_PROFILE_PIC_SIZE) {
-          notifyError("Profile picture must be smaller than 1MB.");
-          return;
-        }
-        if (!file.type.startsWith("image/")) {
-          notifyError("Profile picture must be an image.");
-          return;
-        }
+    // PROFILE PIC VALIDATION
+    if (name === "profilePic") {
+      if (file.size > MAX_PROFILE_PIC_SIZE) {
+        notifyError("Profile picture must be smaller than 1MB.");
+        return;
       }
-
-      // TRANSCRIPT VALIDATION
-      if (name === "olTranscript" || name === "alTranscript") {
-        if (file.size > MAX_TRANSCRIPT_SIZE) {
-          notifyError("Transcript must be smaller than 5MB.");
-          return;
-        }
-
-        if (file.type !== "application/pdf") {
-          notifyError("Transcript must be a PDF file.");
-          return;
-        }
-      }
-      const genderMap = {
-        Male: "M",
-        Female: "F",
-      };
-
-      setFormData((prev) => ({ ...prev, [name]: file }));
-      return;
-    }
-
-    /* ---------- TEXT INPUT VALIDATIONS ---------- */
-
-    // 1️⃣ Full Name should not contain any numbers
-    if (name === "fullName") {
-      if (/\d/.test(value)) {
-        notifyError("Full name cannot contain numbers.");
+      if (!file.type.startsWith("image/")) {
+        notifyError("Profile picture must be an image.");
         return;
       }
     }
 
-    /* ---------- NORMAL INPUT UPDATE ---------- */
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+    // TRANSCRIPT VALIDATION
+    if (name === "olTranscript" || name === "alTranscript") {
+      if (file.size > MAX_TRANSCRIPT_SIZE) {
+        notifyError("Transcript must be smaller than 5MB.");
+        return;
+      }
+      if (file.type !== "application/pdf") {
+        notifyError("Transcript must be a PDF file.");
+        return;
+      }
+    }
+
+    setFormData((prev) => ({ ...prev, [name]: file }));
+    return;
+  }
+
+  /* ---------- TEXT INPUT VALIDATIONS ---------- */
+  if (name === "fullName") {
+    if (/\d/.test(value)) {
+      notifyError("Full name cannot contain numbers.");
+      return;
+    }
+  }
+
+  // MAP GENDER TO SINGLE CHAR
+  let newValue = value;
+  if (name === "gender") {
+    const genderMap = { Male: "M", Female: "F" };
+    newValue = genderMap[value] || "";
+  }
+
+  /* ---------- NORMAL INPUT UPDATE ---------- */
+  setFormData((prev) => ({ ...prev, [name]: newValue }));
+};
+
 
   /* ---------- Step Validation ---------- */
   const validateStep = () => {
