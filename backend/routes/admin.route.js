@@ -1,7 +1,7 @@
 import { Router } from "express";
 import db from "../config/db.js";
 import { sendEmail } from "../utils/email.js";
-import { generateEmailHTML } from "../utils/emailtemplate.js";
+import { generateEmailHTML } from "../utils/emailTemplate.js";
 
 const adminRouter = Router();
 
