@@ -55,16 +55,19 @@ const Step1 = ({ formData, handleChange, role }) => {
         <div className="radio-group-container">
           <p className="radio-label">Gender:</p>
           <div className="radio-options">
-            {["Male", "Female"].map((g) => (
-              <label key={g} className="radio-option">
+            {[
+              { label: "Male", value: "M" },
+              { label: "Female", value: "F" },
+            ].map((g) => (
+              <label key={g.value} className="radio-option">
                 <input
                   type="radio"
                   name="gender"
-                  value={g}
-                  checked={formData.gender === g}
+                  value={g.value}
+                  checked={formData.gender === g.value}
                   onChange={handleChange}
                 />
-                {g}
+                {g.label}
               </label>
             ))}
           </div>
@@ -433,14 +436,13 @@ const Register = () => {
   const MAX_PROFILE_PIC_SIZE = 1 * 1024 * 1024; // 1MB
   const MAX_TRANSCRIPT_SIZE = 5 * 1024 * 1024; // 5MB
 
-const handleChange = (e) => {
-  const { name, value, files } = e.target;
+  const handleChange = (e) => {
+  const { name, value, files, type, checked } = e.target;
 
-  /* ---------- FILE INPUTS ---------- */
+  // ---------- FILE INPUTS ----------
   if (files && files[0]) {
     const file = files[0];
 
-    // PROFILE PIC VALIDATION
     if (name === "profilePic") {
       if (file.size > MAX_PROFILE_PIC_SIZE) {
         notifyError("Profile picture must be smaller than 1MB.");
@@ -452,7 +454,6 @@ const handleChange = (e) => {
       }
     }
 
-    // TRANSCRIPT VALIDATION
     if (name === "olTranscript" || name === "alTranscript") {
       if (file.size > MAX_TRANSCRIPT_SIZE) {
         notifyError("Transcript must be smaller than 5MB.");
@@ -468,7 +469,13 @@ const handleChange = (e) => {
     return;
   }
 
-  /* ---------- TEXT INPUT VALIDATIONS ---------- */
+  // ---------- RADIO BUTTONS ----------
+  if (type === "radio") {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    return;
+  }
+
+  // ---------- TEXT VALIDATION ----------
   if (name === "fullName") {
     if (/\d/.test(value)) {
       notifyError("Full name cannot contain numbers.");
@@ -476,7 +483,7 @@ const handleChange = (e) => {
     }
   }
 
-  /* ---------- NORMAL INPUT UPDATE ---------- */
+  // ---------- NORMAL INPUT UPDATE ----------
   setFormData((prev) => ({ ...prev, [name]: value }));
 };
 
