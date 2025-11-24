@@ -84,7 +84,7 @@ function Signin() {
 
   return (
     <>
-      {loading && <Loading />}
+      {loading ? <Loading /> :
       <motion.div
         className="auth-container"
         initial={{ opacity: 0, x: -50 }}
@@ -152,7 +152,7 @@ function Signin() {
           <h1>Welcome Back</h1>
           <img src="/signin.png" alt="Signin illustration" />
         </div>
-      </motion.div>
+      </motion.div> }
     </>
   );
 }
