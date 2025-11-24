@@ -419,69 +419,73 @@ const Register = () => {
   });
 
   useEffect(() => {
-  axios
-    .get(`${import.meta.env.VITE_BACKEND_URL}/subjects`, { withCredentials: true })
-    .then((res) => {
-      console.log("Subjects fetched:", res.data);
-      setSubjects(Array.isArray(res.data) ? res.data : res.data?.data || []);
-    })
-    .catch(() => console.log("Failed to fetch subjects"));
-}, []);
+    axios
+      .get(`${import.meta.env.VITE_BACKEND_URL}/subjects`, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        setSubjects(Array.isArray(res.data) ? res.data : res.data?.data || []);
+      })
+      .catch(() => console.log("Failed to fetch subjects"));
+  }, []);
 
   // === File Size Limits ===
-const MAX_PROFILE_PIC_SIZE = 1 * 1024 * 1024; // 1MB
-const MAX_TRANSCRIPT_SIZE = 5 * 1024 * 1024; // 5MB
+  const MAX_PROFILE_PIC_SIZE = 1 * 1024 * 1024; // 1MB
+  const MAX_TRANSCRIPT_SIZE = 5 * 1024 * 1024; // 5MB
 
-const handleChange = (e) => {
-  const { name, value, files } = e.target;
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
 
-  /* ---------- FILE INPUTS ---------- */
-  if (files && files[0]) {
-    const file = files[0];
+    /* ---------- FILE INPUTS ---------- */
+    if (files && files[0]) {
+      const file = files[0];
 
-    // PROFILE PIC VALIDATION
-    if (name === "profilePic") {
-      if (file.size > MAX_PROFILE_PIC_SIZE) {
-        notifyError("Profile picture must be smaller than 1MB.");
-        return;
-      }
-      if (!file.type.startsWith("image/")) {
-        notifyError("Profile picture must be an image.");
-        return;
-      }
-    }
-
-    // TRANSCRIPT VALIDATION
-    if (name === "olTranscript" || name === "alTranscript") {
-      if (file.size > MAX_TRANSCRIPT_SIZE) {
-        notifyError("Transcript must be smaller than 5MB.");
-        return;
+      // PROFILE PIC VALIDATION
+      if (name === "profilePic") {
+        if (file.size > MAX_PROFILE_PIC_SIZE) {
+          notifyError("Profile picture must be smaller than 1MB.");
+          return;
+        }
+        if (!file.type.startsWith("image/")) {
+          notifyError("Profile picture must be an image.");
+          return;
+        }
       }
 
-      if (file.type !== "application/pdf") {
-        notifyError("Transcript must be a PDF file.");
-        return;
+      // TRANSCRIPT VALIDATION
+      if (name === "olTranscript" || name === "alTranscript") {
+        if (file.size > MAX_TRANSCRIPT_SIZE) {
+          notifyError("Transcript must be smaller than 5MB.");
+          return;
+        }
+
+        if (file.type !== "application/pdf") {
+          notifyError("Transcript must be a PDF file.");
+          return;
+        }
       }
-    }
+      const genderMap = {
+        Male: "M",
+        Female: "F",
+      };
 
-    setFormData((prev) => ({ ...prev, [name]: file }));
-    return;
-  }
-
-  /* ---------- TEXT INPUT VALIDATIONS ---------- */
-
-  // 1️⃣ Full Name should not contain any numbers
-  if (name === "fullName") {
-    if (/\d/.test(value)) {
-      notifyError("Full name cannot contain numbers.");
+      setFormData((prev) => ({ ...prev, [name]: file }));
       return;
     }
-  }
 
-  /* ---------- NORMAL INPUT UPDATE ---------- */
-  setFormData((prev) => ({ ...prev, [name]: value }));
-};
+    /* ---------- TEXT INPUT VALIDATIONS ---------- */
 
+    // 1️⃣ Full Name should not contain any numbers
+    if (name === "fullName") {
+      if (/\d/.test(value)) {
+        notifyError("Full name cannot contain numbers.");
+        return;
+      }
+    }
+
+    /* ---------- NORMAL INPUT UPDATE ---------- */
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   /* ---------- Step Validation ---------- */
   const validateStep = () => {
@@ -519,8 +523,7 @@ const handleChange = (e) => {
       if (isTutor) {
         if (age < 18 || age > 30)
           return notifyError("Tutor age must be between 18 and 30.");
-        if (!school)
-          return notifyError("School and University are required.");
+        if (!school) return notifyError("School and University are required.");
         if (!olTranscript || !alTranscript)
           return notifyError("OL and AL transcripts are required.");
         if (
