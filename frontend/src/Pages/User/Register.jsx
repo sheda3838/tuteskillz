@@ -433,7 +433,7 @@ const Register = () => {
   const MAX_PROFILE_PIC_SIZE = 1 * 1024 * 1024; // 1MB
   const MAX_TRANSCRIPT_SIZE = 5 * 1024 * 1024; // 5MB
 
- const handleChange = (e) => {
+const handleChange = (e) => {
   const { name, value, files } = e.target;
 
   /* ---------- FILE INPUTS ---------- */
@@ -476,15 +476,8 @@ const Register = () => {
     }
   }
 
-  // MAP GENDER TO SINGLE CHAR
-  let newValue = value;
-  if (name === "gender") {
-    const genderMap = { Male: "M", Female: "F" };
-    newValue = genderMap[value] || "";
-  }
-
   /* ---------- NORMAL INPUT UPDATE ---------- */
-  setFormData((prev) => ({ ...prev, [name]: newValue }));
+  setFormData((prev) => ({ ...prev, [name]: value }));
 };
 
 
