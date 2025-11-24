@@ -36,27 +36,7 @@ function Signin() {
 
       if (r.data.success) {
         notifySuccess("Signin successful! 🎉");
-
-        try {
-          // Wait for session to be properly set
-          const sessionRes = await axios.get(
-            `${import.meta.env.VITE_BACKEND_URL}/test-session`,
-            { withCredentials: true }
-          );
-          console.log("Session response:", sessionRes.data);
-
-          if (sessionRes.data.loggedin) {
-            navigate("/loggedin-home");
-          } else {
-            notifyError("Session not set yet. Try again.");
-          }
-        } catch (sessionErr) {
-          console.error(
-            "Session error:",
-            sessionErr.response?.data || sessionErr.message
-          );
-          notifyError("Session check failed.");
-        }
+        navigate('/loggedin-home')
       }
     } catch (err) {
       notifyError(err.message || "Something went wrong!");
