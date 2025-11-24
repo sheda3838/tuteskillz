@@ -10,7 +10,6 @@ import { AnimatePresence } from "framer-motion";
 import RoleSelection from "./Pages/User/RoleSelection";
 import Register from "./Pages/User/Register";
 import AdminLayout from "./layout/AdminLayout";
-import { getCurrentUser } from "./utils/getUser";
 
 // Admin Pages Imports Here
 import AdminHome from "./Pages/Admin/HomePage";
