@@ -17,7 +17,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://tuteskillz.vercel.app"], // add your Vercel URL
+    origin: ["https://tuteskillz.vercel.app"], 
     methods: ["GET", "POST", "PATCH", "DELETE"],
     credentials: true,
   })
