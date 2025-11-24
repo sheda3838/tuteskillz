@@ -6,7 +6,7 @@ import axios from "axios";
 import { notifySuccess, notifyError } from "../../utils/toast";
 import "../../styles/Utils/formElements.css";
 import { motion } from "framer-motion";
-import "../../utils/Loading";
+import Loading from "../../utils/Loading";
 
 function Signin() {
   axios.defaults.withCredentials = true;
