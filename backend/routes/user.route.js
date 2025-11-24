@@ -327,8 +327,16 @@ userRouter.post("/logout", (req, res) => {
 
 userRouter.get("/test-session", (req, res) => {
   console.log("Session:", req.session);
-  if (!req.session.user) return res.status(401).json({ loggedin: false });
-  res.json({ loggedin: true, user: req.session.user });
+
+  if (!req.session.email) {
+    return res.status(401).json({ loggedin: false });
+  }
+
+  res.json({
+    loggedin: true,
+    email: req.session.email,
+    userId: req.session.userId
+  });
 });
 
 export default userRouter;
