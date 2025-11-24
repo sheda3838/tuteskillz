@@ -15,16 +15,17 @@ import sessionRouter from "./routes/session.route.js";
 dotenv.config();
 const app = express();
 
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173",
-      "https://tuteskillz.vercel.app",
-    ],
-    methods: ["GET", "POST", "PATCH", "DELETE"],
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: function(origin, callback){
+    if(["http://localhost:5173","https://tuteskillz.vercel.app"].indexOf(origin) !== -1 || !origin){
+      callback(null, true)
+    } else {
+      callback(new Error("Not allowed by CORS"))
+    }
+  },
+  credentials: true
+}));
+
 
 
 app.use(express.json({ limit: '50mb' }));

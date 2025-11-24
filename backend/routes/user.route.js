@@ -253,8 +253,9 @@ userRouter.post("/google/token", async (req, resp) => {
 // ===========================
 
 userRouter.get("/user", (req, res) => {
+  console.log("Accessed user route");
   const email = req.session?.email;
-
+  console.log("Session:", email);
   if (!email) {
     return res.status(401).json({
       success: false,
