@@ -137,6 +137,7 @@ adminRouter.get("/allNotes", (req, resp) => {
 
 // Get counts for dashboard
 adminRouter.get("/counts", (req, resp) => {
+  console.log("SESSION:", req.session);
   const query = `
     SELECT 
       (SELECT COUNT(*) FROM users WHERE role = 'tutor') AS tutorCount,

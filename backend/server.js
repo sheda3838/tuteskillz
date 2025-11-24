@@ -17,7 +17,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["https://tuteskillz.vercel.app"], 
+    origin: ["http://localhost:5173", "https://tuteskillz.vercel.app"], 
     methods: ["GET", "POST", "PATCH", "DELETE"],
     credentials: true,
   })
@@ -37,12 +37,13 @@ app.use(
     saveUninitialized: false,
     store: sessionStore,
     cookie: {
-      secure: false,
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 1000 * 60 * 60 * 24,
     },
   })
 );
-
 app.use("/api" ,userRouter);
 app.use("/api/student", studentRouter);
 app.use("/api/subjects", subjectRouter);
