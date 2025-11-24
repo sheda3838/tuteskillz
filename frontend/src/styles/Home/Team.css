@@ -1,7 +1,7 @@
 /* --- Section Layout --- */
 .team-section {
   padding: 70px 0;
-  background-color: #f7eef7; /* light pink background matching the image */
+  background-color: #f7eef7;
   text-align: center;
 }
 
@@ -9,21 +9,23 @@
   font-size: 2.4rem;
   font-weight: 700;
   margin-bottom: 40px;
-  color: var(--primary-color); /* greenish heading like in image */
+  color: var(--primary-color);
 }
 
 /* --- Card Grid --- */
 .team-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 0px;
-  justify-items: center;
+  gap: 30px;
+  justify-items: center; /* CENTER ALL CARDS */
   padding: 0 40px;
 }
 
-/* --- Flip Card Container --- */
+/* --- Flip Card Wrapper --- */
 .card-container {
   perspective: 1000px;
+  display: flex;
+  justify-content: center;
 }
 
 /* --- Card --- */
@@ -39,7 +41,7 @@
   transform: rotateY(180deg);
 }
 
-/* --- Card Front & Back Shared Style --- */
+/* --- Shared Card Sides --- */
 .card-front,
 .card-back {
   position: absolute;
@@ -52,18 +54,20 @@
   background: #fff;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: center; /* CENTER */
+  justify-content: center; /* NEW: center vertically */
 }
 
-/* --- Front --- */
+/* --- FRONT --- */
 .card-front {
   justify-content: flex-start;
+  text-align: center; /* center text on mobile & desktop */
 }
 
 .card-image {
   width: 200px;
   height: 200px;
-  border-radius: 22px; /* matches rounded rectangle images */
+  border-radius: 22px;
   object-fit: cover;
 }
 
@@ -77,23 +81,20 @@
   font-weight: 700;
   color: #0094ba;
   text-transform: uppercase;
-  margin: 0px;
 }
 
 .card-bio {
   font-size: 0.85rem;
   color: #555;
   max-width: 220px;
-  margin: 2px;
 }
 
-/* --- Back Side --- */
+/* --- BACK --- */
 .card-back {
   background: var(--primary-color);
   color: #fff;
   transform: rotateY(180deg);
-  justify-content: center;
-  text-align: center;
+  text-align: center; /* Ensure centered */
 }
 
 .back-title {
@@ -114,9 +115,10 @@
 /* --- LinkedIn Button --- */
 .linkedin-button {
   display: inline-flex;
+  justify-content: center; /* CENTER CONTENT */
   align-items: center;
   padding: 10px 20px;
-  background: #0a66c2; /* LinkedIn blue */
+  background: #0a66c2;
   color: #fff;
   font-weight: 600;
   font-size: 1rem;
@@ -124,11 +126,49 @@
   text-decoration: none;
   transition: all 0.3s ease;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  transform: translateY(0);
 }
 
 .linkedin-button:hover {
-  background: #004182; /* darker blue on hover */
+  background: #004182;
   transform: translateY(-5px) scale(1.05);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* --- MOBILE VIEW FIXES (everything centered) --- */
+@media (max-width: 600px) {
+
+  .team-section {
+    padding: 50px 10px;
+  }
+
+  .team-heading {
+    font-size: 1.8rem;
+  }
+
+  .team-grid {
+    grid-template-columns: 1fr; /* stack cards nicely */
+    padding: 0 10px;
+    gap: 25px;
+    justify-items: center; /* center cards */
+  }
+
+  .card {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .card-front,
+  .card-back {
+    padding: 20px;
+  }
+
+  .card-image {
+    width: 180px;
+    height: 180px;
+  }
+
+  .linkedin-button {
+    width: 80%;
+    justify-content: center;
+    margin-top: 15px;
+  }
 }
