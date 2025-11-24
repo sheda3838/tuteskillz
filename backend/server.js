@@ -18,15 +18,13 @@ const app = express();
 app.use(
   cors({
     origin: [
-      "http://localhost:5173", // dev
-      "https://tuteskillz.vercel.app", // production frontend
+      "http://localhost:5173",
+      "https://tuteskillz.vercel.app",
     ],
     methods: ["GET", "POST", "PATCH", "DELETE"],
     credentials: true,
   })
 );
-
-
 
 
 app.use(express.json({ limit: '50mb' }));
@@ -42,13 +40,15 @@ app.use(
     saveUninitialized: false,
     store: sessionStore,
     cookie: {
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       httpOnly: true,
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      sameSite: "none",
       maxAge: 1000 * 60 * 60 * 24,
     },
   })
 );
+
+
 app.use("/api" ,userRouter);
 app.use("/api/student", studentRouter);
 app.use("/api/subjects", subjectRouter);
