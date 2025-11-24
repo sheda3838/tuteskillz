@@ -13,6 +13,7 @@ import axios from "axios";
 import "../../styles/Admin/admin.css";
 
 function HomePage() {
+  axios.defaults.withCredentials = true;
   const navigate = useNavigate();
   const [counts, setCounts] = useState({
     tutors: 0,

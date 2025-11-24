@@ -6,6 +6,7 @@ import "../../styles/BrowseTutors/RequestSession.css";
 import { authGuard } from "../../utils/authGuard";
 
 const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
+  axios.defaults.withCredentials = true;
   const [tutorInfo, setTutorInfo] = useState(null);
   const [selectedDate, setSelectedDate] = useState("");
   const [availability, setAvailability] = useState([]);

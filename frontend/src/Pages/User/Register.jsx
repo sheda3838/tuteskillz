@@ -378,6 +378,7 @@ const Step4_TutorSubjects = ({
 
 /* ---------- Main Component ---------- */
 const Register = () => {
+  axios.defaults.withCredentials = true;
   const navigate = useNavigate();
   const location = useLocation();
 

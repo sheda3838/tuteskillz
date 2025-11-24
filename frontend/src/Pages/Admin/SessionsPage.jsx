@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import {handleViewNavigation} from "../../utils/navigation"
 
 const SessionsPage = () => {
+  axios.defaults.withCredentials = true;
   const [sessions, setSessions] = useState([]);
   const navigate = useNavigate();
 

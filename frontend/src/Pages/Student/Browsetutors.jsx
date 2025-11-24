@@ -13,6 +13,7 @@ import Footer from "../../components/Home/Footer";
 import { motion, AnimatePresence } from "framer-motion";
 
 const BrowseTutors = () => {
+  axios.defaults.withCredentials = true;
   const [mediums, setMediums] = useState([]);
   const [grades, setGrades] = useState([]);
   const [subjects, setSubjects] = useState([]);

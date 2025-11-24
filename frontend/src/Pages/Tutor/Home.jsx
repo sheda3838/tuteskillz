@@ -9,6 +9,7 @@ import { authGuard } from "../../utils/authGuard";
 import "../../styles/Tutor/TutorHome.css"
 
 function Home() {
+  axios.defaults.withCredentials = true;
   const navigate = useNavigate();
   const [userId, setUserId] = useState(null);
   const [existingSlots, setExistingSlots] = useState([]);

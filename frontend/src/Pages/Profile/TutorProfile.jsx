@@ -25,6 +25,7 @@ import { authGuard } from "../../utils/authGuard";
 import Loading from "../../utils/Loading";
 
 const TutorProfile = ({}) => {
+  axios.defaults.withCredentials = true;
   const { id } = useParams();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);

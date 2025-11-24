@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { arrayBufferToBase64 } from "../../utils/fileHelper";
 
 const AdminsPage = () => {
+  axios.defaults.withCredentials = true;
   const [admins, setAdmins] = useState([]);
   const navigate = useNavigate();
 

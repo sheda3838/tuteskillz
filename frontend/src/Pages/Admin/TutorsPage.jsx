@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import {handleViewNavigation} from "../../utils/navigation"
 
 const TutorsPage = () => {
+  axios.defaults.withCredentials = true;
   const [tutors, setTutors] = useState([]);
   const navigate = useNavigate();
 

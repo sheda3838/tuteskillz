@@ -7,6 +7,7 @@ import { arrayBufferToBase64 } from "../../utils/fileHelper";
 import { useNavigate } from "react-router-dom";
 
 const StudentsPage = () => {
+  axios.defaults.withCredentials = true;
   const [students, setStudents] = useState([]);
   const navigate = useNavigate();
 

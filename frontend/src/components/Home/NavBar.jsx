@@ -6,6 +6,7 @@ import UserSession from "../../utils/UserSession";
 import { notifySuccess } from "../../utils/toast";
 
 const Navbar = () => {
+  axios.defaults.withCredentials = true;
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);

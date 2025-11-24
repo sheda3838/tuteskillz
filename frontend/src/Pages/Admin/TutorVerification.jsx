@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { authGuard } from "../../utils/authGuard";
 
 const TutorVerification = () => {
+  axios.defaults.withCredentials = true;
   const [olText, setOlText] = useState("");
   const [alText, setAlText] = useState("");
   const [olResults, setOlResults] = useState([]);

@@ -5,6 +5,7 @@ import banksData from "../../../data/banks.json";
 import "../../styles/TutorProfile/SetBankDetails.css";
 
 const SetBankDetails = ({ tutorId, onClose, onSaved }) => {
+  axios.defaults.withCredentials = true;
   const [accounts, setAccounts] = useState([
     {
       bankName: "",

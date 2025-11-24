@@ -4,7 +4,9 @@ import axios from "axios";
 const UserSession = {
   async get() {
     try {
-      const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/user`);
+      const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/user`, {
+        withCredentials: true,
+      });
       // standardize shape
       return {
         success: data?.success ?? false,

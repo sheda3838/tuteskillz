@@ -5,6 +5,7 @@ import { useRef } from "react";
 import "../../styles/Home/StatsSection.css";
 
 const Counter = ({ target }) => {
+  axios.defaults.withCredentials = true;
   const [count, setCount] = useState(0);
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });

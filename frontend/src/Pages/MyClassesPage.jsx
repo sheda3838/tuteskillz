@@ -11,6 +11,7 @@ import { notifySuccess, notifyError } from "../utils/toast";
 import { AiOutlineClose } from "react-icons/ai"; // react-icons for clear button
 
 const MyClassesPage = () => {
+  axios.defaults.withCredentials = true;
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);

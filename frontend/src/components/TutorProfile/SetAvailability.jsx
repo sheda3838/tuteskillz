@@ -14,6 +14,7 @@ const DAYS = [
 ];
 
 const SetAvailability = ({ existingSlots = [], tutorId, onClose, onSaved }) => {
+  axios.defaults.withCredentials = true;
   const [slots, setSlots] = useState([]);
   const [errors, setErrors] = useState({});
   const [globalError, setGlobalError] = useState("");

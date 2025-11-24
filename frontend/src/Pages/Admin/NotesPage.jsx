@@ -6,6 +6,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const NotesPage = () => {
+  axios.defaults.withCredentials = true;
   const [notes, setNotes] = useState([]);
   const navigate = useNavigate();
 
