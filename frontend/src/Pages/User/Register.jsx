@@ -419,11 +419,14 @@ const Register = () => {
   });
 
   useEffect(() => {
-    axios
-      .get("/api/subjects")
-      .then((res) => setSubjects(res.data))
-      .catch(() => console.log("Failed to fetch subjects"));
-  }, []);
+  axios
+    .get(`${import.meta.env.VITE_BACKEND_URL}/subjects`, { withCredentials: true })
+    .then((res) => {
+      console.log("Subjects fetched:", res.data);
+      setSubjects(Array.isArray(res.data) ? res.data : res.data?.data || []);
+    })
+    .catch(() => console.log("Failed to fetch subjects"));
+}, []);
 
   // === File Size Limits ===
 const MAX_PROFILE_PIC_SIZE = 1 * 1024 * 1024; // 1MB
