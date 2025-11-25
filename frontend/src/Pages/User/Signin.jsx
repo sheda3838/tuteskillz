@@ -37,7 +37,6 @@ function Signin() {
       if (r.data.success) {
         notifySuccess("Signin successful! 🎉");
 
-        // wait a tiny bit for cookie/session to propagate
         await new Promise((resolve) => setTimeout(resolve, 300));
 
         navigate("/loggedin-home");
