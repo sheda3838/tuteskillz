@@ -17,7 +17,7 @@ const MyClassesPage = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
-  const [activeTab, setActiveTab] = useState("today"); // 'today' | 'requested' | 'all'
+  const [activeTab, setActiveTab] = useState("all"); // 'today' | 'requested' | 'all'
   const navigate = useNavigate();
 
   useEffect(() => {

@@ -462,24 +462,116 @@
 
 
 /* ================================
-   Responsive Fixes
+   Responsive 
 ================================= */
 @media (max-width: 600px) {
-  .myclasses-search-bar {
+
+  /* Make cards full width on mobile */
+  .session-card {
+    width: 100%;
+    padding: 18px 16px;
+    border-radius: 14px;
+  }
+
+  /* Profile photo smaller + centered */
+  .profile-info img,
+  .profile-photo {
+    width: 80px;
+    height: 80px;
+    border-width: 2px;
+  }
+
+  .profile-info-name,
+  .prof-name {
+    font-size: 16px;
+  }
+
+  /* Tags: stack or shrink */
+  .session-tags {
+    gap: 10px;
+    font-size: 12px;
+    flex-wrap: wrap;
+  }
+
+  .session-tags span {
+    padding-right: 6px;
+    font-size: 12px;
+  }
+
+  /* Time Pill smaller */
+  .session-time-pill {
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+
+  /* Note box responsive */
+  .note-box {
+    font-size: 12px;
+    padding: 10px;
+  }
+
+  .notes-label {
+    font-size: 13px;
+  }
+
+  /* Textarea full width + bigger on mobile */
+  .tutor-note-input {
+    font-size: 13px;
+    min-height: 90px;
+    padding: 10px;
+  }
+
+  /* Accept / Reject buttons stacked */
+  .session-actions-clean {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .session-actions-clean button {
+    width: 100%;
+    border-radius: 30px;
+    font-size: 15px;
+    padding: 12px 0;
+  }
+
+  /* View button full width */
+  .btn-view {
+    padding: 14px 0;
+    font-size: 15px;
+  }
+
+  /* Grid becomes single-column */
+  .my-classes-grid {
+    grid-template-columns: 1fr !important;
+    gap: 18px;
+  }
+
+  /* Filters stack nicely */
+  .myclasses-filter-bar {
+    flex-direction: column;
+    gap: 12px;
     width: 100%;
   }
 
+  .myclasses-search-bar,
   .myclasses-date-picker {
     width: 100%;
+    font-size: 14px;
   }
 
+  .myclasses-date-wrapper {
+    width: 100%;
+  }
+
+  /* Tabs wrap cleanly */
   .myclasses-tabs {
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
   }
 
-  .no-sessions {
-    width: 90vw;
-    height: auto;
+  .myclasses-tabs button {
+    font-size: 13px;
+    padding: 8px 14px;
   }
 }

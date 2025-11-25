@@ -13,7 +13,6 @@ export const authGuard = async (navigate) => {
 
   // 🟡 NEW USER → go to role selection
   if (session.isNewUser) {
-    notifySuccess("Welcome! Complete Registration");
     navigate("/role-selection", { replace: true });
     return null;
   }

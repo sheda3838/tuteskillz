@@ -163,42 +163,99 @@
 /* =========================================
    MOBILE RESPONSIVE
 ========================================= */
+/* =========================================
+   MOBILE RESPONSIVE (IMPROVED)
+========================================= */
 @media (max-width: 600px) {
 
   .team-section {
-    padding: 50px 15px;
+    padding: 40px 10px;
   }
 
   .team-heading {
-    font-size: 1.9rem;
-    margin-bottom: 30px;
+    font-size: 1.8rem;
+    margin-bottom: 25px;
   }
 
+  /* Clean single-column layout */
   .team-grid {
     grid-template-columns: 1fr;
-    gap: 25px;
-    padding: 0 10px;
+    gap: 18px;
+    padding: 0 5px;
   }
 
+  /* Reduce card height, tighter layout */
   .card {
-    width: 90%;
+    width: 95%;
     max-width: 300px;
-    height: 390px;
+    height: auto; /* let card adjust naturally */
+    min-height: 320px;
+    transform: none !important; /* avoid awkward flip in mobile */
+  }
+
+  /* Disable flip for mobile (optional but better UX) */
+  .card-container:hover .card {
+    transform: none !important;
   }
 
   .card-front,
   .card-back {
+    padding: 18px;
+    height: auto;
+  }
+
+  .card-front {
+    justify-content: flex-start;
+  }
+
+  /* Smaller image */
+  .card-image {
+    width: 140px;
+    height: 140px;
+    margin-bottom: 10px;
+    border-radius: 18px;
+  }
+
+  /* Tighter text layout */
+  .card-name {
+    font-size: 1.05rem;
+    margin-bottom: 4px;
+    line-height: 1.2;
+  }
+
+  .card-role {
+    font-size: 0.8rem;
+    margin-bottom: 6px;
+  }
+
+  .card-bio {
+    font-size: 0.78rem;
+    max-width: 90%;
+    line-height: 1.25;
+  }
+
+  /* Back side simplified */
+  .card-back {
     padding: 20px;
   }
 
-  .card-image {
-    width: 170px;
-    height: 170px;
+  .back-title {
+    font-size: 1rem;
+    margin-bottom: 8px;
   }
 
+  /* Reduce social icon size */
+  .card-socials a {
+    font-size: 1.1rem;
+    margin: 0 6px;
+  }
+
+  /* LinkedIn button cleaner */
   .linkedin-button {
     width: 85%;
-    padding: 12px 0;
-    font-size: 0.95rem;
+    padding: 10px 0;
+    font-size: 0.9rem;
+    margin-top: 10px;
   }
 }
+

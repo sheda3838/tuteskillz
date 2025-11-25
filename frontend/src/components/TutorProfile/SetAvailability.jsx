@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { notifySuccess, notifyError } from "../../utils/toast";
 import "../../styles/TutorProfile/SetAvailability.css";
+import Loading from "../../utils/Loading";
 
 const DAYS = [
   "Monday",
@@ -18,6 +19,7 @@ const SetAvailability = ({ existingSlots = [], tutorId, onClose, onSaved }) => {
   const [slots, setSlots] = useState([]);
   const [errors, setErrors] = useState({});
   const [globalError, setGlobalError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // Prefill slots from existing data
   useEffect(() => {
@@ -120,10 +122,10 @@ const SetAvailability = ({ existingSlots = [], tutorId, onClose, onSaved }) => {
 
   // SAVE
   const handleSave = async () => {
-    // Clear previous global error
     setGlobalError("");
+    setLoading(true); // start loading
 
-    // Row-level validation using validateRow
+    // Row-level validation
     let hasRowErrors = false;
     slots.forEach((slot, index) => {
       const error = validateRow(slot);
@@ -132,13 +134,16 @@ const SetAvailability = ({ existingSlots = [], tutorId, onClose, onSaved }) => {
         notifyError(`Row ${index + 1}: ${error}`);
       }
     });
+    if (hasRowErrors) {
+      setLoading(false); // stop loading if validation fails
+      return;
+    }
 
-    if (hasRowErrors) return;
-
-    // Conflict check using checkForConflicts
+    // Conflict check
     const conflictError = checkForConflicts();
     if (conflictError) {
       notifyError(conflictError);
+      setLoading(false); // stop loading
       return;
     }
 
@@ -152,13 +157,15 @@ const SetAvailability = ({ existingSlots = [], tutorId, onClose, onSaved }) => {
       })),
     };
 
-    // Call backend
     try {
-      const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/tutor/availability`, payload);
-      console.log("Debug: Backend response:", data);
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/tutor/availability`,
+        payload
+      );
 
       if (!data.success) {
         notifyError(data.message || "Failed to save availability.");
+        setLoading(false);
         return;
       }
 
@@ -167,73 +174,85 @@ const SetAvailability = ({ existingSlots = [], tutorId, onClose, onSaved }) => {
     } catch (err) {
       console.error("Axios error:", err);
       notifyError("Server error. Try again later.");
+    } finally {
+      setLoading(false); // always stop loading at the end
     }
   };
 
   return (
-    <div className="modal-backdrop">
-      <div className="modal">
-        <h2>Set Availability</h2>
+    <div>
+      {loading ? (
+        <Loading />
+      ) : (
+        <div className="modal-backdrop">
+          <div className="modal">
+            <h2>Set Availability</h2>
 
-        {globalError && <div className="error global-error">{globalError}</div>}
-
-        <div className="availability-container">
-          {slots.map((slot, idx) => (
-            <div key={idx} className="availability-row">
-              <select
-                value={slot.day}
-                onChange={(e) => updateSlot(idx, "day", e.target.value)}
-              >
-                <option value="">Select Day</option>
-                {DAYS.map((day) => (
-                  <option key={day} value={day}>
-                    {day}
-                  </option>
-                ))}
-              </select>
-
-              <input
-                type="time"
-                value={slot.startTime}
-                onChange={(e) => updateSlot(idx, "startTime", e.target.value)}
-              />
-
-              <input
-                type="time"
-                value={slot.endTime}
-                onChange={(e) => updateSlot(idx, "endTime", e.target.value)}
-              />
-
-              <button type="button" onClick={() => removeSlot(idx)}>
-                Remove
-              </button>
-
-              {errors[idx] && (
-                <div className="error row-error">{errors[idx]}</div>
-              )}
-            </div>
-          ))}
-        </div>
-
-        <button type="button" className="addBtn" onClick={addSlot}>
-          + Add Availability
-        </button>
-
-        <div className="actions">
-          <button type="button" onClick={handleSave}>
-            Save
-          </button>
-          <button
-            type="button"
-            onClick={handleCancel}
-            disabled={slots.every(
-              (slot) => !slot.day && !slot.startTime && !slot.endTime
+            {globalError && (
+              <div className="error global-error">{globalError}</div>
             )}
-          >
-            Cancel
-          </button>
+
+            <div className="availability-container">
+              {slots.map((slot, idx) => (
+                <div key={idx} className="availability-row">
+                  <select
+                    value={slot.day}
+                    onChange={(e) => updateSlot(idx, "day", e.target.value)}
+                  >
+                    <option value="">Select Day</option>
+                    {DAYS.map((day) => (
+                      <option key={day} value={day}>
+                        {day}
+                      </option>
+                    ))}
+                  </select>
+
+                  <input
+                    type="time"
+                    value={slot.startTime}
+                    onChange={(e) =>
+                      updateSlot(idx, "startTime", e.target.value)
+                    }
+                  />
+
+                  <input
+                    type="time"
+                    value={slot.endTime}
+                    onChange={(e) => updateSlot(idx, "endTime", e.target.value)}
+                  />
+
+                  <button type="button" onClick={() => removeSlot(idx)}>
+                    Remove
+                  </button>
+
+                  {errors[idx] && (
+                    <div className="error row-error">{errors[idx]}</div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <button type="button" className="addBtn" onClick={addSlot}>
+              + Add Availability
+            </button>
+
+            <div className="actions">
+              <button type="button" onClick={handleSave}>
+                Save
+              </button>
+              <button
+                type="button"
+                onClick={handleCancel}
+                disabled={slots.every(
+                  (slot) => !slot.day && !slot.startTime && !slot.endTime
+                )}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

@@ -157,33 +157,90 @@
   border-radius: 3px;
 }
 
-/* Mobile responsive */
+/* ============================
+   MOBILE NAVBAR (IMPROVED)
+============================ */
 @media (max-width: 820px) {
+  /* Navbar container */
+  .header nav {
+    height: 70px; 
+    padding: 0 1.5rem;
+    border-radius: 15px;
+  }
+
+  /* Center/space items */
+  .navbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* Logo smaller */
+  .navbar-logo {
+    height: 45px;
+  }
+
+  /* Hide desktop links */
   .navbar-links {
     position: absolute;
-    top: 70px;
+    top: 75px;
     left: 0;
-    transform: none;
-    background: white;
-    box-shadow: var(--shadow);
     width: 100%;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    padding: 1.5rem 0;
     display: none;
-    border-radius: 50px;
+    flex-direction: column;
+    gap: 1.2rem;
+    background: white;
+    padding: 2rem 0;
+    border-radius: 25px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+    z-index: 999;
   }
 
+  /* Show dropdown when active */
   .navbar-links.active {
     display: flex;
+    animation: slideDown 0.25s ease-out;
   }
 
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-15px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Mobile menu items */
   .nav-item {
     color: var(--text-dark);
+    font-size: 1.1rem;
+    font-weight: 600;
   }
 
+  /* Move the logout button INTO the dropdown */
+  .navbar-right {
+    display: none;
+  }
+
+  .logout-btn {
+    width: 80%;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    height: 2.8em;
+    font-size: 15px;
+  }
+
+  /* Hamburger visible in mobile */
   .navbar-hamburger {
     display: flex;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+  }
+
+  .navbar-hamburger span {
+    width: 27px;
+    height: 3px;
+    background: white;
+    border-radius: 5px;
+    transition: 0.3s ease;
   }
 }

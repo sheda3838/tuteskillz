@@ -126,17 +126,25 @@ const TutorProfile = ({}) => {
           <div className="section">
             <AdminVerificationControls
               onVerify={() => navigate(`/tutor-verification/${profile.userId}`)}
+
               onRejectSubmit={(note) => {
                 const adminId = currentUser?.userId;
                 if (!adminId) return notifyError("Admin info missing");
 
                 axios
-                  .post(`${import.meta.env.VITE_BACKEND_URL}/admin/reject-tutor/${profile.userId}`, {
-                    note,
-                    adminId, // ✅ Correct
+                  .post(
+                    `${import.meta.env.VITE_BACKEND_URL}/admin/reject-tutor/${
+                      profile.userId
+                    }`,
+                    {
+                      note,
+                      adminId,
+                    }
+                  )
+                  .then(() => {
+                    notifySuccess("Tutor rejected");
+                    navigate("/admin/tutors"); // now correctly inside .then
                   })
-                  .then(() => notifySuccess("Tutor rejected"))
-                  navigate('/admin/tutors')
                   .catch((err) =>
                     notifyError(
                       "Error rejecting tutor: " +
@@ -144,6 +152,7 @@ const TutorProfile = ({}) => {
                     )
                   );
               }}
+              
               profile={profile}
             />
           </div>

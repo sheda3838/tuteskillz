@@ -10,6 +10,8 @@ import "../../styles/BrowseTutors/BrowseTutors.css";
 import Header from "../../components/Home/Header";
 import Footer from "../../components/Home/Footer";
 
+import Loading from "../../utils/Loading"
+
 import { motion, AnimatePresence } from "framer-motion";
 
 const BrowseTutors = () => {
@@ -24,6 +26,8 @@ const BrowseTutors = () => {
   const [selectedSubject, setSelectedSubject] = useState("");
 
   const [currentStep, setCurrentStep] = useState(1);
+
+  const [loadingTutors, setLoadingTutors] = useState(false);
 
   // Page animation
   const pageVariants = {
@@ -40,8 +44,9 @@ const BrowseTutors = () => {
   };
 
   useEffect(() => {
-    axios.get(`${import.meta.env.VITE_BACKEND_URL}/student/tutors/mediums`)
-      .then(res => res.data.success && setMediums(res.data.data));
+    axios
+      .get(`${import.meta.env.VITE_BACKEND_URL}/student/tutors/mediums`)
+      .then((res) => res.data.success && setMediums(res.data.data));
   }, []);
 
   useEffect(() => {
@@ -52,8 +57,12 @@ const BrowseTutors = () => {
     setTutors([]);
 
     axios
-      .get(`${import.meta.env.VITE_BACKEND_URL}/student/tutors/grades?medium=${selectedMedium}`)
-      .then(res => res.data.success && setGrades(res.data.data));
+      .get(
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/student/tutors/grades?medium=${selectedMedium}`
+      )
+      .then((res) => res.data.success && setGrades(res.data.data));
   }, [selectedMedium]);
 
   useEffect(() => {
@@ -62,16 +71,30 @@ const BrowseTutors = () => {
     setTutors([]);
 
     axios
-      .get(`${import.meta.env.VITE_BACKEND_URL}/student/tutors/subjects?medium=${selectedMedium}&grade=${selectedGrade}`)
-      .then(res => res.data.success && setSubjects(res.data.data));
+      .get(
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/student/tutors/subjects?medium=${selectedMedium}&grade=${selectedGrade}`
+      )
+      .then((res) => res.data.success && setSubjects(res.data.data));
   }, [selectedGrade]);
 
   useEffect(() => {
     if (!selectedMedium || !selectedGrade || !selectedSubject) return;
 
+    setLoadingTutors(true); // start loading
     axios
-      .get(`${import.meta.env.VITE_BACKEND_URL}/student/tutors?medium=${selectedMedium}&grade=${selectedGrade}&subjectId=${selectedSubject}`)
-      .then(res => res.data.success && setTutors(res.data.data));
+      .get(
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/student/tutors?medium=${selectedMedium}&grade=${selectedGrade}&subjectId=${selectedSubject}`
+      )
+      .then((res) => {
+        if (res.data.success) setTutors(res.data.data);
+        else setTutors([]);
+      })
+      .catch(() => setTutors([]))
+      .finally(() => setLoadingTutors(false)); // stop loading
   }, [selectedSubject]);
 
   return (
@@ -172,7 +195,14 @@ const BrowseTutors = () => {
               <button className="back-btn" onClick={() => setCurrentStep(3)}>
                 Back
               </button>
-              <TutorList tutors={tutors} />
+
+              {loadingTutors ? (
+                <Loading />
+              ) : tutors.length > 0 ? (
+                <TutorList tutors={tutors} />
+              ) : (
+                <p className="no-tutors-msg">No tutors found</p>
+              )}
             </motion.div>
           )}
         </AnimatePresence>

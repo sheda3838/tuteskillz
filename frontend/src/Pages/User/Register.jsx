@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { FileHelper } from "../../utils/fileHelper";
 import universityData from "../../../data/universities.json";
 import { useLocation } from "react-router-dom";
-import Loading from "../../utils/Loading"
+import Loading from "../../utils/Loading";
 
 /* ---------- Step 1 ---------- */
 const Step1 = ({ formData, handleChange, role }) => {
@@ -385,7 +385,7 @@ const Register = () => {
   axios.defaults.withCredentials = true;
   const navigate = useNavigate();
   const location = useLocation();
-const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const role = location.state?.role;
 
@@ -601,86 +601,99 @@ const [loading, setLoading] = useState(false);
     } catch (err) {
       console.error(err);
       notifyError("Something went wrong during registration.");
-    }finally{
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="student-register-container">
-      {loading && <Loading />}
-      <div className="stepper-wrapper">
-        <div className="stepper">
-          <div
-            className="step-progress-bar"
-            style={{
-              width: `${((step - 1) / (isTutor ? 3 : 2)) * 100}%`,
-            }}
-          ></div>
+    <>
+      {loading ? (
+        <Loading />
+      ) : (
+        <div className="student-register-container">
+          <div className="stepper-wrapper">
+            <div className="stepper">
+              <div
+                className="step-progress-bar"
+                style={{
+                  width: `${((step - 1) / (isTutor ? 3 : 2)) * 100}%`,
+                }}
+              ></div>
 
-          <div className={`step ${step === 1 ? "active" : ""}`}>1</div>
-          <div className={`step ${step === 2 ? "active" : ""}`}>2</div>
-          <div className={`step ${step === 3 ? "active" : ""}`}>3</div>
+              <div className={`step ${step === 1 ? "active" : ""}`}>1</div>
+              <div className={`step ${step === 2 ? "active" : ""}`}>2</div>
+              <div className={`step ${step === 3 ? "active" : ""}`}>3</div>
 
-          {isTutor && (
-            <div className={`step ${step === 4 ? "active" : ""}`}>4</div>
-          )}
+              {isTutor && (
+                <div className={`step ${step === 4 ? "active" : ""}`}>4</div>
+              )}
+            </div>
+          </div>
+
+          <form onSubmit={step === (isTutor ? 4 : 3) ? handleSubmit : nextStep}>
+            {step === 1 && (
+              <Step1
+                formData={formData}
+                handleChange={handleChange}
+                role={role}
+              />
+            )}
+            {step === 2 && (
+              <Step2 formData={formData} handleChange={handleChange} />
+            )}
+            {step === 3 && (
+              <Step3
+                formData={formData}
+                handleChange={handleChange}
+                role={role}
+              />
+            )}
+            {isTutor && step === 4 && (
+              <Step4_TutorSubjects
+                teachingSubjects={formData.teachingSubjects}
+                onChangeSet={(i, f, v) =>
+                  setFormData((p) => {
+                    const updated = [...p.teachingSubjects];
+                    updated[i][f] = v;
+                    return { ...p, teachingSubjects: updated };
+                  })
+                }
+                onAddSet={() =>
+                  setFormData((p) => ({
+                    ...p,
+                    teachingSubjects: [
+                      ...p.teachingSubjects,
+                      { medium: "", grade: "", subjectId: "" },
+                    ],
+                  }))
+                }
+                onRemoveSet={(i) =>
+                  setFormData((p) => ({
+                    ...p,
+                    teachingSubjects: p.teachingSubjects.filter(
+                      (_, idx) => idx !== i
+                    ),
+                  }))
+                }
+                subjects={subjects}
+              />
+            )}
+
+            <div className="form-navigation">
+              {step > 1 && (
+                <button type="button" className="btn-back" onClick={prevStep}>
+                  Back
+                </button>
+              )}
+              <button type="submit" className="btn-next">
+                {step === (isTutor ? 4 : 3) ? "Submit" : "Next"}
+              </button>
+            </div>
+          </form>
         </div>
-      </div>
-
-      <form onSubmit={step === (isTutor ? 4 : 3) ? handleSubmit : nextStep}>
-        {step === 1 && (
-          <Step1 formData={formData} handleChange={handleChange} role={role} />
-        )}
-        {step === 2 && (
-          <Step2 formData={formData} handleChange={handleChange} />
-        )}
-        {step === 3 && (
-          <Step3 formData={formData} handleChange={handleChange} role={role} />
-        )}
-        {isTutor && step === 4 && (
-          <Step4_TutorSubjects
-            teachingSubjects={formData.teachingSubjects}
-            onChangeSet={(i, f, v) =>
-              setFormData((p) => {
-                const updated = [...p.teachingSubjects];
-                updated[i][f] = v;
-                return { ...p, teachingSubjects: updated };
-              })
-            }
-            onAddSet={() =>
-              setFormData((p) => ({
-                ...p,
-                teachingSubjects: [
-                  ...p.teachingSubjects,
-                  { medium: "", grade: "", subjectId: "" },
-                ],
-              }))
-            }
-            onRemoveSet={(i) =>
-              setFormData((p) => ({
-                ...p,
-                teachingSubjects: p.teachingSubjects.filter(
-                  (_, idx) => idx !== i
-                ),
-              }))
-            }
-            subjects={subjects}
-          />
-        )}
-
-        <div className="form-navigation">
-          {step > 1 && (
-            <button type="button" className="btn-back" onClick={prevStep}>
-              Back
-            </button>
-          )}
-          <button type="submit" className="btn-next">
-            {step === (isTutor ? 4 : 3) ? "Submit" : "Next"}
-          </button>
-        </div>
-      </form>
-    </div>
+      )}
+    </>
   );
 };
 
