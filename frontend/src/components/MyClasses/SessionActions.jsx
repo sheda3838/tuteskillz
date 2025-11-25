@@ -12,6 +12,7 @@ const SessionActions = ({
 }) => {
   const [tutorNote, setTutorNote] = useState(initialNote || "");
 
+
   const handleAcceptClick = () => {
     if (!tutorNote.trim()) {
       notifyError("Please enter a tutor note before accepting!");

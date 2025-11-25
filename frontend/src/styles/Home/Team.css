@@ -166,7 +166,7 @@
 /* =========================================
    MOBILE RESPONSIVE (IMPROVED)
 ========================================= */
-@media (max-width: 600px) {
+@media (max-width: 480px) {
 
   .team-section {
     padding: 40px 10px;

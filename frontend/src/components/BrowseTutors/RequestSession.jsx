@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { notifySuccess, notifyError } from "../../utils/toast";
 import "../../styles/BrowseTutors/RequestSession.css";
 import { authGuard } from "../../utils/authGuard";
-import Loading from "../../utils/Loading";
 
 const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
   axios.defaults.withCredentials = true;
@@ -16,7 +15,6 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
   const [studentNote, setStudentNote] = useState("");
   const navigate = useNavigate();
   const [studentId, setStudentId] = useState(null);
-  const [loading, setLoading] = useState(false);
 
   function formatTime(timeString) {
     const [h, m] = timeString.split(":").map(Number);
@@ -47,11 +45,7 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
     if (!visible) return;
 
     axios
-      .get(
-        `${
-          import.meta.env.VITE_BACKEND_URL
-        }/session/tutor-info/${tutorSubjectId}`
-      )
+      .get(`${import.meta.env.VITE_BACKEND_URL}/session/tutor-info/${tutorSubjectId}`)
       .then((res) => {
         if (res.data.success) setTutorInfo(res.data.data);
       })
@@ -73,11 +67,7 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
     });
 
     axios
-      .get(
-        `${import.meta.env.VITE_BACKEND_URL}/tutor/availability/${
-          tutorInfo.tutorId
-        }`
-      )
+      .get(`${import.meta.env.VITE_BACKEND_URL}/tutor/availability/${tutorInfo.tutorId}`)
       .then((res) => {
         if (res.data.success) {
           const slots = res.data.availability.filter(
@@ -110,78 +100,76 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
       return notifyError("Please fill all required fields");
     }
 
-    setLoading(true); // ✅ start loading
+    // --- Check if date + time is in the future ---
+    const now = new Date();
+    const selectedDateTime = new Date(`${selectedDate}T${startTime}`);
+    if (selectedDateTime <= now) {
+      return notifyError("Please select a date and time in the future");
+    }
 
+    const startInMinutes =
+      parseInt(startTime.split(":")[0]) * 60 +
+      parseInt(startTime.split(":")[1]);
+    const endInMinutes =
+      parseInt(endTime.split(":")[0]) * 60 + parseInt(endTime.split(":")[1]);
+
+    const validSlot = availability.some((slot) => {
+      const slotStart =
+        parseInt(slot.startTime.split(":")[0]) * 60 +
+        parseInt(slot.startTime.split(":")[1]);
+      const slotEnd =
+        parseInt(slot.endTime.split(":")[0]) * 60 +
+        parseInt(slot.endTime.split(":")[1]);
+      return startInMinutes >= slotStart && endInMinutes <= slotEnd;
+    });
+
+    if (!validSlot) {
+      return notifyError("Selected time is not within tutor availability");
+    }
+
+    // -----------------------------
+    //  CHECK STUDENT SESSION CONFLICT
+    // -----------------------------
     try {
-      // Check future date
-      const now = new Date();
-      const selectedDateTime = new Date(`${selectedDate}T${startTime}`);
-      if (selectedDateTime <= now) {
-        notifyError("Please select a date and time in the future");
-        return;
-      }
-
-      // Validate against tutor availability
-      const startInMinutes =
-        parseInt(startTime.split(":")[0]) * 60 +
-        parseInt(startTime.split(":")[1]);
-      const endInMinutes =
-        parseInt(endTime.split(":")[0]) * 60 + parseInt(endTime.split(":")[1]);
-
-      const validSlot = availability.some((slot) => {
-        const slotStart =
-          parseInt(slot.startTime.split(":")[0]) * 60 +
-          parseInt(slot.startTime.split(":")[1]);
-        const slotEnd =
-          parseInt(slot.endTime.split(":")[0]) * 60 +
-          parseInt(slot.endTime.split(":")[1]);
-        return startInMinutes >= slotStart && endInMinutes <= slotEnd;
-      });
-
-      if (!validSlot) {
-        notifyError("Selected time is not within tutor availability");
-        return;
-      }
-
-      // Check for conflicts
       const conflictRes = await axios.get(
-        `${
-          import.meta.env.VITE_BACKEND_URL
-        }/session/student/${studentId}/check-conflict`,
-        { params: { date: selectedDate, startTime } }
-      );
-
-      if (conflictRes.data.conflict) {
-        notifyError("You already have a session at this time.");
-        return;
-      }
-
-      // Request session
-      const res = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/session/request`,
+        `${import.meta.env.VITE_BACKEND_URL}/session/student/${studentId}/check-conflict`,
         {
-          tutorSubjectId,
-          studentId,
-          date: selectedDate,
-          startTime,
-          duration: 2,
-          studentNote,
+          params: { date: selectedDate, startTime },
         }
       );
-
-      if (res.data.success) {
-        notifySuccess("Session requested successfully");
-        onClose();
-        navigate("/my-classes");
-      } else {
-        notifyError(res.data.message || "Failed to request session");
+      if (conflictRes.data.conflict) {
+        return notifyError("You already have a session at this time.");
       }
     } catch (err) {
       console.error(err);
-      notifyError("Failed to request session");
-    } finally {
-      setLoading(false); // ✅ stop loading
+      return notifyError("Failed to verify your schedule");
     }
+
+    // -----------------------------
+    //  IF NO CONFLICT, REQUEST SESSION
+    // -----------------------------
+    axios
+      .post(`${import.meta.env.VITE_BACKEND_URL}/session/request`, {
+        tutorSubjectId,
+        studentId,
+        date: selectedDate,
+        startTime,
+        duration: 2,
+        studentNote,
+      })
+      .then((res) => {
+        if (res.data.success) {
+          notifySuccess("Session requested successfully");
+          onClose();
+          navigate("/my-classes");
+        } else {
+          notifyError(res.data.message || "Failed to request session");
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        notifyError("Failed to request session");
+      });
   };
 
   if (!visible) return null;
@@ -189,108 +177,100 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
   const amount = [6, 7].includes(Number(tutorInfo?.grade)) ? 500 : 700;
 
   return (
-    <div>
-      {loading ? (
-        <Loading />
-      ) : (
-        <div className="request-session-modal">
-          <div className="modal-content">
-            <h2>Request Session</h2>
-            <button className="close-btn" onClick={onClose}>
-              X
-            </button>
+    <div className="request-session-modal">
+      <div className="modal-content">
+        <h2>Request Session</h2>
+        <button className="close-btn" onClick={onClose}>
+          X
+        </button>
 
-            {tutorInfo && (
-              <div className="static-info">
-                <div className="static-info-grid">
-                  <div className="static-info-item">
-                    <span className="static-info-label">Tutor</span>
-                    <span className="static-info-value">
-                      {tutorInfo.tutorName}
-                    </span>
-                  </div>
-                  <div className="static-info-item">
-                    <span className="static-info-label">Duration</span>
-                    <span className="static-info-value">2 Hours</span>
-                  </div>
-                  <div className="static-info-item">
-                    <span className="static-info-label">Amount</span>
-                    <span className="static-info-value">LKR {amount}.00</span>
-                  </div>
-                  <div className="static-info-item">
-                    <span className="static-info-label">Medium</span>
-                    <span className="static-info-value">
-                      {tutorInfo.teachingMedium}
-                    </span>
-                  </div>
-                  <div className="static-info-item">
-                    <span className="static-info-label">Grade</span>
-                    <span className="static-info-value">{tutorInfo.grade}</span>
-                  </div>
-                  <div className="static-info-item">
-                    <span className="static-info-label">Subject</span>
-                    <span className="static-info-value">
-                      {tutorInfo.subjectName}
-                    </span>
-                  </div>
-                </div>
+        {tutorInfo && (
+          <div className="static-info">
+            <div className="static-info-grid">
+              <div className="static-info-item">
+                <span className="static-info-label">Tutor</span>
+                <span className="static-info-value">{tutorInfo.tutorName}</span>
               </div>
-            )}
-
-            <div className="form-grp">
-              <div className="form-row">
-                <label>Date:</label>
-                <input
-                  type="date"
-                  value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
-                />
+              <div className="static-info-item">
+                <span className="static-info-label">Duration</span>
+                <span className="static-info-value">2 Hours</span>
+              </div>
+              <div className="static-info-item">
+                <span className="static-info-label">Amount</span>
+                <span className="static-info-value">LKR {amount}.00</span>
+              </div>
+              <div className="static-info-item">
+                <span className="static-info-label">Medium</span>
+                <span className="static-info-value">
+                  {tutorInfo.teachingMedium}
+                </span>
+              </div>
+              <div className="static-info-item">
+                <span className="static-info-label">Grade</span>
+                <span className="static-info-value">{tutorInfo.grade}</span>
+              </div>
+              <div className="static-info-item">
+                <span className="static-info-label">Subject</span>
+                <span className="static-info-value">
+                  {tutorInfo.subjectName}
+                </span>
               </div>
             </div>
+          </div>
+        )}
 
-            {/* Availability */}
-            {selectedDate && availability.length > 0 ? (
-              <div className="form-grp">
-                <div className="time-row">
-                  <label>Start Time:</label>
-                  <input
-                    type="time"
-                    value={startTime}
-                    onChange={(e) => setStartTime(e.target.value)}
-                  />
-                  <p>End Time: {endTime}</p>
-                </div>
-
-                <p>Available Slots:</p>
-                <ul>
-                  {availability.map((slot, idx) => (
-                    <li key={idx}>
-                      {formatTime(slot.startTime)} – {formatTime(slot.endTime)}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : selectedDate ? (
-              <p className="no-availability-msg">
-                No available time slots for this tutor on the selected date.
-              </p>
-            ) : null}
-
-            <div className="form-grp">
-              <label>Student Note:</label>
-              <textarea
-                placeholder="Please focus on matrices and determinants for my upcoming exam."
-                value={studentNote}
-                onChange={(e) => setStudentNote(e.target.value)}
-              />
-            </div>
-
-            <button className="submit-btn" onClick={handleSubmit}>
-              Request Session
-            </button>
+        <div className="form-grp">
+          <div className="form-row">
+            <label>Date:</label>
+            <input
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+            />
           </div>
         </div>
-      )}
+
+        {/* Availability */}
+        {selectedDate && availability.length > 0 ? (
+          <div className="form-grp">
+            <div className="time-row">
+              <label>Start Time:</label>
+              <input
+                type="time"
+                value={startTime}
+                onChange={(e) => setStartTime(e.target.value)}
+              />
+              <p>End Time: {endTime}</p>
+            </div>
+
+            <p>Available Slots:</p>
+            <ul>
+              {availability.map((slot, idx) => (
+                <li key={idx}>
+                  {formatTime(slot.startTime)} – {formatTime(slot.endTime)}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : selectedDate ? (
+          <p className="no-availability-msg">
+            No available time slots for this tutor on the selected date.
+          </p>
+        ) : null}
+
+        <div className="form-grp">
+          <label>Student Note:</label>
+          <textarea
+            placeholder="Please focus on matrices and determinants for my upcoming exam."
+            value={studentNote}
+            onChange={(e) => setStudentNote(e.target.value)}
+          />
+        </div>
+
+        <button className="submit-btn" onClick={handleSubmit}>
+          Request Session
+        </button>
+      </div>
     </div>
   );
 };
