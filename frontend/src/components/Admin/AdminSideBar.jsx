@@ -34,7 +34,7 @@ const AdminSidebar = () => {
       }
     } catch (err) {
       console.error(err);
-      alert("Logout failed!");
+      alert("Logout failed Try again!");
     }
   };
 
