@@ -45,7 +45,7 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
     if (!visible) return;
 
     axios
-      .get(`/api/session/tutor-info/${tutorSubjectId}`)
+      .get(`${import.meta.env.VITE_BACKEND_URL}/session/tutor-info/${tutorSubjectId}`)
       .then((res) => {
         if (res.data.success) setTutorInfo(res.data.data);
       })
@@ -67,7 +67,7 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
     });
 
     axios
-      .get(`/api/tutor/availability/${tutorInfo.tutorId}`)
+      .get(`${import.meta.env.VITE_BACKEND_URL}/tutor/availability/${tutorInfo.tutorId}`)
       .then((res) => {
         if (res.data.success) {
           const slots = res.data.availability.filter(
@@ -132,7 +132,7 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
     // -----------------------------
     try {
       const conflictRes = await axios.get(
-        `/api/session/student/${studentId}/check-conflict`,
+        `${import.meta.env.VITE_BACKEND_URL}/session/student/${studentId}/check-conflict`,
         {
           params: { date: selectedDate, startTime },
         }
@@ -149,7 +149,7 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
     //  IF NO CONFLICT, REQUEST SESSION
     // -----------------------------
     axios
-      .post("/api/session/request", {
+      .post(`${import.meta.env.VITE_BACKEND_URL}/session/request`, {
         tutorSubjectId,
         studentId,
         date: selectedDate,
