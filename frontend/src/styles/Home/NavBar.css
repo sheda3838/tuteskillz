@@ -34,10 +34,9 @@
 
 
 .navbar-logo {
-  height: 75px;
+  height: 55px;
   border-radius: 10px;
   cursor: pointer;
-  background: transparent !important;
 }
 
 /* Nav links centered */
