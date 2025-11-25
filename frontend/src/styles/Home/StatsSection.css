@@ -1,5 +1,4 @@
 /* ======= Stats Section ======= */
-
 .stats-section {
   padding: 80px 20px;
   text-align: center;
@@ -17,11 +16,12 @@
 .stats-grid {
   display: flex;
   justify-content: center;
+  align-items: stretch;
   gap: 60px;
   flex-wrap: wrap;
 }
 
-/* ---- Big Card ---- */
+/* ---- Card ---- */
 .stats-card {
   background: white;
   text-align: center;
@@ -29,7 +29,10 @@
   width: 320px;
   border-radius: 28px;
   box-shadow: var(--shadow);
-  transition: 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .stats-card:hover {
@@ -37,18 +40,22 @@
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.13);
 }
 
-/* ---- Bigger Illustration Icon ---- */
+/* ---- Icon ---- */
 .icon {
   width: 170px;
   height: 170px;
-  margin: 0 auto 20px;
+  margin-bottom: 20px;
 
-  background-size: cover;
+  background-size: 70%;
   background-repeat: no-repeat;
   background-position: center;
 
-  border-radius: 40% 60% 60% 40% / 50% 40% 60% 50%;
+  border-radius: 35%;
   background-color: #ffffff;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Custom icons */
@@ -78,14 +85,51 @@
   color: #444;
 }
 
+/* ======= Mobile Responsive ======= */
+@media (max-width: 900px) {
+  .stats-grid {
+    gap: 40px;
+  }
+
+  .stats-card {
+    width: 280px;
+  }
+
+  .icon {
+    width: 150px;
+    height: 150px;
+    background-size: 65%;
+  }
+}
+
 @media (max-width: 600px) {
   .stats-grid {
     flex-direction: column;
+    align-items: center;
     gap: 30px;
   }
 
   .stats-card {
-    width: 85%;
+    width: 90%;
+    padding: 30px 25px;
+  }
+
+  .stats-title {
+    font-size: 2rem;
+    margin-bottom: 35px;
+  }
+
+  .icon {
+    width: 140px;
+    height: 140px;
+    background-size: 60%;
+  }
+
+  .stats-card h3 {
+    font-size: 2.4rem;
+  }
+
+  .stats-card p {
+    font-size: 1rem;
   }
 }
-  

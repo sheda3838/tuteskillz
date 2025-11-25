@@ -32,15 +32,6 @@
   position: relative;
 }
 
-/* Logo */
-.logo-container {
-  background: white;
-  padding: 6px 10px;
-  border-radius: 12px;
-  box-shadow: var(--shadow);
-  display: flex;
-  align-items: center;
-}
 
 .navbar-logo {
   height: 55px;

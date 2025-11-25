@@ -49,68 +49,11 @@
 .feature-card.green .card-description {
   color: #374151;
 }
-
-/* TABLET */
-@media (max-width: 900px) {
-  .card-row {
-    flex-wrap: wrap;
-    padding: 20px;
-    gap: 16px;
-  }
-
-  .feature-card {
-    flex-basis: calc(50% - 16px);
-    padding: 18px;
-  }
-
-  .card-title {
-    font-size: 1.15rem;
-  }
-
-  .card-description {
-    font-size: 0.85rem;
-  }
-}
-
-/* MOBILE - enhanced spacing, readability & cleaner stacking */
+/* MOBILE - hide entire feature cards section */
 @media (max-width: 600px) {
-  .feature-overlap {
-    margin-top: -60px; /* softer overlap */
-  }
-
-  .container {
-    padding: 0 8px;
-    align-items: stretch;
-  }
-
-  .card-row {
-    flex-direction: column;
-    padding: 16px;
-    gap: 14px;
-    border-radius: 18px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.05);
-  }
-
+  .feature-overlap,
+  .card-row,
   .feature-card {
-    padding: 18px 16px;
-    border-radius: 18px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
-    width: 100%;
-  }
-
-  .card-title {
-    font-size: 1.05rem;
-    font-weight: 600;
-    margin-bottom: 6px;
-  }
-
-  .card-description {
-    font-size: 0.85rem;
-    line-height: 1.4;
-  }
-
-  /* Improve spacing inside green cards */
-  .feature-card.green {
-    padding: 20px 18px;
+    display: none !important;
   }
 }

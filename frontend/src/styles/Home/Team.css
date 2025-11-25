@@ -1,4 +1,6 @@
-/* --- Section Layout --- */
+/* =========================================
+   TEAM SECTION
+========================================= */
 .team-section {
   padding: 70px 0;
   background-color: #f7eef7;
@@ -12,67 +14,77 @@
   color: var(--primary-color);
 }
 
-/* --- Card Grid --- */
+/* =========================================
+   GRID
+========================================= */
 .team-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 30px;
-  justify-items: center; /* CENTER ALL CARDS */
   padding: 0 40px;
+  justify-items: center;
 }
 
-/* --- Flip Card Wrapper --- */
+/* =========================================
+   CARD WRAPPER
+========================================= */
 .card-container {
   perspective: 1000px;
   display: flex;
   justify-content: center;
 }
 
-/* --- Card --- */
+/* =========================================
+   FLIP CARD
+========================================= */
 .card {
   width: 300px;
   height: 420px;
   position: relative;
   transform-style: preserve-3d;
-  transition: transform 0.7s;
+  transition: transform 0.7s ease;
 }
 
 .card-container:hover .card {
   transform: rotateY(180deg);
 }
 
-/* --- Shared Card Sides --- */
+/* =========================================
+   CARD SHARED SIDES
+========================================= */
 .card-front,
 .card-back {
   position: absolute;
   width: 100%;
   height: 100%;
   padding: 25px;
-  backface-visibility: hidden;
   border-radius: 25px;
+  backface-visibility: hidden;
   box-shadow: 0 8px 26px rgba(0, 0, 0, 0.1);
   background: #fff;
   display: flex;
   flex-direction: column;
-  align-items: center; /* CENTER */
-  justify-content: center; /* NEW: center vertically */
+  align-items: center;
 }
 
-/* --- FRONT --- */
+/* =========================================
+   FRONT SIDE
+========================================= */
 .card-front {
+  text-align: center;
   justify-content: flex-start;
-  text-align: center; /* center text on mobile & desktop */
 }
 
 .card-image {
   width: 200px;
   height: 200px;
-  border-radius: 22px;
   object-fit: cover;
+  border-radius: 22px;
+  margin-bottom: 15px;
 }
 
 .card-name {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 700;
 }
 
@@ -81,6 +93,7 @@
   font-weight: 700;
   color: #0094ba;
   text-transform: uppercase;
+  margin-bottom: 10px;
 }
 
 .card-bio {
@@ -89,20 +102,31 @@
   max-width: 220px;
 }
 
-/* --- BACK --- */
+/* =========================================
+   BACK SIDE
+========================================= */
 .card-back {
-  background: var(--primary-color);
+  background-color: var(--primary-color);
   color: #fff;
   transform: rotateY(180deg);
-  text-align: center; /* Ensure centered */
+  justify-content: center;
+  text-align: center;
+  padding: 30px;
 }
 
 .back-title {
   font-size: 1.2rem;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
+}
+
+.card-socials {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
 }
 
 .card-socials a {
+  font-size: 1.3rem;
   margin: 0 10px;
   color: #fff;
   transition: 0.3s;
@@ -112,48 +136,53 @@
   color: #f8f11a;
 }
 
-/* --- LinkedIn Button --- */
+/* =========================================
+   LINKEDIN BUTTON
+========================================= */
 .linkedin-button {
   display: inline-flex;
-  justify-content: center; /* CENTER CONTENT */
   align-items: center;
-  padding: 10px 20px;
+  justify-content: center;
+  padding: 12px 25px;
   background: #0a66c2;
   color: #fff;
-  font-weight: 600;
-  font-size: 1rem;
   border-radius: 50px;
   text-decoration: none;
-  transition: all 0.3s ease;
+  font-weight: 600;
+  margin-top: 15px;
+  transition: 0.3s ease;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .linkedin-button:hover {
   background: #004182;
-  transform: translateY(-5px) scale(1.05);
+  transform: translateY(-3px) scale(1.05);
 }
 
-/* --- MOBILE VIEW FIXES (everything centered) --- */
+/* =========================================
+   MOBILE RESPONSIVE
+========================================= */
 @media (max-width: 600px) {
 
   .team-section {
-    padding: 50px 10px;
+    padding: 50px 15px;
   }
 
   .team-heading {
-    font-size: 1.8rem;
+    font-size: 1.9rem;
+    margin-bottom: 30px;
   }
 
   .team-grid {
-    grid-template-columns: 1fr; /* stack cards nicely */
-    padding: 0 10px;
+    grid-template-columns: 1fr;
     gap: 25px;
-    justify-items: center; /* center cards */
+    padding: 0 10px;
   }
 
   .card {
-    width: 100%;
+    width: 90%;
     max-width: 300px;
+    height: 390px;
   }
 
   .card-front,
@@ -162,13 +191,13 @@
   }
 
   .card-image {
-    width: 180px;
-    height: 180px;
+    width: 170px;
+    height: 170px;
   }
 
   .linkedin-button {
-    width: 80%;
-    justify-content: center;
-    margin-top: 15px;
+    width: 85%;
+    padding: 12px 0;
+    font-size: 0.95rem;
   }
 }
