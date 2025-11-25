@@ -164,98 +164,90 @@
    MOBILE RESPONSIVE
 ========================================= */
 /* =========================================
-   MOBILE RESPONSIVE (IMPROVED)
+   MOBILE RESPONSIVE FIXED CARDS
 ========================================= */
-@media (max-width: 480px) {
+@media (max-width: 600px) {
 
   .team-section {
-    padding: 40px 10px;
+    padding: 50px 15px;
   }
 
   .team-heading {
-    font-size: 1.8rem;
-    margin-bottom: 25px;
+    font-size: 1.9rem;
+    margin-bottom: 30px;
   }
 
-  /* Clean single-column layout */
   .team-grid {
     grid-template-columns: 1fr;
-    gap: 18px;
-    padding: 0 5px;
+    gap: 25px;
+    padding: 0 10px;
   }
 
-  /* Reduce card height, tighter layout */
+  /* Adjust card size & perspective */
+  .card-container {
+    width: 100%;
+    max-width: 280px;   /* constrain max width */
+    perspective: 900px; /* maintain flip perspective */
+    margin: 0 auto;
+  }
+
   .card {
-    width: 95%;
-    max-width: 300px;
-    height: auto; /* let card adjust naturally */
-    min-height: 320px;
-    transform: none !important; /* avoid awkward flip in mobile */
+    width: 100%;
+    height: 380px;       /* slightly shorter for mobile */
   }
 
-  /* Disable flip for mobile (optional but better UX) */
-  .card-container:hover .card {
-    transform: none !important;
-  }
-
+  /* Front and back sides padding & alignment */
   .card-front,
   .card-back {
-    padding: 18px;
-    height: auto;
+    padding: 20px;
+    height: 100%;
+    border-radius: 20px;
   }
 
   .card-front {
     justify-content: flex-start;
   }
 
-  /* Smaller image */
+  .card-back {
+    justify-content: center;
+    text-align: center;
+    transform: rotateY(180deg);
+  }
+
+  /* Image resize */
   .card-image {
     width: 140px;
     height: 140px;
-    margin-bottom: 10px;
     border-radius: 18px;
+    margin-bottom: 12px;
+    object-fit: cover;
   }
 
-  /* Tighter text layout */
+  /* Text resizing */
   .card-name {
-    font-size: 1.05rem;
-    margin-bottom: 4px;
-    line-height: 1.2;
+    font-size: 1.1rem;
   }
 
   .card-role {
-    font-size: 0.8rem;
-    margin-bottom: 6px;
+    font-size: 0.85rem;
   }
 
   .card-bio {
-    font-size: 0.78rem;
-    max-width: 90%;
-    line-height: 1.25;
+    font-size: 0.8rem;
+    max-width: 180px;
+    margin: 0px;
   }
 
-  /* Back side simplified */
-  .card-back {
-    padding: 20px;
-  }
-
-  .back-title {
-    font-size: 1rem;
-    margin-bottom: 8px;
-  }
-
-  /* Reduce social icon size */
-  .card-socials a {
-    font-size: 1.1rem;
-    margin: 0 6px;
-  }
-
-  /* LinkedIn button cleaner */
+  /* LinkedIn button */
   .linkedin-button {
-    width: 85%;
+    width: 80%;
     padding: 10px 0;
     font-size: 0.9rem;
-    margin-top: 10px;
+  }
+
+  /* Social icons spacing */
+  .card-socials a {
+    font-size: 1.2rem;
+    margin: 0 8px;
   }
 }
-
