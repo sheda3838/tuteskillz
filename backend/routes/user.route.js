@@ -53,7 +53,7 @@ userRouter.post("/signup", async (req, resp) => {
     <p style="color: #555; font-size: 16px; line-height: 1.6;">
       Please verify your email address to activate your account.
     </p>
-    <a href="${process.env.FRONTEND_URL}verify-email?token=${token}"
+    <a href="${process.env.FRONTEND_URL}/verify-email?token=${token}"
        style="display: inline-block; background-color: #0078ff; color: #fff; text-decoration: none;
               padding: 12px 30px; border-radius: 6px; margin-top: 20px; font-weight: bold; font-size: 16px;">
       Verify Email
