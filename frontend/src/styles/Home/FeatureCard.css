@@ -57,3 +57,11 @@
     display: none !important;
   }
 }
+/* MOBILE - hide entire feature cards section */
+@media (max-width: 900px) {
+  .feature-overlap,
+  .card-row,
+  .feature-card {
+    display: none !important;
+  }
+}
