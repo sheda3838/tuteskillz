@@ -441,7 +441,7 @@
    Page Layout Wrapper
 ================================= */
 .my-classes-page {
-  padding: 21px;
+  padding: 20px;
   width: 100%;
   display: flex;
   flex-direction: column;
