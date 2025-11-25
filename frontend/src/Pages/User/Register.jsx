@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { FileHelper } from "../../utils/fileHelper";
 import universityData from "../../../data/universities.json";
 import { useLocation } from "react-router-dom";
+import Loading from "../../utils/Loading"
 
 /* ---------- Step 1 ---------- */
 const Step1 = ({ formData, handleChange, role }) => {
@@ -384,6 +385,7 @@ const Register = () => {
   axios.defaults.withCredentials = true;
   const navigate = useNavigate();
   const location = useLocation();
+const [loading, setLoading] = useState(false);
 
   const role = location.state?.role;
 
@@ -571,6 +573,7 @@ const Register = () => {
     e.preventDefault();
     if (validateStep() !== true) return;
 
+    setLoading(true);
     try {
       const endpoint = isTutor
         ? `${import.meta.env.VITE_BACKEND_URL}/tutor/register`
@@ -598,11 +601,14 @@ const Register = () => {
     } catch (err) {
       console.error(err);
       notifyError("Something went wrong during registration.");
+    }finally{
+      setLoading(false)
     }
   };
 
   return (
     <div className="student-register-container">
+      {loading && <Loading />}
       <div className="stepper-wrapper">
         <div className="stepper">
           <div
