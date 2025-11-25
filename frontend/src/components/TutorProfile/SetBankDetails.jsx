@@ -61,49 +61,54 @@ const SetBankDetails = ({ tutorId, onClose, onSaved }) => {
 
   // Validation before submitting
   const validateAccounts = () => {
-    let hasError = false;
+  let hasError = false;
 
-    if (accounts.length === 0) {
-      notifyError("Add at least one bank account.");
-      return false;
-    }
+  if (accounts.length === 0) {
+    notifyError("Add at least one bank account.");
+    return false;
+  }
 
-    let primaryCount = 0;
+  let primaryCount = 0;
 
-    accounts.forEach((acc, idx) => {
-      if (
-        !acc.bankName ||
-        !acc.branch ||
-        !acc.accountNumber ||
-        !acc.beneficiaryName
-      ) {
-        notifyError(`Row ${idx + 1}: All fields are required.`);
-        hasError = true;
-      }
-      // 2️⃣ Bank Account Number — must be 5 or 6 digits minimum
-
-      if (!/^\d*$/.test(value)) {
-        notifyError("Bank account number must contain digits only.");
-        return;
-      }
-      if (value.length > 0 && value.length < 5) {
-        notifyError("Bank account number must be at least 5 digits.");
-        return;
-      }
-      if (acc.isPrimary) primaryCount++;
-    });
-
-    if (primaryCount === 0) {
-      notifyError("Please mark one account as primary.");
-      hasError = true;
-    }
-    if (primaryCount > 1) {
-      notifyError("Only one account can be marked as primary.");
+  accounts.forEach((acc, idx) => {
+    // 1️⃣ Required fields
+    if (
+      !acc.bankName ||
+      !acc.branch ||
+      !acc.accountNumber ||
+      !acc.beneficiaryName
+    ) {
+      notifyError(`Row ${idx + 1}: All fields are required.`);
       hasError = true;
     }
 
-    return !hasError;
-  };
+    // 2️⃣ Account number must be digits only
+    if (!/^\d+$/.test(acc.accountNumber)) {
+      notifyError(`Row ${idx + 1}: Account number must contain digits only.`);
+      hasError = true;
+    }
+
+    // 3️⃣ Minimum length 5 digits
+    if (acc.accountNumber.length < 5) {
+      notifyError(`Row ${idx + 1}: Account number must be at least 5 digits.`);
+      hasError = true;
+    }
+
+    if (acc.isPrimary) primaryCount++;
+  });
+
+  if (primaryCount === 0) {
+    notifyError("Please mark one account as primary.");
+    hasError = true;
+  }
+  if (primaryCount > 1) {
+    notifyError("Only one account can be marked as primary.");
+    hasError = true;
+  }
+
+  return !hasError;
+};
+
 
   // Submit to backend
   const handleSubmit = async () => {
