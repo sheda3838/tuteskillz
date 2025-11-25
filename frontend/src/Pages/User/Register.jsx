@@ -579,24 +579,20 @@ const Register = () => {
         ? `${import.meta.env.VITE_BACKEND_URL}/tutor/register`
         : `${import.meta.env.VITE_BACKEND_URL}/student/register`;
       const prepared = await FileHelper.prepareFiles(formData);
-      console.log("Prepared data:", prepared);
       const res = await axios.post(endpoint, prepared, {
         headers: { "Content-Type": "application/json" },
       });
-      if (res.data.success) {
-        setLoading(false); // stop spinner first
 
-        if (isTutor) {
-          notifySuccess(
-            "Registration successful! Your account is now pending admin approval. You will receive an email once verified."
-          );
-          setTimeout(() => navigate("/loggedin-home"), 2000);
-        } else {
-          notifySuccess(res.data.message);
-          navigate("/loggedin-home");
-        }
+      if (res.data.success) {
+        notifySuccess(
+          isTutor
+            ? "Registration successful! Your account is now pending admin approval."
+            : res.data.message
+        );
+
+        // Use small timeout to let toast render
+        setTimeout(() => navigate("/loggedin-home"), 500);
       } else {
-        setLoading(false); // stop spinner if error
         notifyError(res.data.message);
       }
     } catch (err) {

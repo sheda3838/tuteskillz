@@ -15,7 +15,7 @@ const Header = () => {
         {/* Text content */}
         <div className="hero-content">
           <h1>
-            Learn, Grow, and Achieve With <span>Expert</span> Guidance
+            Learn, Grow, and Achieve With Zaid <span>Expert</span> Guidance
           </h1>
           <p>
             Access high-quality courses anytime, anywhere, and take control of your
