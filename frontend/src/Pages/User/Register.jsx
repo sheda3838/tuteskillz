@@ -584,18 +584,19 @@ const Register = () => {
         headers: { "Content-Type": "application/json" },
       });
       if (res.data.success) {
+        setLoading(false); // stop spinner first
+
         if (isTutor) {
           notifySuccess(
-            "Registration successful! Your account is now pending admin approval. " +
-              "You will receive an email once verified."
+            "Registration successful! Your account is now pending admin approval. You will receive an email once verified."
           );
-          // Optionally redirect to homepage or login after a delay
           setTimeout(() => navigate("/loggedin-home"), 2000);
         } else {
-          notifySuccess(res.data.message); // Keep normal behavior for students
+          notifySuccess(res.data.message);
           navigate("/loggedin-home");
         }
       } else {
+        setLoading(false); // stop spinner if error
         notifyError(res.data.message);
       }
     } catch (err) {
