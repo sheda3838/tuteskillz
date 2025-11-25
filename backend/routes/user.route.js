@@ -48,7 +48,7 @@ userRouter.post("/signup", async (req, resp) => {
               const emailHtml = `
 <div style="font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f6f8; padding: 40px; text-align: center;">
   <div style="max-width: 600px; margin: auto; background: #ffffff; border-radius: 10px; padding: 40px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-    <img src="/assets/Logo.png" alt="TuteSkillz Logo" style="width: 80px; margin-bottom: 20px;" />
+    <img src="/frontend/src/public/Logo.png" alt="TuteSkillz Logo" style="width: 80px; margin-bottom: 20px;" />
     <h2 style="color: #2a2a2a;">Welcome to <span style="color: #0078ff;">TuteSkillz!</span></h2>
     <p style="color: #555; font-size: 16px; line-height: 1.6;">
       Please verify your email address to activate your account.
