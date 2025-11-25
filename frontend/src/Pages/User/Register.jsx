@@ -549,7 +549,7 @@ const Register = () => {
       for (const set of formData.teachingSubjects) {
         if (!set.medium || !set.grade || !set.subjectId) {
           return notifyError(
-            "Please complete all teaching sets before submitting."
+            "Please make sure to complete all teaching sets before submitting."
           );
         }
       }
