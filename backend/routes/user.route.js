@@ -130,6 +130,7 @@ userRouter.post("/signin", async (req, resp) => {
         // Store session
         req.session.email = user.email;
         req.session.userId = user.tempUserId;
+        console.log("SIGNIN: session after signin:", req.session);
 
         resp.json({ success: true, message: "Signin successful" });
       }
@@ -326,17 +327,13 @@ userRouter.post("/logout", (req, res) => {
 });
 
 userRouter.get("/test-session", (req, res) => {
-  console.log("Session:", req.session);
-
-  if (!req.session.email) {
+  console.log("TEST-SESSION: full session object:", req.session);
+  const email = req.session?.email;
+  if (!email) {
     return res.status(401).json({ loggedin: false });
   }
-
-  res.json({
-    loggedin: true,
-    email: req.session.email,
-    userId: req.session.userId
-  });
+  return res.json({ loggedin: true, email, userId: req.session.userId ?? null });
 });
+
 
 export default userRouter;
