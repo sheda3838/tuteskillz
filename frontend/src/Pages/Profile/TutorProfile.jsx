@@ -21,7 +21,7 @@ import RequestSessionModal from "../../components/BrowseTutors/RequestSession";
 import Modal from "../../components/Modal"; // your modal component
 import { notifySuccess } from "../../utils/toast";
 import { useLocation } from "react-router-dom";
-import { authGuard } from "../../utils/authGuard";
+import { localAuthGuard } from "../../utils/LocalAuthGuard";
 import Loading from "../../utils/Loading";
 
 const TutorProfile = ({}) => {
@@ -39,13 +39,10 @@ const TutorProfile = ({}) => {
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    const validate = async () => {
-      const user = await authGuard(navigate); // checks login + redirects if not
-      if (!user) return;
-      setCurrentUser(user);
-    };
+    const user = localAuthGuard(navigate); // redirects if no user
+    if (!user) return;
 
-    validate();
+    setCurrentUser(user);
   }, [navigate]);
 
   useEffect(() => {
@@ -126,7 +123,6 @@ const TutorProfile = ({}) => {
           <div className="section">
             <AdminVerificationControls
               onVerify={() => navigate(`/tutor-verification/${profile.userId}`)}
-
               onRejectSubmit={(note) => {
                 const adminId = currentUser?.userId;
                 if (!adminId) return notifyError("Admin info missing");
@@ -152,7 +148,6 @@ const TutorProfile = ({}) => {
                     )
                   );
               }}
-              
               profile={profile}
             />
           </div>

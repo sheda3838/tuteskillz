@@ -6,7 +6,7 @@ import axios from "axios";
 import Footer from "../components/Home/Footer";
 import Header from "../components/Home/Header";
 import Loading from "../utils/Loading";
-import { authGuard } from "../utils/authGuard";
+import { localAuthGuard } from "../utils/LocalAuthGuard";
 import { notifySuccess, notifyError } from "../utils/toast";
 import { AiOutlineClose } from "react-icons/ai"; // react-icons for clear button
 
@@ -21,8 +21,8 @@ const MyClassesPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const validate = async () => {
-      const user = await authGuard(navigate);
+    const validate = () => {
+      const user = localAuthGuard(navigate);
       if (!user) return;
       setCurrentUser(user);
     };
@@ -39,8 +39,12 @@ const MyClassesPage = () => {
     try {
       const endpoint =
         currentUser.role === "tutor"
-          ? `${import.meta.env.VITE_BACKEND_URL}/session/tutor/${currentUser.userId}/sessions`
-          : `${import.meta.env.VITE_BACKEND_URL}/session/student/${currentUser.userId}/sessions`;
+          ? `${import.meta.env.VITE_BACKEND_URL}/session/tutor/${
+              currentUser.userId
+            }/sessions`
+          : `${import.meta.env.VITE_BACKEND_URL}/session/student/${
+              currentUser.userId
+            }/sessions`;
 
       const res = await axios.get(endpoint);
       setSessions(res.data?.data || []);
@@ -52,16 +56,27 @@ const MyClassesPage = () => {
     }
   };
 
-  const handleAccept = async (sessionId, tutorNote, sessionDate, sessionStartTime) => {
+  const handleAccept = async (
+    sessionId,
+    tutorNote,
+    sessionDate,
+    sessionStartTime
+  ) => {
     try {
       const formattedDate = new Date(sessionDate).toISOString().split("T")[0];
       const conflictRes = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/session/tutor/${currentUser.userId}/check-conflict`,
+        `${import.meta.env.VITE_BACKEND_URL}/session/tutor/${
+          currentUser.userId
+        }/check-conflict`,
         { params: { date: formattedDate, startTime: sessionStartTime } }
       );
-      if (conflictRes.data.conflict) return notifyError(conflictRes.data.message);
+      if (conflictRes.data.conflict)
+        return notifyError(conflictRes.data.message);
 
-      await axios.put(`${import.meta.env.VITE_BACKEND_URL}/session/${sessionId}/status`, { status: "Accepted", tutorNote });
+      await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/session/${sessionId}/status`,
+        { status: "Accepted", tutorNote }
+      );
       notifySuccess("Session accepted successfully");
       fetchSessions();
     } catch (err) {
@@ -71,7 +86,11 @@ const MyClassesPage = () => {
   };
 
   const handleReject = (sessionId, tutorNote = null) => {
-    axios.put(`${import.meta.env.VITE_BACKEND_URL}/session/${sessionId}/status`, { status: "Declined", tutorNote })
+    axios
+      .put(`${import.meta.env.VITE_BACKEND_URL}/session/${sessionId}/status`, {
+        status: "Declined",
+        tutorNote,
+      })
       .then(() => {
         notifySuccess("Session declined!");
         fetchSessions();
@@ -91,7 +110,7 @@ const MyClassesPage = () => {
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       filtered = filtered.filter(
-        s =>
+        (s) =>
           s.studentName?.toLowerCase().includes(term) ||
           s.tutorName?.toLowerCase().includes(term) ||
           s.subjectName?.toLowerCase().includes(term) ||
@@ -102,16 +121,20 @@ const MyClassesPage = () => {
     // Date filter
     if (selectedDate) {
       filtered = filtered.filter(
-        s => new Date(s.date).toDateString() === new Date(selectedDate).toDateString()
+        (s) =>
+          new Date(s.date).toDateString() ===
+          new Date(selectedDate).toDateString()
       );
     }
 
     // Tab filter
     const todayStr = new Date().toDateString();
     if (activeTab === "today") {
-      filtered = filtered.filter(s => new Date(s.date).toDateString() === todayStr);
+      filtered = filtered.filter(
+        (s) => new Date(s.date).toDateString() === todayStr
+      );
     } else if (activeTab === "requested") {
-      filtered = filtered.filter(s => s.sessionStatus === "Requested");
+      filtered = filtered.filter((s) => s.sessionStatus === "Requested");
     }
 
     return filtered;
@@ -133,7 +156,7 @@ const MyClassesPage = () => {
             type="text"
             placeholder="Search by student, tutor, subject, grade..."
             value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="myclasses-search-bar"
           />
 
@@ -141,7 +164,7 @@ const MyClassesPage = () => {
             <input
               type="date"
               value={selectedDate}
-              onChange={e => setSelectedDate(e.target.value)}
+              onChange={(e) => setSelectedDate(e.target.value)}
               className="myclasses-date-picker"
             />
             {selectedDate && (
@@ -157,13 +180,22 @@ const MyClassesPage = () => {
 
         {/* Tabs */}
         <div className="myclasses-tabs">
-          <button className={activeTab === "today" ? "active" : ""} onClick={() => setActiveTab("today")}>
+          <button
+            className={activeTab === "today" ? "active" : ""}
+            onClick={() => setActiveTab("today")}
+          >
             Today's Sessions
           </button>
-          <button className={activeTab === "requested" ? "active" : ""} onClick={() => setActiveTab("requested")}>
+          <button
+            className={activeTab === "requested" ? "active" : ""}
+            onClick={() => setActiveTab("requested")}
+          >
             Requested Sessions
           </button>
-          <button className={activeTab === "all" ? "active" : ""} onClick={() => setActiveTab("all")}>
+          <button
+            className={activeTab === "all" ? "active" : ""}
+            onClick={() => setActiveTab("all")}
+          >
             All
           </button>
         </div>
@@ -172,8 +204,16 @@ const MyClassesPage = () => {
         {loading ? (
           <Loading />
         ) : filteredSessions.length === 0 ? (
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="no-sessions">
-            <img className="no-sessions" src="/no-sessions.png" alt="No Sessions" />
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="no-sessions"
+          >
+            <img
+              className="no-sessions"
+              src="/no-sessions.png"
+              alt="No Sessions"
+            />
           </motion.p>
         ) : (
           <div className="my-classes-grid">
@@ -206,4 +246,3 @@ const MyClassesPage = () => {
 };
 
 export default MyClassesPage;
- 

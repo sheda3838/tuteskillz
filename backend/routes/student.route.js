@@ -6,6 +6,7 @@ const studentRouter = Router();
 
 studentRouter.post("/register", (req, resp) => {
   const {
+    email,
     fullName,
     gender,
     dob,
@@ -20,8 +21,6 @@ studentRouter.post("/register", (req, resp) => {
     postalCode,
     profilePic,
   } = req.body;
-
-  const email = req.session.email;
 
   if (!email) {
     return resp

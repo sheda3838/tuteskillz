@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/User/roleSelection.css";
 import { motion } from "framer-motion";
-import { authGuard } from "../../utils/authGuard";
+import { localAuthGuard } from "../../utils/LocalAuthGuard";
 import { notifyError } from "../../utils/toast";
 
 const RoleSelection = () => {
@@ -10,7 +10,7 @@ const RoleSelection = () => {
 
   useEffect(() => {
     const validate = async () => {
-      const user = await authGuard(navigate);
+      const user = localAuthGuard(navigate);
 
       // If null → already redirected
       if (!user) return;
@@ -45,7 +45,9 @@ const RoleSelection = () => {
           <div className="role-cards">
             <div
               className="role-card"
-              onClick={() => navigate("/student-register", { state: { role: "student" } })}
+              onClick={() =>
+                navigate("/student-register", { state: { role: "student" } })
+              }
             >
               <img src="/student.png" alt="Study" />
               <h2>Learn</h2>
@@ -54,7 +56,9 @@ const RoleSelection = () => {
 
             <div
               className="role-card"
-              onClick={() => navigate("/tutor-register", { state: { role: "tutor" } })}
+              onClick={() =>
+                navigate("/tutor-register", { state: { role: "tutor" } })
+              }
             >
               <img src="/tutor.png" alt="Teach" />
               <h2>Teach</h2>
@@ -68,4 +72,3 @@ const RoleSelection = () => {
 };
 
 export default RoleSelection;
-

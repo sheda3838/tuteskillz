@@ -6,6 +6,7 @@ const tutorRouter = Router();
 
 tutorRouter.post("/register", (req, res) => {
   const {
+    email,
     fullName,
     gender,
     dob,
@@ -23,7 +24,6 @@ tutorRouter.post("/register", (req, res) => {
     teachingSubjects, // array of { subjectId, grade, teachingMedium }
   } = req.body;
 
-  const email = req.session.email;
   if (!email) {
     return res
       .status(401)

@@ -1,9 +1,9 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import AdminSidebar from "../components/Admin/AdminSideBar";
-import { authGuard } from "../utils/authGuard"; // your authGuard utility
-import '../styles/Admin/admin.css';
-import Loading from "../utils/Loading"
+import { localAuthGuard } from "../utils/LocalAuthGuard"; // your authGuard utility
+import "../styles/Admin/admin.css";
+import Loading from "../utils/Loading";
 
 const AdminLayout = () => {
   const navigate = useNavigate();
@@ -11,11 +11,10 @@ const AdminLayout = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const validate = async () => {
-      const user = await authGuard(navigate); // redirect if not logged in
+    const validate = () => {
+      const user = localAuthGuard(navigate); // synchronous
       if (!user || user.role !== "admin") {
-        // block non-admins
-        navigate("/signin");
+        navigate("/signin"); // extra safety
         return;
       }
       setCurrentUser(user);

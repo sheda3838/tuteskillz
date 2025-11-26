@@ -5,7 +5,7 @@ import "../../styles/TutorProfile/TutorVerification.css";
 import { notifyError, notifySuccess } from "../../utils/toast";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { authGuard } from "../../utils/authGuard";
+import { localAuthGuard } from "../../utils/LocalAuthGuard";
 
 const TutorVerification = () => {
   axios.defaults.withCredentials = true;
@@ -23,17 +23,18 @@ const TutorVerification = () => {
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    const validate = async () => {
-      const user = await authGuard(navigate); // redirects if not logged in
-      if (!user || user.role !== "admin") {
-        navigate("/signin"); // extra safety
-        return;
-      }
-      setCurrentUser(user);
-    };
-    validate();
-  }, [navigate]);
+    const user = localAuthGuard(navigate); // redirects if not logged in
+    if (!user) return; // already redirected
 
+    // Extra check: only allow admin
+    if (user.role !== "admin") {
+      navigate("/", { replace: true });
+      return;
+    }
+
+    setCurrentUser(user);
+  }, [navigate]);
+  
   const dedupeResults = (results) => {
     const map = new Map();
     results.forEach((r) => {
@@ -48,9 +49,12 @@ const TutorVerification = () => {
     if (!olText.trim()) return notifyError("Please enter OL transcript text");
 
     try {
-      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/admin/tutor/parse-text`, {
-        transcriptText: olText,
-      });
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/admin/tutor/parse-text`,
+        {
+          transcriptText: olText,
+        }
+      );
       const deduped = dedupeResults(res.data.results);
       setOlResults(deduped);
       setShowALTextarea(true);
@@ -64,9 +68,12 @@ const TutorVerification = () => {
     if (!alText.trim()) return notifyError("Please enter AL transcript text");
 
     try {
-      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/admin/tutor/parse-text`, {
-        transcriptText: alText,
-      });
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/admin/tutor/parse-text`,
+        {
+          transcriptText: alText,
+        }
+      );
       const deduped = dedupeResults(res.data.results);
       setAlResults(deduped);
     } catch (error) {
@@ -100,21 +107,34 @@ const TutorVerification = () => {
       const dedupedAL = dedupeResults(alResults);
 
       if (dedupedOL.length > 0) {
-        await axios.post(`${import.meta.env.VITE_BACKEND_URL}/admin/tutor/save-results/${tutorId}/OL`, {
-          results: dedupedOL,
-        });
+        await axios.post(
+          `${
+            import.meta.env.VITE_BACKEND_URL
+          }/admin/tutor/save-results/${tutorId}/OL`,
+          {
+            results: dedupedOL,
+          }
+        );
       }
 
       if (dedupedAL.length > 0) {
-        await axios.post(`${import.meta.env.VITE_BACKEND_URL}/admin/tutor/save-results/${tutorId}/AL`, {
-          results: dedupedAL,
-        });
+        await axios.post(
+          `${
+            import.meta.env.VITE_BACKEND_URL
+          }/admin/tutor/save-results/${tutorId}/AL`,
+          {
+            results: dedupedAL,
+          }
+        );
       }
 
-      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/admin/tutor/approve/${tutorId}`, {
-        adminId,
-        verifiedNotes: "Approved by admin",
-      });
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/admin/tutor/approve/${tutorId}`,
+        {
+          adminId,
+          verifiedNotes: "Approved by admin",
+        }
+      );
 
       notifySuccess("Tutor verified successfully!");
       navigate("/admin/tutors");

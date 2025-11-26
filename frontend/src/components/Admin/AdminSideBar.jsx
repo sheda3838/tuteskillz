@@ -1,16 +1,16 @@
 // components/AdminSidebar.jsx
 import { NavLink, useNavigate } from "react-router-dom";
-import { 
-  FaHome, 
-  FaGraduationCap, 
-  FaUserGraduate, 
-  FaBookOpen, 
-  FaClipboardList, 
-  FaUserShield, 
-  FaUserCircle, 
-  FaSignOutAlt 
+import {
+  FaHome,
+  FaGraduationCap,
+  FaUserGraduate,
+  FaBookOpen,
+  FaClipboardList,
+  FaUserShield,
+  FaUserCircle,
+  FaSignOutAlt,
 } from "react-icons/fa"; // ✅ Added icons for profile & logout
-import '../../styles/Admin/admin.css';
+import "../../styles/Admin/admin.css";
 import axios from "axios";
 
 const AdminSidebar = () => {
@@ -25,17 +25,11 @@ const AdminSidebar = () => {
     { name: "Admins", path: "/admin/admins", icon: FaUserShield },
   ];
 
-  const handleLogout = async () => {
-    try {
-      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/logout`);
-      if (res.data.success) {
-        localStorage.clear();
-        navigate("/signin");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Logout failed Try again!");
-    }
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+    notifySuccess("Logged Out Successfully");
+    navigate("/", { replace: true });
   };
 
   return (
@@ -60,7 +54,9 @@ const AdminSidebar = () => {
                 `menu-item ${isActive ? "active" : ""}`
               }
             >
-              <span className="menu-icon"><Icon /></span>
+              <span className="menu-icon">
+                <Icon />
+              </span>
               <span className="menu-text">{item.name}</span>
             </NavLink>
           );
@@ -78,7 +74,9 @@ const AdminSidebar = () => {
         </NavLink> */}
 
         <button className="menu-item logout-btn" onClick={handleLogout}>
-          <span className="menu-icon"><FaSignOutAlt /></span>
+          <span className="menu-icon">
+            <FaSignOutAlt />
+          </span>
           <span className="menu-text">Logout</span>
         </button>
       </div>

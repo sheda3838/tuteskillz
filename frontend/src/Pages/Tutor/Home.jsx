@@ -5,7 +5,7 @@ import SetAvailability from "../../components/TutorProfile/SetAvailability";
 import SetBankDetailsModal from "../../components/TutorProfile/SetBankDetails";
 import { notifyError } from "../../utils/toast";
 import { motion } from "framer-motion";
-import { authGuard } from "../../utils/authGuard";
+import { localAuthGuard } from "../../utils/LocalAuthGuard"; // <-- updated import
 import "../../styles/Tutor/TutorHome.css"
 
 function Home() {
@@ -18,18 +18,17 @@ function Home() {
   const [status, setStatus] = useState(null);
 
   useEffect(() => {
-    const validateTutor = async () => {
-      const user = await authGuard(navigate);
+    const user = localAuthGuard(navigate); // synchronous check
+    if (!user) return; // already redirected if no user
 
-      if (!user) return; // already redirected by authGuard
+    if (user.role !== "tutor") {
+      notifyError("Unauthorized access");
+      return navigate("/", { replace: true });
+    }
 
-      if (user.role !== "tutor") {
-        notifyError("Unauthorized access");
-        return navigate("/", { replace: true });
-      }
+    setUserId(user.userId);
 
-      setUserId(user.userId);
-
+    const fetchTutorStatus = async () => {
       try {
         const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/tutor/status/${user.userId}`);
         setStatus(data.status);
@@ -59,7 +58,7 @@ function Home() {
       }
     };
 
-    validateTutor();
+    fetchTutorStatus();
   }, [navigate]);
 
   const handleAvailabilitySaved = () => {

@@ -1,45 +1,36 @@
+// src/components/Home/Navbar.js
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
 import "../../styles/Home/NavBar.css";
-import UserSession from "../../utils/UserSession";
 import { notifySuccess } from "../../utils/toast";
+import { localAuthGuard } from "../../utils/LocalAuthGuard";
 
 const Navbar = () => {
-  axios.defaults.withCredentials = true;
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [user, setUser] = useState(null); // store session user
+  const [user, setUser] = useState(null);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const s = await UserSession.get();
-        if (s.loggedin) setUser(s.user);
-      } catch (err) {
-        // Ignore 401
-      }
-    };
-    fetchUser();
-  }, []);
+    const u = localAuthGuard(navigate);
+    if (!u) return;
 
-  const handleLogout = async () => {
-    try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/logout`
-      );
-      if (res.data.success) {
-        setUser(null); // clear session state
-        notifySuccess("Logged Out Success");
-        navigate("/", { replace: true });
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Logout failed!");
+    // Redirect admins immediately
+    if (u.role === "admin") {
+      navigate("/admin", { replace: true });
+      return;
     }
+
+    setUser(u);
+  }, [navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+    notifySuccess("Logged Out Successfully");
+    navigate("/", { replace: true });
   };
 
   const isLoggedIn = !!user;
@@ -85,14 +76,6 @@ const Navbar = () => {
               >
                 My Sessions
               </Link>
-              {/* <Link
-                to="/profile"
-                className={`nav-item ${
-                  location.pathname === "/profile" ? "active" : ""
-                }`}
-              >
-                My Profile
-              </Link> */}
             </>
           )}
 

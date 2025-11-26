@@ -43,14 +43,16 @@ function Signup() {
       });
 
       if (r.data.error) return notifyError(r.data.error);
-      if (r.data.exists){
-        notifyInfo("Email already exists - Please sign in")
+      if (r.data.exists) {
+        notifyInfo("Email already exists - Please sign in");
         navigate("/signin");
         return;
-      };
+      }
 
       if (r.data.success) {
-        notifySuccess("Signup successful! Check your email to verify your account.");
+        notifySuccess(
+          "Signup successful! Check your email to verify your account."
+        );
         navigate("/signin");
       }
     } catch (err) {
@@ -60,12 +62,21 @@ function Signup() {
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
-      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/google/token`, {
-        token: credentialResponse.credential,
-      });
+      const token = credentialResponse.credential;
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      const email = payload.email; // ✅ extract email
+
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/google/token`,
+        {
+          token,
+          email, // optional: pass to backend if needed
+        }
+      );
+
       if (res.data.success) {
         notifySuccess("Signup success!");
-        navigate("/loggedin-home");
+        navigate("/loggedin-home", { state: { email } }); // now 'email' is defined
       }
     } catch (err) {
       notifyError("Google Signup/Login Error: " + err.message);

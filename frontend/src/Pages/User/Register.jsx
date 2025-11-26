@@ -392,6 +392,9 @@ const Register = () => {
   const [step, setStep] = useState(1);
   const [subjects, setSubjects] = useState([]);
 
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  const storedEmail = storedUser?.email || "";
+
   useEffect(() => {
     if (!role) {
       notifyError("Please select a role first.");
@@ -578,8 +581,18 @@ const Register = () => {
       const endpoint = isTutor
         ? `${import.meta.env.VITE_BACKEND_URL}/tutor/register`
         : `${import.meta.env.VITE_BACKEND_URL}/student/register`;
+
+      // --- Grab email from localStorage safely ---
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      const storedEmail = storedUser?.email || "";
+
+      // --- Prepare files as usual ---
       const prepared = await FileHelper.prepareFiles(formData);
-      const res = await axios.post(endpoint, prepared, {
+
+      // --- Merge email into payload ---
+      const payload = { ...prepared, email: storedEmail };
+
+      const res = await axios.post(endpoint, payload, {
         headers: { "Content-Type": "application/json" },
       });
 
@@ -589,6 +602,9 @@ const Register = () => {
             ? "Registration successful! Your account is now pending admin approval."
             : res.data.message
         );
+
+        // Optional: clear localStorage if student email is no longer needed
+        localStorage.removeItem("user");
 
         // Use small timeout to let toast render
         setTimeout(() => navigate("/loggedin-home"), 500);

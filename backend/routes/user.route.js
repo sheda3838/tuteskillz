@@ -256,16 +256,15 @@ userRouter.post("/google/token", async (req, resp) => {
 //  Check if User Exists in Main Users Table
 // ===========================
 
-userRouter.get("/user", (req, res) => {
-  console.log("Accessed user route");
-  const email = req.session?.email;
-  console.log("Session:", email);
+userRouter.post("/user", (req, res) => {
+  // Get email from request body instead of session
+  const email = req.body.email;
   if (!email) {
-    return res.status(401).json({
+    return res.status(400).json({
       success: false,
       loggedin: false,
       isNewUser: false,
-      message: "Unauthorized",
+      message: "Email is required",
       user: null,
     });
   }
@@ -283,7 +282,7 @@ userRouter.get("/user", (req, res) => {
     }
 
     if (result.length === 0) {
-      // email exists in session but user not in main table -> new user flow
+      // email not in main users table -> new user flow
       return res.status(200).json({
         success: true,
         loggedin: true,
@@ -294,10 +293,6 @@ userRouter.get("/user", (req, res) => {
     }
 
     const row = result[0];
-
-    // Optionally update session with server-side userId and role
-    // req.session.userId = row.userId;
-    // req.session.role = row.role;
 
     return res.status(200).json({
       success: true,
@@ -332,8 +327,11 @@ userRouter.get("/test-session", (req, res) => {
   if (!email) {
     return res.status(401).json({ loggedin: false });
   }
-  return res.json({ loggedin: true, email, userId: req.session.userId ?? null });
+  return res.json({
+    loggedin: true,
+    email,
+    userId: req.session.userId ?? null,
+  });
 });
-
 
 export default userRouter;

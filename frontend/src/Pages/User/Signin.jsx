@@ -19,34 +19,33 @@ function Signin() {
     setValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
+    e.preventDefault();
+    setLoading(true);
 
-  try {
-    const r = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}/signin`,
-      values,
-      { withCredentials: true }
-    );
+    try {
+      const r = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/signin`,
+        values,
+        { withCredentials: true }
+      );
 
-    if (r.data.error) {
-      notifyError(r.data.error);
-      setLoading(false); // Only reset loading for error
-      return;
+      if (r.data.error) {
+        notifyError(r.data.error);
+        setLoading(false); // Only reset loading for error
+        return;
+      }
+
+      if (r.data.success) {
+        notifySuccess("Signin successful! 🎉");
+        await new Promise((resolve) => setTimeout(resolve, 300));
+        navigate("/loggedin-home", { state: { email: values.email } });
+        return; // 🔥 IMPORTANT: stop execution so finally won't run
+      }
+    } catch (err) {
+      notifyError(err.message || "Something went wrong!");
+      setLoading(false); // error → stop loading
     }
-    
-    if (r.data.success) {
-      notifySuccess("Signin successful! 🎉");
-      await new Promise((resolve) => setTimeout(resolve, 300));
-      navigate("/loggedin-home");
-      return; // 🔥 IMPORTANT: stop execution so finally won't run
-    }
-
-  } catch (err) {
-    notifyError(err.message || "Something went wrong!");
-    setLoading(false); // error → stop loading
-  }
-};
+  };
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
@@ -58,7 +57,8 @@ function Signin() {
       );
       if (res.data.success) {
         notifySuccess("Signed in with Google successfully! 🚀");
-        navigate("/loggedin-home");
+        const email = res.data.email || credentialResponse.email;
+        navigate("/loggedin-home", { state: { email } });
       }
     } catch (err) {
       notifyError(err.message || "Google Signin failed!");
