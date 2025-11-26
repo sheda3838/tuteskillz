@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { notifySuccess, notifyError } from "../../utils/toast";
-import {authGuard } from "../../utils/authGuard"
-import Loading from "../../utils/Loading"
+import { authGuard } from "../../utils/authGuard";
+import Loading from "../../utils/Loading";
 
 function LoggedinHome() {
   const [name, setName] = useState("");
@@ -11,32 +11,32 @@ function LoggedinHome() {
 
   axios.defaults.withCredentials = true;
 
- useEffect(() => {
-  const validate = async () => {
-    const user = await authGuard(navigate);
+  useEffect(() => {
+    const validate = async () => {
+      const user = await authGuard(navigate);
 
-    if (!user) return;
+      if (!user) return;
 
-    // Set name (optional visual)
-    setName(user.fullName);
+      // Set name (optional visual)
+      setName(user.fullName);
 
-    // ROLE REDIRECT
-    if (user.role === "student") navigate("/", { replace: true });
-    if (user.role === "tutor") {
-      console.log(user.role);
-      navigate("/tutor", { replace: true })
+      // ROLE REDIRECT
+      if (user.role === "student") navigate("/", { replace: true });
+      if (user.role === "tutor") {
+        console.log(user.role);
+        navigate("/tutor", { replace: true });
+      }
+      if (user.role === "admin") navigate("/admin", { replace: true });
     };
-    if (user.role === "admin") navigate("/admin", { replace: true });
-  };
 
-  validate();
-}, []);
-
-
+    validate();
+  }, []);
 
   const handleLogout = async () => {
     try {
-      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/logout`);
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/logout`
+      );
 
       if (res.data.success) {
         notifySuccess("Logged out successfully!");
