@@ -15,6 +15,7 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
   const [studentNote, setStudentNote] = useState("");
   const navigate = useNavigate();
   const [studentId, setStudentId] = useState(null);
+  const [isRequesting, setIsRequesting] = useState(false);
 
   function formatTime(timeString) {
     const [h, m] = timeString.split(":").map(Number);
@@ -107,37 +108,38 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
       return notifyError("Please fill all required fields");
     }
 
-    // --- Check if date + time is in the future ---
-    const now = new Date();
-    const selectedDateTime = new Date(`${selectedDate}T${startTime}`);
-    if (selectedDateTime <= now) {
-      return notifyError("Please select a date and time in the future");
-    }
+    setIsRequesting(true); // ⬅️ START LOADING
 
-    const startInMinutes =
-      parseInt(startTime.split(":")[0]) * 60 +
-      parseInt(startTime.split(":")[1]);
-    const endInMinutes =
-      parseInt(endTime.split(":")[0]) * 60 + parseInt(endTime.split(":")[1]);
-
-    const validSlot = availability.some((slot) => {
-      const slotStart =
-        parseInt(slot.startTime.split(":")[0]) * 60 +
-        parseInt(slot.startTime.split(":")[1]);
-      const slotEnd =
-        parseInt(slot.endTime.split(":")[0]) * 60 +
-        parseInt(slot.endTime.split(":")[1]);
-      return startInMinutes >= slotStart && endInMinutes <= slotEnd;
-    });
-
-    if (!validSlot) {
-      return notifyError("Selected time is not within tutor availability");
-    }
-
-    // -----------------------------
-    //  CHECK STUDENT SESSION CONFLICT
-    // -----------------------------
     try {
+      const now = new Date();
+      const selectedDateTime = new Date(`${selectedDate}T${startTime}`);
+      if (selectedDateTime <= now) {
+        setIsRequesting(false);
+        return notifyError("Please select a date and time in the future");
+      }
+
+      const startInMinutes =
+        parseInt(startTime.split(":")[0]) * 60 +
+        parseInt(startTime.split(":")[1]);
+      const endInMinutes =
+        parseInt(endTime.split(":")[0]) * 60 + parseInt(endTime.split(":")[1]);
+
+      const validSlot = availability.some((slot) => {
+        const slotStart =
+          parseInt(slot.startTime.split(":")[0]) * 60 +
+          parseInt(slot.startTime.split(":")[1]);
+        const slotEnd =
+          parseInt(slot.endTime.split(":")[0]) * 60 +
+          parseInt(slot.endTime.split(":")[1]);
+        return startInMinutes >= slotStart && endInMinutes <= slotEnd;
+      });
+
+      if (!validSlot) {
+        setIsRequesting(false);
+        return notifyError("Selected time is not within tutor availability");
+      }
+
+      // Check student conflict
       const conflictRes = await axios.get(
         `${
           import.meta.env.VITE_BACKEND_URL
@@ -146,39 +148,38 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
           params: { date: selectedDate, startTime },
         }
       );
+
       if (conflictRes.data.conflict) {
+        setIsRequesting(false);
         return notifyError("You already have a session at this time.");
+      }
+
+      // Request the session
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/session/request`,
+        {
+          tutorSubjectId,
+          studentId,
+          date: selectedDate,
+          startTime,
+          duration: 2,
+          studentNote,
+        }
+      );
+
+      if (res.data.success) {
+        notifySuccess("Session requested successfully");
+        onClose();
+        navigate("/my-classes");
+      } else {
+        notifyError(res.data.message || "Failed to request session");
       }
     } catch (err) {
       console.error(err);
-      return notifyError("Failed to verify your schedule");
+      notifyError("Failed to request session");
+    } finally {
+      setIsRequesting(false); // ⬅️ END LOADING ALWAYS
     }
-
-    // -----------------------------
-    //  IF NO CONFLICT, REQUEST SESSION
-    // -----------------------------
-    axios
-      .post(`${import.meta.env.VITE_BACKEND_URL}/session/request`, {
-        tutorSubjectId,
-        studentId,
-        date: selectedDate,
-        startTime,
-        duration: 2,
-        studentNote,
-      })
-      .then((res) => {
-        if (res.data.success) {
-          notifySuccess("Session requested successfully");
-          onClose();
-          navigate("/my-classes");
-        } else {
-          notifyError(res.data.message || "Failed to request session");
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-        notifyError("Failed to request session");
-      });
   };
 
   if (!visible) return null;
@@ -276,8 +277,16 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
           />
         </div>
 
-        <button className="submit-btn" onClick={handleSubmit}>
-          Request Session
+        <button
+          className="submit-btn"
+          onClick={handleSubmit}
+          disabled={isRequesting}
+          style={{
+            opacity: isRequesting ? 0.6 : 1,
+            cursor: isRequesting ? "not-allowed" : "pointer",
+          }}
+        >
+          {isRequesting ? "Requesting..." : "Request Session"}
         </button>
       </div>
     </div>

@@ -11,7 +11,8 @@ import {
   FaSignOutAlt,
 } from "react-icons/fa"; // ✅ Added icons for profile & logout
 import "../../styles/Admin/admin.css";
-import axios from "axios";
+import { notifySuccess } from "../../utils/toast";
+
 
 const AdminSidebar = () => {
   const navigate = useNavigate();
@@ -27,7 +28,6 @@ const AdminSidebar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("user");
-    setUser(null);
     notifySuccess("Logged Out Successfully");
     navigate("/", { replace: true });
   };

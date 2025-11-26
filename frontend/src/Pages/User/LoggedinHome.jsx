@@ -9,7 +9,14 @@ function LoggedinHome() {
   const navigate = useNavigate();
 
   // Fallback to localStorage email if location.state.email is undefined
-  const email = JSON.parse(localStorage.getItem("user"))?.email;
+  let stored = null;
+  try {
+    stored = JSON.parse(localStorage.getItem("user") || "{}");
+  } catch {
+    stored = {};
+  }
+
+  const email = stored.email || null;
 
   axios.defaults.withCredentials = true;
 
@@ -44,7 +51,10 @@ function LoggedinHome() {
             const localUser = JSON.parse(rawLocalUser);
             const now = Date.now();
 
-            if (!localUser.timestamp || now - localUser.timestamp > SESSION_EXPIRY) {
+            if (
+              !localUser.timestamp ||
+              now - localUser.timestamp > SESSION_EXPIRY
+            ) {
               localStorage.removeItem("user");
               console.log("Session expired → cleared localStorage");
             } else if (localUser.role && localUser.role !== serverUser.role) {
@@ -79,7 +89,6 @@ function LoggedinHome() {
         if (role === "student") navigate("/", { replace: true });
         else if (role === "tutor") navigate("/tutor", { replace: true });
         else if (role === "admin") navigate("/admin", { replace: true });
-
       } catch (err) {
         notifyError(err.message || "Failed to fetch user info!");
         navigate("/signin", { replace: true });
@@ -91,7 +100,9 @@ function LoggedinHome() {
 
   const handleLogout = async () => {
     try {
-      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/logout`);
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/logout`
+      );
       if (res.data.success) {
         localStorage.removeItem("user");
         notifySuccess("Logged out successfully!");
