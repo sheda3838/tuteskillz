@@ -603,14 +603,14 @@ const Register = () => {
             : res.data.message
         );
 
-        // Optional: clear localStorage if student email is no longer needed
-        localStorage.removeItem("user");
-
-        // Use small timeout to let toast render
-        setTimeout(
-          () => navigate("/loggedin-home", { state: { email: storedEmail } }),
-          500
+        // Store email in localStorage for LoggedinHome
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ email: storedEmail, timestamp: Date.now() })
         );
+
+        // Navigate without state
+        setTimeout(() => navigate("/loggedin-home"), 500);
       } else {
         notifyError(res.data.message);
       }
