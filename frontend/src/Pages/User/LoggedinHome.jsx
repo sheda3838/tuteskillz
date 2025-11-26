@@ -9,7 +9,8 @@ function LoggedinHome() {
   const navigate = useNavigate();
 
   // Fallback to localStorage email if location.state.email is undefined
-  const email = JSON.parse(localStorage.getItem("user"))?.email;
+  const email =
+    location.state?.email || JSON.parse(localStorage.getItem("user"))?.email;
 
   axios.defaults.withCredentials = true;
 

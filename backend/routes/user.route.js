@@ -224,7 +224,11 @@ userRouter.post("/google/token", async (req, resp) => {
           const user = data[0];
           req.session.userId = user.tempUserId;
           req.session.email = user.email;
-          return resp.json({ success: true, message: "Login successful" });
+          return resp.json({
+            success: true,
+            email,
+            message: "Login successful",
+          });
         } else {
           const values = [email, true];
           db.query(
@@ -240,7 +244,11 @@ userRouter.post("/google/token", async (req, resp) => {
               req.session.userId = result.insertId;
               req.session.email = email;
 
-              return resp.json({ success: true, message: "Signup successful" });
+              return resp.json({
+                success: true,
+                email,
+                message: "Signup successful",
+              });
             }
           );
         }

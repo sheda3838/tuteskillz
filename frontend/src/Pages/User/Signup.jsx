@@ -63,31 +63,32 @@ function Signup() {
   const handleGoogleSuccess = async (credentialResponse) => {
   try {
     const token = credentialResponse.credential;
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    const email = payload.email;
 
     const res = await axios.post(
       `${import.meta.env.VITE_BACKEND_URL}/google/token`,
-      { token, email }
+      { token },
+      { withCredentials: true }
     );
 
     if (res.data.success) {
-      // Store minimal info first
+      const email = res.data.email; // <-- take email from backend
+
       localStorage.setItem(
         "user",
         JSON.stringify({
-          email,
+          email: email,
           timestamp: Date.now()
         })
       );
 
       notifySuccess("Signup success!");
-      navigate("/loggedin-home");  // no state needed
+      navigate("/loggedin-home");
     }
   } catch (err) {
     notifyError("Google Signup/Login Error: " + err.message);
   }
 };
+
 
 
   return (

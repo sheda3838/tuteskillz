@@ -51,13 +51,13 @@ function Signin() {
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/google/token`,
-        {
-          token: credentialResponse.credential,
-        }
+        { token: credentialResponse.credential },
+        { withCredentials: true }
       );
+
       if (res.data.success) {
-        notifySuccess("Signed in with Google successfully! 🚀");
-        const email = res.data.email || credentialResponse.email;
+        const email = res.data.email; // <-- ONLY from backend
+
         localStorage.setItem(
           "user",
           JSON.stringify({
@@ -65,7 +65,9 @@ function Signin() {
             timestamp: Date.now(),
           })
         );
-        navigate('/loggedin-home')
+
+        notifySuccess("Signed in with Google successfully! 🚀");
+        navigate("/loggedin-home");
       }
     } catch (err) {
       notifyError(err.message || "Google Signin failed!");
