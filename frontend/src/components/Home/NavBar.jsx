@@ -15,13 +15,17 @@ const Navbar = () => {
 
   useEffect(() => {
     const u = localAuthGuard(navigate);
-    // Redirect admins immediately
-    if (u.role === "admin") {
-      navigate("/admin", { replace: true });
-      return;
-    }
 
-    setUser(u);
+    // If user exists
+    if (u) {
+      // Redirect admins immediately
+      if (u.role === "admin") {
+        navigate("/admin", { replace: true });
+        return;
+      }
+      setUser(u);
+    }
+    // If no user → don't return, just let user remain null
   }, [navigate]);
 
   const handleLogout = () => {
