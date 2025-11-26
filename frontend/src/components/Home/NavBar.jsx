@@ -13,27 +13,32 @@ const Navbar = () => {
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
   useEffect(() => {
+    let mounted = true;
+
     const raw = localStorage.getItem("user");
 
     if (!raw) {
-      setUser(null); // guest
+      if (mounted) setUser(null); // guest safe update
       return;
     }
 
     try {
       const u = JSON.parse(raw);
 
-      // redirect ONLY admins
       if (u.role === "admin") {
         navigate("/admin", { replace: true });
         return;
       }
 
-      setUser(u);
+      if (mounted) setUser(u);
     } catch {
       localStorage.removeItem("user");
-      setUser(null);
+      if (mounted) setUser(null);
     }
+
+    return () => {
+      mounted = false;
+    };
   }, [navigate]);
 
   const handleLogout = () => {
