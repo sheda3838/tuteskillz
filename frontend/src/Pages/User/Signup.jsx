@@ -61,27 +61,34 @@ function Signup() {
   };
 
   const handleGoogleSuccess = async (credentialResponse) => {
-    try {
-      const token = credentialResponse.credential;
-      const payload = JSON.parse(atob(token.split(".")[1]));
-      const email = payload.email; // ✅ extract email
+  try {
+    const token = credentialResponse.credential;
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    const email = payload.email;
 
-      const res = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/google/token`,
-        {
-          token,
-          email, // optional: pass to backend if needed
-        }
+    const res = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/google/token`,
+      { token, email }
+    );
+
+    if (res.data.success) {
+      // Store minimal info first
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          email,
+          timestamp: Date.now()
+        })
       );
 
-      if (res.data.success) {
-        notifySuccess("Signup success!");
-        navigate("/loggedin-home", { state: { email } }); // now 'email' is defined
-      }
-    } catch (err) {
-      notifyError("Google Signup/Login Error: " + err.message);
+      notifySuccess("Signup success!");
+      navigate("/loggedin-home");  // no state needed
     }
-  };
+  } catch (err) {
+    notifyError("Google Signup/Login Error: " + err.message);
+  }
+};
+
 
   return (
     <motion.div

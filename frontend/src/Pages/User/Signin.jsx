@@ -58,7 +58,14 @@ function Signin() {
       if (res.data.success) {
         notifySuccess("Signed in with Google successfully! 🚀");
         const email = res.data.email || credentialResponse.email;
-        navigate("/loggedin-home", { state: { email } });
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            email,
+            timestamp: Date.now(),
+          })
+        );
+        navigate('/loggedin-home')
       }
     } catch (err) {
       notifyError(err.message || "Google Signin failed!");
