@@ -12,7 +12,7 @@ function LoggedinHome() {
 
   axios.defaults.withCredentials = true;
 
-  uuseEffect(() => {
+  useEffect(() => {
     const fetchUser = async () => {
       if (!email) {
         notifyError("No email provided! Redirecting to signin...");

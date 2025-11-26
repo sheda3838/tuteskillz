@@ -15,8 +15,6 @@ const Navbar = () => {
 
   useEffect(() => {
     const u = localAuthGuard(navigate);
-    if (!u) return;
-
     // Redirect admins immediately
     if (u.role === "admin") {
       navigate("/admin", { replace: true });
