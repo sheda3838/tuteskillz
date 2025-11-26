@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { notifySuccess, notifyError } from "../../utils/toast";
 import "../../styles/BrowseTutors/RequestSession.css";
-import { authGuard } from "../../utils/authGuard";
+import { localAuthGuard } from "../../utils/LocalAuthGuard";
 
 const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
   axios.defaults.withCredentials = true;
@@ -28,24 +28,27 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
   }
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const user = await authGuard(navigate); // your own logic, unchanged
-      if (user && user.role === "student") {
-        setStudentId(user.userId);
-      } else {
-        notifyError("Only students can request sessions.");
-        onClose();
-      }
-    };
+    const user = localAuthGuard(navigate); // sync, returns user or redirects
+    if (!user) return; // stops execution if unauthorized
 
-    fetchUser();
-  }, []);
+    if (user.role === "student") {
+      setStudentId(user.userId); // ✅ only set if student
+    } else {
+      notifyError("Only students can request sessions.");
+      onClose();
+    }
+  }, [navigate]);
+
   // Fetch tutor static info when modal opens
   useEffect(() => {
     if (!visible) return;
 
     axios
-      .get(`${import.meta.env.VITE_BACKEND_URL}/session/tutor-info/${tutorSubjectId}`)
+      .get(
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/session/tutor-info/${tutorSubjectId}`
+      )
       .then((res) => {
         if (res.data.success) setTutorInfo(res.data.data);
       })
@@ -67,7 +70,11 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
     });
 
     axios
-      .get(`${import.meta.env.VITE_BACKEND_URL}/tutor/availability/${tutorInfo.tutorId}`)
+      .get(
+        `${import.meta.env.VITE_BACKEND_URL}/tutor/availability/${
+          tutorInfo.tutorId
+        }`
+      )
       .then((res) => {
         if (res.data.success) {
           const slots = res.data.availability.filter(
@@ -132,7 +139,9 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
     // -----------------------------
     try {
       const conflictRes = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/session/student/${studentId}/check-conflict`,
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/session/student/${studentId}/check-conflict`,
         {
           params: { date: selectedDate, startTime },
         }
