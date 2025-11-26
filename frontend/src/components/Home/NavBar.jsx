@@ -16,18 +16,24 @@ const Navbar = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const s = await UserSession.get(); // returns session info without redirect
-      if (s.loggedin) setUser(s.user);
+      try {
+        const s = await UserSession.get();
+        if (s.loggedin) setUser(s.user);
+      } catch (err) {
+        // Ignore 401
+      }
     };
     fetchUser();
   }, []);
 
   const handleLogout = async () => {
     try {
-      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/logout`);
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/logout`
+      );
       if (res.data.success) {
         setUser(null); // clear session state
-        notifySuccess("Logged Out Success")
+        notifySuccess("Logged Out Success");
         navigate("/", { replace: true });
       }
     } catch (err) {

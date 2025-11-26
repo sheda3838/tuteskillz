@@ -17,11 +17,14 @@ const app = express();
 
 app.use(
   cors({
-    origin: "https://tuteskillz.vercel.app",
+    origin: [
+      "https://tuteskillz.vercel.app",
+      "https://tuteskillz-git-main-sheda3838s-projects.vercel.app",
+      "https://tuteskillz-qcvb2ek4l-sheda3838s-projects.vercel.app",
+    ],
     credentials: true,
   })
 );
-
 
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
@@ -38,13 +41,14 @@ app.use(
     saveUninitialized: false,
     store: sessionStore,
     cookie: {
-      secure: true,
+      secure: true,       // HTTPS only
       httpOnly: true,
-      sameSite: "none",
+      sameSite: "none",   // allow cross-origin
       maxAge: 1000 * 60 * 60 * 24,
     },
   })
 );
+
 
 app.use("/api", userRouter);
 app.use("/api/student", studentRouter);
