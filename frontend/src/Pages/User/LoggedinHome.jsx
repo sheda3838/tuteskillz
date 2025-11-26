@@ -7,8 +7,11 @@ import Loading from "../../utils/Loading";
 function LoggedinHome() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
-  const location = useLocation(); // to get email from Signin
-  const email = location.state?.email; // email passed from Signin
+  const location = useLocation();
+
+  // Fallback to localStorage email if location.state.email is undefined
+  const email =
+    location.state?.email || JSON.parse(localStorage.getItem("user"))?.email;
 
   axios.defaults.withCredentials = true;
 
@@ -23,7 +26,7 @@ function LoggedinHome() {
       try {
         const res = await axios.post(
           `${import.meta.env.VITE_BACKEND_URL}/user`,
-          { email } // send email in body
+          { email }
         );
 
         if (!res.data.success) {
@@ -34,25 +37,19 @@ function LoggedinHome() {
 
         const serverUser = res.data.user;
 
-        // ======== SESSION EXPIRY CHECK ========
+        // ======== SESSION EXPIRY & ROLE CONFLICT CHECK ========
         const SESSION_EXPIRY = 1000 * 60 * 30; // 30 mins
         const rawLocalUser = localStorage.getItem("user");
+
         if (rawLocalUser) {
           try {
             const localUser = JSON.parse(rawLocalUser);
             const now = Date.now();
 
-            // expired session
-            if (
-              !localUser.timestamp ||
-              now - localUser.timestamp > SESSION_EXPIRY
-            ) {
+            if (!localUser.timestamp || now - localUser.timestamp > SESSION_EXPIRY) {
               localStorage.removeItem("user");
               console.log("Session expired → cleared localStorage");
-            }
-
-            // role conflict
-            if (localUser.role && localUser.role !== serverUser.role) {
+            } else if (localUser.role && localUser.role !== serverUser.role) {
               localStorage.removeItem("user");
               console.log("Role conflict → cleared localStorage");
             }
@@ -61,7 +58,7 @@ function LoggedinHome() {
           }
         }
 
-        // ======== NEW USER ========
+        // ======== NEW USER CHECK ========
         if (res.data.isNewUser) {
           notifySuccess("Please complete your registration!");
           localStorage.setItem(
@@ -72,7 +69,7 @@ function LoggedinHome() {
           return;
         }
 
-        // ======== STORE FULL USER WITH TIMESTAMP ========
+        // ======== STORE LATEST USER ========
         const userWithTimestamp = { ...serverUser, timestamp: Date.now() };
         setUser(userWithTimestamp);
         localStorage.setItem("user", JSON.stringify(userWithTimestamp));
@@ -84,6 +81,7 @@ function LoggedinHome() {
         if (role === "student") navigate("/", { replace: true });
         else if (role === "tutor") navigate("/tutor", { replace: true });
         else if (role === "admin") navigate("/admin", { replace: true });
+
       } catch (err) {
         notifyError(err.message || "Failed to fetch user info!");
         navigate("/signin", { replace: true });
@@ -95,9 +93,7 @@ function LoggedinHome() {
 
   const handleLogout = async () => {
     try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/logout`
-      );
+      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/logout`);
       if (res.data.success) {
         localStorage.removeItem("user");
         notifySuccess("Logged out successfully!");
