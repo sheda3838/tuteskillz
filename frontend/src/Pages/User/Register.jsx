@@ -607,7 +607,10 @@ const Register = () => {
         localStorage.removeItem("user");
 
         // Use small timeout to let toast render
-        setTimeout(() => navigate("/loggedin-home"), 500);
+        setTimeout(
+          () => navigate("/loggedin-home", { state: { email: storedEmail } }),
+          500
+        );
       } else {
         notifyError(res.data.message);
       }
