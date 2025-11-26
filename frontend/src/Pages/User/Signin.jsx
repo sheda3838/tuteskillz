@@ -31,19 +31,29 @@ function Signin() {
 
       if (r.data.error) {
         notifyError(r.data.error);
-        setLoading(false); // Only reset loading for error
+        setLoading(false);
         return;
       }
 
       if (r.data.success) {
         notifySuccess("Signin successful! 🎉");
-        await new Promise((resolve) => setTimeout(resolve, 300));
-        navigate("/loggedin-home", { state: { email: values.email } });
-        return; // 🔥 IMPORTANT: stop execution so finally won't run
+
+        // ✅ Store email in localStorage
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            email: values.email,
+            timestamp: Date.now(),
+          })
+        );
+
+        // 🔥 No need to pass email in state anymore
+        navigate("/loggedin-home");
+        return;
       }
     } catch (err) {
       notifyError(err.message || "Something went wrong!");
-      setLoading(false); // error → stop loading
+      setLoading(false);
     }
   };
 
