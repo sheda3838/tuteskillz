@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import "../../styles/Home/NavBar.css";
 import { notifySuccess } from "../../utils/toast";
-import { localAuthGuard } from "../../utils/LocalAuthGuard";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -14,18 +13,27 @@ const Navbar = () => {
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
   useEffect(() => {
-    const u = localAuthGuard(navigate);
+    const raw = localStorage.getItem("user");
 
-    // If user exists
-    if (u) {
-      // Redirect admins immediately
+    if (!raw) {
+      setUser(null); // guest
+      return;
+    }
+
+    try {
+      const u = JSON.parse(raw);
+
+      // redirect ONLY admins
       if (u.role === "admin") {
         navigate("/admin", { replace: true });
         return;
       }
+
       setUser(u);
+    } catch {
+      localStorage.removeItem("user");
+      setUser(null);
     }
-    // If no user → don't return, just let user remain null
   }, [navigate]);
 
   const handleLogout = () => {

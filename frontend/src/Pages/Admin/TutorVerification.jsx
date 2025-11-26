@@ -6,6 +6,7 @@ import { notifyError, notifySuccess } from "../../utils/toast";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { localAuthGuard } from "../../utils/LocalAuthGuard";
+import Loading from "../../utils/Loading";
 
 const TutorVerification = () => {
   axios.defaults.withCredentials = true;
@@ -14,6 +15,8 @@ const TutorVerification = () => {
   const [olResults, setOlResults] = useState([]);
   const [alResults, setAlResults] = useState([]);
   const [showALTextarea, setShowALTextarea] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const { id: tutorId } = useParams();
 
   const grades = ["A", "B", "C", "F", "S", "W"];
@@ -34,7 +37,7 @@ const TutorVerification = () => {
 
     setCurrentUser(user);
   }, [navigate]);
-  
+
   const dedupeResults = (results) => {
     const map = new Map();
     results.forEach((r) => {
@@ -95,7 +98,6 @@ const TutorVerification = () => {
   };
 
   // Approve button click
-  // Approve button click
   const handleApprove = async () => {
     if (!currentUser || currentUser.role !== "admin")
       return alert("Admin info missing");
@@ -103,6 +105,8 @@ const TutorVerification = () => {
     const adminId = currentUser.userId;
 
     try {
+      setLoading(true); // <-- START LOADING
+
       const dedupedOL = dedupeResults(olResults);
       const dedupedAL = dedupeResults(alResults);
 
@@ -111,9 +115,7 @@ const TutorVerification = () => {
           `${
             import.meta.env.VITE_BACKEND_URL
           }/admin/tutor/save-results/${tutorId}/OL`,
-          {
-            results: dedupedOL,
-          }
+          { results: dedupedOL }
         );
       }
 
@@ -122,9 +124,7 @@ const TutorVerification = () => {
           `${
             import.meta.env.VITE_BACKEND_URL
           }/admin/tutor/save-results/${tutorId}/AL`,
-          {
-            results: dedupedAL,
-          }
+          { results: dedupedAL }
         );
       }
 
@@ -142,131 +142,139 @@ const TutorVerification = () => {
       notifyError(
         "Error approving tutor: " + (err.response?.data?.message || err.message)
       );
+    } finally {
+      setLoading(false); // <-- STOP LOADING ALWAYS
     }
   };
 
   return (
-    <div className="verification-container">
-      <h2>Tutor Verification</h2>
+    <>
+      {loading ? (
+        <Loading />
+      ) : (
+        <div className="verification-container">
+          <h2>Tutor Verification</h2>
 
-      {/* OL Section */}
-      <div className="section-block">
-        <h3 className="section-title">Paste OL Transcript:</h3>
-        <textarea
-          rows={6}
-          className="verification-textarea"
-          value={olText}
-          onChange={(e) => setOlText(e.target.value)}
-          placeholder="Paste OL transcript here..."
-        />
-        <button className="parse-btn" onClick={handleParseOL}>
-          Parse OL
-        </button>
+          {/* OL Section */}
+          <div className="section-block">
+            <h3 className="section-title">Paste OL Transcript:</h3>
+            <textarea
+              rows={6}
+              className="verification-textarea"
+              value={olText}
+              onChange={(e) => setOlText(e.target.value)}
+              placeholder="Paste OL transcript here..."
+            />
+            <button className="parse-btn" onClick={handleParseOL}>
+              Parse OL
+            </button>
 
-        {olResults.length > 0 && (
-          <table className="results-table">
-            <thead>
-              <tr>
-                <th>Subject</th>
-                <th>Grade</th>
-              </tr>
-            </thead>
-            <tbody>
-              {olResults.map((res, i) => (
-                <tr key={i}>
-                  <td>
-                    <input
-                      type="text"
-                      value={res.subject}
-                      onChange={(e) =>
-                        handleOLChange(i, "subject", e.target.value)
-                      }
-                    />
-                  </td>
-                  <td>
-                    <select
-                      value={res.grade}
-                      onChange={(e) =>
-                        handleOLChange(i, "grade", e.target.value)
-                      }
-                    >
-                      {grades.map((g) => (
-                        <option key={g} value={g}>
-                          {g}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
-
-      {/* AL Section */}
-      {showALTextarea && (
-        <div className="section-block">
-          <h3 className="section-title">Paste AL Transcript:</h3>
-          <textarea
-            rows={6}
-            className="verification-textarea"
-            value={alText}
-            onChange={(e) => setAlText(e.target.value)}
-            placeholder="Paste AL transcript here..."
-          />
-          <button className="parse-btn" onClick={handleParseAL}>
-            Parse AL
-          </button>
-
-          {alResults.length > 0 && (
-            <table className="results-table">
-              <thead>
-                <tr>
-                  <th>Subject</th>
-                  <th>Grade</th>
-                </tr>
-              </thead>
-              <tbody>
-                {alResults.map((res, i) => (
-                  <tr key={i}>
-                    <td>
-                      <input
-                        type="text"
-                        value={res.subject}
-                        onChange={(e) =>
-                          handleALChange(i, "subject", e.target.value)
-                        }
-                      />
-                    </td>
-                    <td>
-                      <select
-                        value={res.grade}
-                        onChange={(e) =>
-                          handleALChange(i, "grade", e.target.value)
-                        }
-                      >
-                        {grades.map((g) => (
-                          <option key={g} value={g}>
-                            {g}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
+            {olResults.length > 0 && (
+              <table className="results-table">
+                <thead>
+                  <tr>
+                    <th>Subject</th>
+                    <th>Grade</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {olResults.map((res, i) => (
+                    <tr key={i}>
+                      <td>
+                        <input
+                          type="text"
+                          value={res.subject}
+                          onChange={(e) =>
+                            handleOLChange(i, "subject", e.target.value)
+                          }
+                        />
+                      </td>
+                      <td>
+                        <select
+                          value={res.grade}
+                          onChange={(e) =>
+                            handleOLChange(i, "grade", e.target.value)
+                          }
+                        >
+                          {grades.map((g) => (
+                            <option key={g} value={g}>
+                              {g}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+
+          {/* AL Section */}
+          {showALTextarea && (
+            <div className="section-block">
+              <h3 className="section-title">Paste AL Transcript:</h3>
+              <textarea
+                rows={6}
+                className="verification-textarea"
+                value={alText}
+                onChange={(e) => setAlText(e.target.value)}
+                placeholder="Paste AL transcript here..."
+              />
+              <button className="parse-btn" onClick={handleParseAL}>
+                Parse AL
+              </button>
+
+              {alResults.length > 0 && (
+                <table className="results-table">
+                  <thead>
+                    <tr>
+                      <th>Subject</th>
+                      <th>Grade</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {alResults.map((res, i) => (
+                      <tr key={i}>
+                        <td>
+                          <input
+                            type="text"
+                            value={res.subject}
+                            onChange={(e) =>
+                              handleALChange(i, "subject", e.target.value)
+                            }
+                          />
+                        </td>
+                        <td>
+                          <select
+                            value={res.grade}
+                            onChange={(e) =>
+                              handleALChange(i, "grade", e.target.value)
+                            }
+                          >
+                            {grades.map((g) => (
+                              <option key={g} value={g}>
+                                {g}
+                              </option>
+                            ))}
+                          </select>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          )}
+
+          {(olResults.length > 0 || alResults.length > 0) && (
+            <button className="approve-btn" onClick={handleApprove}>
+              Approve
+            </button>
           )}
         </div>
       )}
-
-      {(olResults.length > 0 || alResults.length > 0) && (
-        <button className="approve-btn" onClick={handleApprove}>
-          Approve
-        </button>
-      )}
-    </div>
+    </>
   );
 };
 
