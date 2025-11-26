@@ -26,7 +26,7 @@ app.use(
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
-app.set("trust proxy", 1);
+app.set("trust proxy", true);
 
 const MySQLSessionStore = MySQLStore(session);
 const sessionStore = new MySQLSessionStore({}, db.promise());
