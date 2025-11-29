@@ -11,6 +11,8 @@ import tutorRouter from "./routes/tutor.route.js";
 import adminRouter from "./routes/admin.route.js";
 import profileRouter from "./routes/profile.route.js";
 import sessionRouter from "./routes/session.route.js";
+import paymentRouter from "./routes/payment.route.js";
+import notesRouter from "./routes/notes.route.js";
 
 dotenv.config();
 const app = express();
@@ -55,6 +57,8 @@ app.use("/api/tutor", tutorRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/profile", profileRouter);
 app.use("/api/session", sessionRouter);
+app.use("/api/payment", paymentRouter);
+app.use("/api/notes", notesRouter);
 
 app.listen(3000, () => {
   console.log("Server is running on http://localhost:3000");

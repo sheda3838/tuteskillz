@@ -12,6 +12,7 @@ import Loading from "../../utils/Loading";
 import { localAuthGuard } from "../../utils/LocalAuthGuard";
 
 import "../../styles/SessionDetails/SessionDetails.css";
+import { notifyError, notifySuccess } from "../../utils/toast";
 
 function SessionDetails() {
   const navigate = useNavigate();
@@ -26,8 +27,14 @@ function SessionDetails() {
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
 
-  // 🔥 Fetch logged-in user info
   const [user, setUser] = useState(null);
+
+  // 🔥 Countdown and join logic
+  const [timeLeft, setTimeLeft] = useState(null);
+  const [canJoin, setCanJoin] = useState(false);
+  const JOIN_THRESHOLD = 10 * 60 * 1000; // 10 minutes before session
+
+  // 🔥 Fetch logged-in user info
   useEffect(() => {
     const currentUser = localAuthGuard(navigate);
     if (!currentUser) return; // redirect handled inside localAuthGuard
@@ -36,7 +43,8 @@ function SessionDetails() {
 
   // 🔥 Fetch session details
   useEffect(() => {
-    if (!user) return; // wait until user is loaded
+    if (!user) return;
+
     async function loadSession() {
       try {
         const res = await axios.get(
@@ -53,12 +61,15 @@ function SessionDetails() {
           `${import.meta.env.VITE_BACKEND_URL}/tutor/${data.tutorId}`
         );
 
-        const [studentRes, tutorRes] = await Promise.all([studentReq, tutorReq]);
+        const [studentRes, tutorRes] = await Promise.all([
+          studentReq,
+          tutorReq,
+        ]);
 
         setStudent(studentRes.data.data);
         setTutor(tutorRes.data.data);
       } catch (err) {
-        console.error(err);
+        notifyError(err);
       } finally {
         setLoading(false);
       }
@@ -67,17 +78,68 @@ function SessionDetails() {
     loadSession();
   }, [sessionId, user]);
 
+  // 🔥 Countdown timer effect
+  useEffect(() => {
+    if (!session || !session.date) return;
+
+    const utcDate = new Date(session.date); // Converts UTC → local SL time
+
+    const [h, m, s] = session.startTime.split(":").map(Number);
+
+    // Apply the correct local session start time
+    utcDate.setHours(h, m, s || 0, 0);
+
+    const sessionStart = utcDate;
+
+    // ✅ Define session duration in ms
+    const sessionDurationMs = (session.duration || 2) * 60 * 60 * 1000; // 2 hrs default
+
+    const interval = setInterval(() => {
+      const now = new Date();
+      const diff = sessionStart - now;
+      setTimeLeft(diff);
+
+      if (diff <= JOIN_THRESHOLD && diff + sessionDurationMs > 0) {
+        setCanJoin(true);
+      } else {
+        setCanJoin(false);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [session]);
+
   if (loading || !session || !student || !tutor || !user) {
-    return <div className="loading"><Loading /></div>;
+    return (
+      <div className="loading">
+        <Loading />
+      </div>
+    );
   }
 
-  const role = user.role; // get role from logged-in user
+  const formatCountdown = (ms) => {
+    if (ms <= 0) return "0s";
+
+    const days = Math.floor(ms / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((ms % (1000 * 60)) / 1000);
+
+    let str = "";
+    if (days) str += `${days}d `;
+    if (hours) str += `${hours}h `;
+    if (minutes) str += `${minutes}m `;
+    str += `${seconds}s`;
+
+    return str.trim();
+  };
+
+  const role = user.role;
   const status = session.sessionStatus;
 
   return (
     <div className="session-details-page">
       <div className="session-details-wrapper">
-
         {/* Header */}
         <SessionHeader
           student={{
@@ -104,7 +166,7 @@ function SessionDetails() {
         {status === "Accepted" && (
           <div className="section-card">
             {role === "student" && (
-              <MakePayment onPayment={() => console.log("Payment clicked")} />
+              <MakePayment student={student} sessionId={sessionId} />
             )}
             {(role === "tutor" || role === "admin") && (
               <p className="pending-payment-msg">
@@ -118,30 +180,67 @@ function SessionDetails() {
         {status === "Paid" && (
           <div className="section-card">
             {role === "tutor" && (
-              <button className="btn-open-upload" onClick={() => setShowUploadModal(true)}>
+              <button
+                className="btn-open-upload"
+                onClick={() => setShowUploadModal(true)}
+              >
                 Upload Notes
               </button>
             )}
-            {(role === "student" || role === "admin") && (
-              <button className="btn-open-download" onClick={() => setShowDownloadModal(true)}>
-                Download Notes
+            {(role === "student" || role === "admin" || role === "tutor") && (
+              <button
+                className="btn-open-download"
+                onClick={() => setShowDownloadModal(true)}
+              >
+                {role === "tutor" ? "View Notes" : "Download Notes"}
               </button>
             )}
-
-            <JoinMeetingButton meetingUrl={session.zoomUrl} />
 
             <UploadNotesModal
               isOpen={showUploadModal}
               onClose={() => setShowUploadModal(false)}
-              onSubmit={() => console.log("Notes uploaded")}
+              onSubmit={async ({ title, file }) => {
+                try {
+                  await axios.post(
+                    `${import.meta.env.VITE_BACKEND_URL}/notes/upload`,
+                    {
+                      sessionId,
+                      title,
+                      file,
+                    }
+                  );
+                  notifySuccess("Notes uploaded successfully!");
+
+                  // Refresh session to show new notes
+                  const res = await axios.get(
+                    `${import.meta.env.VITE_BACKEND_URL}/session/${sessionId}`
+                  );
+                  setSession(res.data.data);
+                } catch (err) {
+                  notifyError(
+                    err?.response?.data?.message ||
+                      err.message ||
+                      "Upload failed"
+                  );
+                }
+              }}
             />
 
             <DownloadNotesModal
               isOpen={showDownloadModal}
               onClose={() => setShowDownloadModal(false)}
-              notes={session.notes || []}
+              sessionId={sessionId}
             />
           </div>
+        )}
+        
+        {/* Join Meeting Button */}
+        {status === "Paid" && session.meetingUrl && (
+          <JoinMeetingButton
+            canJoin={canJoin}
+            countdown={formatCountdown(timeLeft)}
+            meetingLink={session.meetingUrl.trim()}
+          />
         )}
 
         {/* COMPLETED */}
@@ -166,7 +265,6 @@ function SessionDetails() {
             </p>
           </div>
         )}
-
       </div>
     </div>
   );

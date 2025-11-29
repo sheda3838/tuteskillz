@@ -1,7 +1,7 @@
 import React from "react";
 import { arrayBufferToBase64 } from "../../utils/fileHelper";
 import { FaGraduationCap, FaUserGraduate } from "react-icons/fa";
-import "../../styles/SessionDetails/SessionHeader.css"; 
+import "../../styles/SessionDetails/SessionHeader.css";
 
 function formatDate(dateString) {
   return new Date(dateString).toLocaleDateString("en-US", {
@@ -14,9 +14,23 @@ function formatDate(dateString) {
 
 function formatTime(timeString) {
   if (!timeString) return "";
-  const [h, m] = timeString.split(":");
+  const [h, m] = timeString.split(":").map(Number);
+
   const d = new Date();
-  d.setHours(h, m);
+  d.setHours(h, m, 0, 0);
+
+  return d.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+function formatEndTime(timeString, duration = 2) {
+  if (!timeString) return "";
+  const [h, m] = timeString.split(":").map(Number);
+
+  const d = new Date();
+  d.setHours(h + duration, m, 0, 0); // auto handles overflow
 
   return d.toLocaleTimeString("en-US", {
     hour: "2-digit",
@@ -35,7 +49,6 @@ function SessionHeader({ student, tutor, session }) {
 
   return (
     <div className="session-header-container">
-
       {/* Participants */}
       <div className="participants-card">
         {/* Student */}
@@ -74,16 +87,25 @@ function SessionHeader({ student, tutor, session }) {
         <h3 className="section-title">Session Information</h3>
 
         <div className="info-grid">
-          <div className="info-row"><span>Medium:</span> {medium}</div>
-          <div className="info-row"><span>Grade:</span> {grade}</div>
-          <div className="info-row"><span>Subject:</span> {subject}</div>
-          <div className="info-row"><span>Date:</span> {formatDate(date)}</div>
-          <div className="info-row"><span>Time:</span> {formatTime(time)}</div>
+          <div className="info-row">
+            <span>Medium:</span> {medium}
+          </div>
+          <div className="info-row">
+            <span>Grade:</span> {grade}
+          </div>
+          <div className="info-row">
+            <span>Subject:</span> {subject}
+          </div>
+          <div className="info-row">
+            <span>Date:</span> {formatDate(date)}
+          </div>
+          <div className="info-row">
+            <span>Time:</span> {formatTime(time)} –{" "}
+            {formatEndTime(time, session.duration || 2)}
+          </div>
         </div>
 
-        <div className={`session-status ${status.toLowerCase()}`}>
-          {status}
-        </div>
+        <div className={`session-status ${status.toLowerCase()}`}>{status}</div>
       </div>
 
       {/* Notes */}

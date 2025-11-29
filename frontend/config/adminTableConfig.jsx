@@ -40,11 +40,11 @@ const adminTableConfig = {
   notes: {
     title: "Notes",
     columns: [
-      { key: "notesId", label: "Notes ID" },
+      { key: "noteId", label: "Notes ID" },
       { key: "sessionId", label: "Session ID" },
-      { key: "tutorName", label: "Tutor Name" },
-      { key: "date", label: "Date" },
-      { key: "status", label: "Status" },
+      { key: "title", label: "Title" },
+      { key: "uploadedDate", label: "Uploaded Date" },
+      { key: "tutorName", label: "Tutor Name" },  
       { key: "actions", label: "Actions" },
     ],
   },

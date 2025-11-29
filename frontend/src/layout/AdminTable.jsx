@@ -60,7 +60,7 @@ const AdminTable = ({ title, columns, data, onActionClick }) => {
                         </button>
                       </td>
                     );
-                  } else if (col.key === "date") {
+                  } else if (col.key === "date" || col.key === "uploadedDate") {
                     const formatted = new Date(row[col.key]).toLocaleDateString(
                       "en-US",
                       {

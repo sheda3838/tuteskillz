@@ -35,6 +35,9 @@ import MyClassesPage from "./Pages/MyClassesPage";
 import Home from "./Pages/User/Home";
 import SessionDetails from "./Pages/Profile/SessionDetails";
 
+// Meeting room
+import MeetingRoom from "./Pages/MeetingRoom";
+
 function App() {
   const location = useLocation();
 
@@ -66,13 +69,12 @@ function App() {
         <Route path="/tutor" element={<TutorHome />} />
         <Route path="/browse-tutors" element={<BrowseTutors />} />
 
-        <Route
-          path="/session/:id"
-          element={<SessionDetails />}
-        />
+        <Route path="/session/:id" element={<SessionDetails />} />
 
         <Route path="/my-classes" element={<MyClassesPage />} />
 
+        {/* EMbed meeting inside platoferm */}
+        <Route path="/session/:id/meeting" element={<MeetingRoom />} />
       </Routes>
     </AnimatePresence>
   );

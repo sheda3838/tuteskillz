@@ -11,7 +11,7 @@ const NotesPage = () => {
   const navigate = useNavigate();
 
   const handleViewNote = (noteId) => {
-    // Navigate to Note details page (implement later)
+    // need to make this downloadable for admin
     navigate(`/note-details/${noteId}`);
   };
 
@@ -22,8 +22,7 @@ const NotesPage = () => {
         const processedNotes = res.data.notes.map((n) => ({
           ...n,
           tutorName: n.tutorName || "-",
-          date: n.sessionDate || "-",
-          status: n.status || "-",
+          uploadedDate: n.uploadedDate || "-",
         }));
         setNotes(processedNotes);
       })

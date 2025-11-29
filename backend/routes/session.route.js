@@ -240,7 +240,7 @@ sessionRouter.get("/:id", (req, res) => {
   s.startTime,
   s.duration,
   s.sessionStatus,
-  s.zoomUrl,
+  s.meetingUrl,
   s.studentNote,
   s.tutorNote,
   s.studentId,

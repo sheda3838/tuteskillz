@@ -12,6 +12,13 @@
   z-index: 2000;
 }
 
+.file-name {
+  color: var(--text-dark);
+  font-weight: 500;
+  font-size: 14px;
+  word-break: break-word;
+}
+
 /* Modal wrapper */
 .upload-modal-container {
   width: 480px;

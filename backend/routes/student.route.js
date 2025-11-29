@@ -238,7 +238,7 @@ studentRouter.get("/tutors", (req, resp) => {
 });
 
 // ============================
-// 5️⃣ Get student name and profile pic by student ID
+// 5️⃣ Get student details by student ID
 // ============================
 studentRouter.get("/:studentId", (req, resp) => {
   const { studentId } = req.params;
@@ -249,9 +249,16 @@ studentRouter.get("/:studentId", (req, resp) => {
   }
 
   const sql = `
-    SELECT fullName, profilePhoto
-    FROM users
-    WHERE userId = ?
+    SELECT 
+      u.fullName, 
+      u.profilePhoto, 
+      u.email, 
+      u.phone, 
+      a.city, 
+      a.street
+    FROM users u
+    LEFT JOIN address a ON u.addressId = a.addressId
+    WHERE u.userId = ?
   `;
 
   db.query(sql, [studentId], (err, rows) => {

@@ -110,19 +110,19 @@ adminRouter.get("/allAdmins", (req, resp) => {
   });
 });
 
-// routes/adminRoutes.js (or wherever you keep your admin routes)
 adminRouter.get("/allNotes", (req, resp) => {
   const query = `
-    SELECT 
-      n.noteId AS notesId,
+    SELECT
+      n.noteId,
       n.sessionId,
-      s.date AS sessionDate,
-      s.sessionStatus AS status,
-      tU.fullName AS tutorName
+      n.title,
+      n.uploadedAt AS uploadedDate,
+      tu.fullName AS tutorName
     FROM notes n
-    LEFT JOIN session s ON n.sessionId = s.sessionId
-    LEFT JOIN tutor t ON s.tutorSubjectId = t.userId
-    LEFT JOIN users tU ON t.userId = tU.userId
+    JOIN session s ON n.sessionId = s.sessionId
+    JOIN tutorSubject ts ON s.tutorSubjectId = ts.tutorSubjectId
+    JOIN tutor t ON ts.tutorId = t.userId
+    JOIN users tu ON t.userId = tu.userId
     ORDER BY n.noteId ASC
   `;
 
