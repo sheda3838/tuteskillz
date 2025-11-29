@@ -82,8 +82,6 @@ function LoggedinHome() {
         setUser(userWithTimestamp);
         localStorage.setItem("user", JSON.stringify(userWithTimestamp));
 
-        notifySuccess("Welcome back!");
-
         // ======== REDIRECT BASED ON ROLE ========
         const role = serverUser.role;
         if (role === "student") navigate("/", { replace: true });

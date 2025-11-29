@@ -7,7 +7,6 @@ import {
   FaBookOpen,
   FaClipboardList,
   FaUserShield,
-  FaUserCircle,
   FaSignOutAlt,
 } from "react-icons/fa"; // ✅ Added icons for profile & logout
 import "../../styles/Admin/admin.css";

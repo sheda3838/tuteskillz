@@ -415,5 +415,33 @@ tutorRouter.post("/bank-details", (req, res) => {
   });
 });
 
+// ============================
+// 5️⃣ Get tutor name and profile pic by tutor ID
+// ============================
+tutorRouter.get("/:tutorId", (req, resp) => {
+  const { tutorId } = req.params;
+  if (!tutorId) {
+    return resp
+      .status(400)
+      .json({ success: false, message: "Tutor ID is required" });
+  }
+
+  const sql = `
+    SELECT fullName, profilePhoto
+    FROM users
+    WHERE userId = ?
+  `;
+
+  db.query(sql, [tutorId], (err, rows) => {
+    if (err)
+      return resp.status(500).json({ success: false, message: err.message });
+    if (rows.length === 0) {
+      return resp
+        .status(404)
+        .json({ success: false, message: "Tutor not found" });
+    }
+    resp.json({ success: true, data: rows[0] });
+  });
+});
 
 export default tutorRouter;

@@ -99,7 +99,7 @@ const MyClassesPage = () => {
   };
 
   const handleView = (sessionId) => {
-    // navigate(`/session/${sessionId}`);
+    navigate(`/session/${sessionId}`);
   };
 
   // Filter sessions by search, date, and tab

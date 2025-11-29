@@ -237,4 +237,34 @@ studentRouter.get("/tutors", (req, resp) => {
   });
 });
 
+// ============================
+// 5️⃣ Get student name and profile pic by student ID
+// ============================
+studentRouter.get("/:studentId", (req, resp) => {
+  const { studentId } = req.params;
+  if (!studentId) {
+    return resp
+      .status(400)
+      .json({ success: false, message: "Student ID is required" });
+  }
+
+  const sql = `
+    SELECT fullName, profilePhoto
+    FROM users
+    WHERE userId = ?
+  `;
+
+  db.query(sql, [studentId], (err, rows) => {
+    if (err)
+      return resp.status(500).json({ success: false, message: err.message });
+    if (rows.length === 0) {
+      return resp
+        .status(404)
+        .json({ success: false, message: "Student not found" });
+    }
+    resp.json({ success: true, data: rows[0] });
+  });
+});
+
+
 export default studentRouter;

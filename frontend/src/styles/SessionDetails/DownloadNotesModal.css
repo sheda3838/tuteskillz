@@ -1,0 +1,153 @@
+/* ---------- Modal Container ---------- */
+.notes-modal {
+  width: 480px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+/* ---------- Top Header Bar ---------- */
+.notes-header-bar {
+  background: var(--primary-color);
+  color: #fff;
+  text-align: center;
+  padding: 14px 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-radius: 0;
+}
+
+/* ---------- Notes List ---------- */
+.notes-list {
+  background: #e6fbff; /* Light aqua like screenshot */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ---------- Each Note Row ---------- */
+.note-item {
+  background: #e6fbff;
+  border-radius: 18px;
+  padding: 14px 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border: 2px solid #def7fb;
+}
+
+.note-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.note-icon {
+  width: 35px;
+  height: 35px;
+}
+
+.note-title {
+  font-size: 1rem;
+  color: var(--text-dark);
+  font-weight: 500;
+}
+
+/* ---------- Download Button ---------- */
+.btn-download-note {
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 25px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.25s ease;
+}
+
+.btn-download-note:hover {
+  background: var(--primary-hover);
+}
+
+/* ---------- No Notes Message ---------- */
+.no-notes {
+  text-align: center;
+  color: var(--text-light);
+  padding: 15px 0;
+}
+
+/* ---------- Bottom Actions ---------- */
+.modal-actions {
+  padding: 16px 20px;
+  display: flex;
+  justify-content: flex-end;
+  background: #fff;
+}
+
+.btn-close {
+  background: #bbb;
+  border: none;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-close:hover {
+  opacity: 0.85;
+}
+
+@media (max-width: 600px) {
+  .notes-modal {
+    width: calc(100% - 40px);
+    margin: 20px auto;
+  }
+
+  .notes-header-bar {
+    font-size: 1.1rem;
+    padding: 12px 0;
+  }
+
+  .notes-list {
+    padding: 15px;
+    gap: 10px;
+  }
+
+  .note-item {
+    padding: 12px 15px;
+  }
+
+  .note-left {
+    gap: 10px;
+  }
+
+  .note-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .note-title {
+    font-size: 0.9rem;
+  }
+
+  .btn-download-note {
+    padding: 8px 18px;
+    font-size: 0.85rem;
+  }
+
+  .modal-actions {
+    padding: 12px 15px;
+  }
+
+  .btn-close {
+    padding: 8px 18px;
+  }
+}

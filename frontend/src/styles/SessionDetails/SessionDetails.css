@@ -1,0 +1,120 @@
+/* =========================================================
+   SESSION DETAILS PAGE
+   ========================================================= */
+
+/* Page wrapper */
+.session-details-page {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+  background: var(--background-light);
+}
+
+/* Main container */
+.session-details-wrapper {
+  width: 100%;
+  max-width: 950px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  align-items: center;
+}
+
+/* Section card (Paid, Accepted, Completed…) */
+.section-card {
+  width: 100%;
+  background: #fff;
+  padding: 28px 30px;
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(1, 163, 164, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  transition: all 0.25s ease;
+}
+
+.section-card.cancelled-box {
+  background: #ffe7e7;
+  border: 1px solid #ffb5b5;
+}
+
+/* Session messages */
+.pending-payment-msg,
+.session-cancelled-msg {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-dark);
+  text-align: center;
+}
+
+.session-cancelled-msg {
+  color: var(--error-color);
+}
+
+/* Action buttons container */
+.session-actions {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.btn-open-upload,
+.btn-open-download {
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 25px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 6px 16px rgba(1, 163, 164, 0.2);
+}
+
+.btn-open-upload:hover,
+.btn-open-download:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 20px rgba(1, 163, 164, 0.25);
+}
+
+/* Loader */
+.loading {
+  margin-top: 40px;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--primary-color);
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .section-card {
+    padding: 22px 20px;
+  }
+
+  .btn-open-upload,
+  .btn-open-download {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .session-details-page {
+    padding: 30px 15px;
+  }
+
+  .section-card {
+    padding: 18px 15px;
+  }
+
+  .pending-payment-msg,
+  .session-cancelled-msg {
+    font-size: 14px;
+  }
+}

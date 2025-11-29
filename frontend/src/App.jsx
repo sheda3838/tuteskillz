@@ -33,6 +33,7 @@ import BrowseTutors from "./Pages/Student/Browsetutors";
 // BrowseClasses
 import MyClassesPage from "./Pages/MyClassesPage";
 import Home from "./Pages/User/Home";
+import SessionDetails from "./Pages/Profile/SessionDetails";
 
 function App() {
   const location = useLocation();
@@ -65,11 +66,10 @@ function App() {
         <Route path="/tutor" element={<TutorHome />} />
         <Route path="/browse-tutors" element={<BrowseTutors />} />
 
-        {/* Session route to be implemeneted in sprint 2 */}
-        {/* <Route
+        <Route
           path="/session/:id"
-          element={<SessionProfile userRole={getCurrentUser()?.role} />}
-        /> */}
+          element={<SessionDetails />}
+        />
 
         <Route path="/my-classes" element={<MyClassesPage />} />
 

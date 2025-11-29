@@ -235,33 +235,26 @@ sessionRouter.get("/:id", (req, res) => {
 
   const sql = `
     SELECT 
-      s.sessionId,
-      s.date,
-      s.startTime,
-      s.duration,
-      s.sessionStatus,
-      s.zoomUrl,
-      s.studentNote,
-      s.tutorNote,
-      s.studentId,
-      ts.tutorId,
-      sub.subjectName,
-      ts.grade,
-      ts.teachingMedium,
-      v.verificationId,
-      v.status AS verificationStatus,
-      v.verifiedAt,
-      v.verifiedNotes,
-      v.verifiedByAdminId,
-      adminUser.fullName AS verifiedByName,
-      adminUser.email AS verifiedByEmail
-    FROM session s
-    JOIN tutorSubject ts ON s.tutorSubjectId = ts.tutorSubjectId
-    JOIN subject sub ON ts.subjectId = sub.subjectId
-    LEFT JOIN verification v ON s.verificationId = v.verificationId
-    LEFT JOIN admin a ON v.verifiedByAdminId = a.userId
-    LEFT JOIN users adminUser ON a.userId = adminUser.userId
-    WHERE s.sessionId = ?
+  s.sessionId,
+  s.date,
+  s.startTime,
+  s.duration,
+  s.sessionStatus,
+  s.zoomUrl,
+  s.studentNote,
+  s.tutorNote,
+  s.studentId,
+  
+  ts.tutorId,
+  sub.subjectName,
+  ts.grade,
+  ts.teachingMedium
+
+FROM session s
+JOIN tutorSubject ts ON s.tutorSubjectId = ts.tutorSubjectId
+JOIN subject sub ON ts.subjectId = sub.subjectId
+WHERE s.sessionId = ?;
+
   `;
 
   db.query(sql, [sessionId], (err, sessions) => {

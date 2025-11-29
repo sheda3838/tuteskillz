@@ -61,35 +61,33 @@ function Signup() {
   };
 
   const handleGoogleSuccess = async (credentialResponse) => {
-  try {
-    const token = credentialResponse.credential;
+    try {
+      const token = credentialResponse.credential;
 
-    const res = await axios.post(
-      `${import.meta.env.VITE_BACKEND_URL}/google/token`,
-      { token },
-      { withCredentials: true }
-    );
-
-    if (res.data.success) {
-      const email = res.data.email; // <-- take email from backend
-
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          email: email,
-          timestamp: Date.now()
-        })
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/google/token`,
+        { token },
+        { withCredentials: true }
       );
 
-      notifySuccess("Signup success!");
-      navigate("/loggedin-home");
+      if (res.data.success) {
+        const email = res.data.email; // <-- take email from backend
+
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            email: email,
+            timestamp: Date.now(),
+          })
+        );
+
+        notifySuccess("Signup success!");
+        navigate("/loggedin-home");
+      }
+    } catch (err) {
+      notifyError("Google Signup/Login Error: " + err.message);
     }
-  } catch (err) {
-    notifyError("Google Signup/Login Error: " + err.message);
-  }
-};
-
-
+  };
 
   return (
     <motion.div
@@ -107,7 +105,7 @@ function Signup() {
 
       <div className="auth-box">
         <img src="/Logo.png" alt="Logo" className="logo" />
-        <h1>Sign up</h1>
+        <h1>Register</h1>
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">

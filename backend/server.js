@@ -18,9 +18,7 @@ const app = express();
 app.use(
   cors({
     origin: [
-      "https://tuteskillz.vercel.app",
-      "https://tuteskillz-git-main-sheda3838s-projects.vercel.app",
-      "https://tuteskillz-qcvb2ek4l-sheda3838s-projects.vercel.app",
+      "http://localhost:5173", // your local frontend
     ],
     credentials: true,
   })
@@ -29,7 +27,7 @@ app.use(
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
-app.set("trust proxy", true);
+// app.set("trust proxy", true);
 
 const MySQLSessionStore = MySQLStore(session);
 const sessionStore = new MySQLSessionStore({}, db.promise());
@@ -41,9 +39,9 @@ app.use(
     saveUninitialized: false,
     store: sessionStore,
     cookie: {
-      secure: true,       // HTTPS only
+      secure: false,      // MUST be false on localhost
       httpOnly: true,
-      sameSite: "none",   // allow cross-origin
+      sameSite: "lax",    // local dev should NOT be "none"
       maxAge: 1000 * 60 * 60 * 24,
     },
   })
