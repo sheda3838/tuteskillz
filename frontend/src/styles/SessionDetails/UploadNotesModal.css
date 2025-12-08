@@ -5,7 +5,7 @@
   left: 0;
   height: 100vh;
   width: 100%;
-  background: rgba(0,0,0,0.35);
+  background: rgba(0, 0, 0, 0.35);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -158,12 +158,19 @@
 
 /* Fade animation */
 @keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.93); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.93);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 @media (max-width: 768px) {
   /* Adjustments for the main modal container */
-  .upload-notes-modal { /* Assuming a class for the modal's main wrapper */
+  .upload-notes-modal {
+    /* Assuming a class for the modal's main wrapper */
     width: 90%; /* Make the modal take up more width on smaller screens */
     max-width: none; /* Remove any fixed max-width */
     margin: 20px auto; /* Center it with some vertical margin */
@@ -179,5 +186,107 @@
   /* Adjustments for the browse text or its container if needed */
   .browse-text {
     font-size: 14px; /* Example: adjust font size if it's too large */
+  }
+}
+
+/* Progress UI */
+.upload-progress-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+  animation: fadeIn 0.3s ease;
+  width: 100%;
+}
+
+.progress-bar-wrapper {
+  width: 100%;
+  height: 12px;
+  background-color: #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--primary-color),
+    var(--primary-hover)
+  );
+  transition: width 0.3s ease;
+  border-radius: 6px;
+}
+
+.progress-percentage {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 25px;
+}
+
+.steps-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 15px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  opacity: 0.6;
+  border: 1px solid transparent;
+}
+
+.step-item.active {
+  opacity: 1;
+  background-color: rgba(1, 163, 164, 0.08);
+  border-color: rgba(1, 163, 164, 0.2);
+  transform: translateX(5px);
+}
+
+.step-item.completed {
+  opacity: 1;
+}
+
+.step-icon {
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+}
+
+.step-item.completed .step-icon {
+  color: #27ae60;
+}
+
+.step-item.active .step-icon {
+  color: var(--primary-color);
+}
+
+.step-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }

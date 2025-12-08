@@ -41,12 +41,38 @@ function SessionDetails() {
     setUser(currentUser);
   }, [navigate]);
 
-  // 🔥 Fetch session details
+  // 🔥 Fetch session details & Handle Payment Return
   useEffect(() => {
     if (!user) return;
 
     async function loadSession() {
       try {
+        // Check for PayHere return params (order_id)
+        const searchParams = new URLSearchParams(window.location.search);
+        const orderId = searchParams.get("order_id");
+
+        if (orderId && orderId === sessionId) {
+          // Simulate Webhook for Localhost Dev
+          try {
+            await axios.post(
+              `${import.meta.env.VITE_BACKEND_URL}/payment/payhere/simulate`,
+              {
+                order_id: orderId,
+                amount: "1000.00", // Default amount
+              }
+            );
+            notifySuccess("Payment verified successfully!");
+            // Clear query params to avoid re-triggering
+            window.history.replaceState(
+              {},
+              document.title,
+              window.location.pathname
+            );
+          } catch (simErr) {
+            console.error("Payment verification failed:", simErr);
+          }
+        }
+
         const res = await axios.get(
           `${import.meta.env.VITE_BACKEND_URL}/session/${sessionId}`
         );
@@ -200,33 +226,24 @@ function SessionDetails() {
               isOpen={showUploadModal}
               onClose={() => setShowUploadModal(false)}
               onSubmit={async ({ title, file }) => {
-                try {
-                  const formData = new FormData();
-                  formData.append("sessionId", sessionId);
-                  formData.append("title", title);
-                  formData.append("file", file);
+                const formData = new FormData();
+                formData.append("sessionId", sessionId);
+                formData.append("title", title);
+                formData.append("file", file);
 
-                  await axios.post(
-                    `${import.meta.env.VITE_BACKEND_URL}/notes/upload`,
-                    formData,
-                    {
-                      headers: { "Content-Type": "multipart/form-data" },
-                    }
-                  );
-                  notifySuccess("Notes uploaded successfully!");
+                await axios.post(
+                  `${import.meta.env.VITE_BACKEND_URL}/notes/upload`,
+                  formData,
+                  {
+                    headers: { "Content-Type": "multipart/form-data" },
+                  }
+                );
 
-                  // Refresh session to show new notes
-                  const res = await axios.get(
-                    `${import.meta.env.VITE_BACKEND_URL}/session/${sessionId}`
-                  );
-                  setSession(res.data.data);
-                } catch (err) {
-                  notifyError(
-                    err?.response?.data?.message ||
-                      err.message ||
-                      "Upload failed"
-                  );
-                }
+                // Refresh session to show new notes
+                const res = await axios.get(
+                  `${import.meta.env.VITE_BACKEND_URL}/session/${sessionId}`
+                );
+                setSession(res.data.data);
               }}
             />
 
@@ -234,6 +251,7 @@ function SessionDetails() {
               isOpen={showDownloadModal}
               onClose={() => setShowDownloadModal(false)}
               sessionId={sessionId}
+              role={role}
             />
           </div>
         )}

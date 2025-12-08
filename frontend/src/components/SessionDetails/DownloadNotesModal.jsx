@@ -1,15 +1,15 @@
-// DownloadNotesModal.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../../styles/SessionDetails/DownloadNotesModal.css";
 import { downloadArrayBufferAsFile } from "../../utils/fileHelper";
-import { notifyError } from "../../utils/toast";
-import { FaRegFileAlt } from "react-icons/fa";
+import { notifyError, notifySuccess } from "../../utils/toast";
+import { FaRegFileAlt, FaTrash } from "react-icons/fa";
 
-function DownloadNotesModal({ isOpen, onClose, sessionId }) {
+function DownloadNotesModal({ isOpen, onClose, sessionId, role }) {
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [downloadingId, setDownloadingId] = useState(null);
+  const [noteToDelete, setNoteToDelete] = useState(null);
 
   // Fetch all notes for the session
   useEffect(() => {
@@ -71,6 +71,29 @@ function DownloadNotesModal({ isOpen, onClose, sessionId }) {
     }
   };
 
+  const handleDeleteClick = (note) => {
+    setNoteToDelete(note);
+  };
+
+  const confirmDelete = async () => {
+    if (!noteToDelete) return;
+
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_BACKEND_URL}/notes/${noteToDelete.noteId}`
+      );
+      notifySuccess("Note deleted successfully");
+      setNotes((prev) => prev.filter((n) => n.noteId !== noteToDelete.noteId));
+      setNoteToDelete(null);
+    } catch (err) {
+      notifyError(err?.response?.data?.message || "Failed to delete note");
+    }
+  };
+
+  const cancelDelete = () => {
+    setNoteToDelete(null);
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -96,15 +119,26 @@ function DownloadNotesModal({ isOpen, onClose, sessionId }) {
                   </div>
                 </div>
 
-                <button
-                  className="btn-download-note"
-                  onClick={() => handleDownload(note.noteId, note.title)}
-                  disabled={downloadingId === note.noteId}
-                >
-                  {downloadingId === note.noteId
-                    ? "Downloading..."
-                    : "Download"}
-                </button>
+                <div className="note-actions">
+                  <button
+                    className="btn-download-note"
+                    onClick={() => handleDownload(note.noteId, note.title)}
+                    disabled={downloadingId === note.noteId}
+                  >
+                    {downloadingId === note.noteId
+                      ? "Downloading..."
+                      : "Download"}
+                  </button>
+                  {role === "tutor" && (
+                    <button
+                      className="btn-delete-note"
+                      onClick={() => handleDeleteClick(note)}
+                      title="Delete Note"
+                    >
+                      <FaTrash />
+                    </button>
+                  )}
+                </div>
               </div>
             ))}
         </div>
@@ -114,6 +148,24 @@ function DownloadNotesModal({ isOpen, onClose, sessionId }) {
             Close
           </button>
         </div>
+
+        {/* Delete Confirmation Modal */}
+        {noteToDelete && (
+          <div className="delete-confirm-overlay">
+            <div className="delete-confirm-box">
+              <h3>Delete Note?</h3>
+              <p>Are you sure you want to delete "{noteToDelete.title}"?</p>
+              <div className="delete-actions">
+                <button className="btn-cancel" onClick={cancelDelete}>
+                  Cancel
+                </button>
+                <button className="btn-confirm-delete" onClick={confirmDelete}>
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

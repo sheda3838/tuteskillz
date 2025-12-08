@@ -3,7 +3,6 @@ import db from "../config/db.js";
 import multer from "multer";
 import fs from "fs";
 import path from "path";
-import { execFile } from "child_process";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -41,42 +40,8 @@ const upload = multer({
   },
 });
 
-// ClamAV Configuration
-const CLAMSCAN_PATH = "C:\\Program Files\\ClamAV\\clamscan.exe";
-const CLAMAV_DB = "C:\\ClamAV\\db";
-
-// Scan function
-const scanFile = (filePath) => {
-  return new Promise((resolve, reject) => {
-    if (!fs.existsSync(CLAMSCAN_PATH)) {
-      console.warn(`ClamAV not found at ${CLAMSCAN_PATH}. Skipping scan.`);
-      // In a real strict environment, this should reject.
-      // For this task, if ClamAV isn't actually installed on the machine running this code,
-      // we might want to fail open or mock it.
-      // Assuming the user HAS it installed as per requirements.
-      // If not found, I'll return true to avoid blocking development if they don't actually have it.
-      return resolve(true);
-    }
-
-    const args = ["--database=" + CLAMAV_DB, "--no-summary", filePath];
-
-    execFile(CLAMSCAN_PATH, args, (error, stdout, stderr) => {
-      if (error) {
-        // Exit code 1 means virus found
-        if (error.code === 1) {
-          console.log("ClamAV found virus:", stdout);
-          return resolve(false); // Infected
-        }
-        console.error("ClamAV error:", error);
-        return reject(error); // System error
-      }
-      resolve(true); // Clean
-    });
-  });
-};
-
 /**
- * Upload notes (PDF) with ClamAV scanning
+ * Upload notes (PDF) with Fake Virus Scanning
  */
 router.post("/upload", upload.single("file"), async (req, res) => {
   const { sessionId, title } = req.body;
@@ -92,27 +57,32 @@ router.post("/upload", upload.single("file"), async (req, res) => {
   const safePath = path.join(SAFE_DIR, file.filename);
 
   try {
-    // 1. Scan the file
+    // 1. Fake Scanning Delay (5-10 seconds)
     console.log(`Scanning file: ${tmpPath}`);
-    const isClean = await scanFile(tmpPath);
+    await new Promise((resolve) => setTimeout(resolve, 7000)); // 7 seconds delay
 
-    if (!isClean) {
-      // Delete infected file
-      fs.unlinkSync(tmpPath);
-      return res
-        .status(400)
-        .json({ success: false, message: "Infected file blocked by ClamAV" });
+    // 2. Check for "virus" in title or filename
+    const hasVirusKeyword =
+      title.toLowerCase().includes("virus") ||
+      file.originalname.toLowerCase().includes("virus");
+
+    if (hasVirusKeyword) {
+      // Delete "infected" file
+      if (fs.existsSync(tmpPath)) fs.unlinkSync(tmpPath);
+
+      return res.status(400).json({
+        success: false,
+        message: "Infected file blocked by Virus Scanner",
+      });
     }
 
-    // 2. Move to safe directory
+    // 3. Move to safe directory
     fs.renameSync(tmpPath, safePath);
 
-    // 3. Read file buffer for DB (Legacy compatibility)
-    // In a full migration, we would store just the path.
-    // But to keep GET /:noteId working without changes, we store the BLOB.
+    // 4. Read file buffer for DB (Legacy compatibility)
     const fileBuffer = fs.readFileSync(safePath);
 
-    // 4. Insert into DB
+    // 5. Insert into DB
     const query =
       "INSERT INTO notes (sessionId, title, document) VALUES (?, ?, ?)";
     db.query(query, [sessionId, title, fileBuffer], (err, result) => {
@@ -123,13 +93,11 @@ router.post("/upload", upload.single("file"), async (req, res) => {
           .json({ success: false, message: "Failed to save notes to DB" });
       }
 
-      return res
-        .status(200)
-        .json({
-          success: true,
-          message: "File safe and uploaded successfully",
-          noteId: result.insertId,
-        });
+      return res.status(200).json({
+        success: true,
+        message: "File safe and uploaded successfully",
+        noteId: result.insertId,
+      });
     });
   } catch (err) {
     console.error("Upload processing error:", err);
@@ -204,6 +172,37 @@ router.get("/:sessionId/:noteId", (req, res) => {
       `attachment; filename="${note.title}.pdf"`
     );
     res.send(note.document); // send raw buffer
+  });
+});
+
+/**
+ * Delete a note
+ */
+router.delete("/:noteId", (req, res) => {
+  const noteId = req.params.noteId;
+
+  if (!noteId) {
+    return res.status(400).json({ success: false, message: "Missing note ID" });
+  }
+
+  const query = "DELETE FROM notes WHERE noteId = ?";
+  db.query(query, [noteId], (err, result) => {
+    if (err) {
+      console.error("Error deleting note:", err);
+      return res
+        .status(500)
+        .json({ success: false, message: "Failed to delete note" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Note not found" });
+    }
+
+    return res
+      .status(200)
+      .json({ success: true, message: "Note deleted successfully" });
   });
 });
 
