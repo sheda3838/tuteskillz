@@ -82,7 +82,7 @@ sessionRouter.get("/tutor/:tutorId/sessions", (req, res) => {
     return res.status(403).json({ success: false, message: "Forbidden" });
   }
 
-  // Build SQL — select only the fields we need now (include zoomUrl, studentNote, tutorNote)
+  // Build SQL — select only the fields we need now (include meetingUrl, studentNote, tutorNote)
   let sql = `
     SELECT
       s.sessionId,
@@ -90,7 +90,7 @@ sessionRouter.get("/tutor/:tutorId/sessions", (req, res) => {
       s.startTime,
       s.duration,
       s.sessionStatus,
-      s.zoomUrl,
+      s.meetingUrl,
       s.studentNote,
       s.tutorNote,
 
@@ -192,7 +192,7 @@ sessionRouter.get("/student/:studentId/sessions", (req, res) => {
       s.startTime,
       s.duration,
       s.sessionStatus,
-      s.zoomUrl,
+      s.meetingUrl,
       s.studentNote,
       s.tutorNote,
 

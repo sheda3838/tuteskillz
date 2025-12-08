@@ -250,26 +250,6 @@ tutorRouter.get("/availability/:tutorId", (req, res) => {
   );
 });
 
-tutorRouter.delete("/availability/:availabilityId", (req, res) => {
-  const { availabilityId } = req.params;
-
-  db.query(
-    "DELETE FROM tutorAvailability WHERE availabilityId = ?",
-    [availabilityId],
-    (err, result) => {
-      if (err)
-        return res.status(500).json({ success: false, message: err.message });
-
-      if (result.affectedRows === 0)
-        return res
-          .status(404)
-          .json({ success: false, message: "Availability not found" });
-
-      res.json({ success: true, message: "Availability deleted" });
-    }
-  );
-});
-
 tutorRouter.get("/status/:id", (req, res) => {
   const tutorId = req.params.id;
 
@@ -351,7 +331,6 @@ tutorRouter.get("/status/:id", (req, res) => {
     });
   });
 });
-
 
 tutorRouter.post("/bank-details", (req, res) => {
   const { tutorId, accounts } = req.body;
@@ -441,6 +420,30 @@ tutorRouter.get("/:tutorId", (req, resp) => {
         .json({ success: false, message: "Tutor not found" });
     }
     resp.json({ success: true, data: rows[0] });
+  });
+});
+
+tutorRouter.get("/available-days/:tutorId", (req, res) => {
+  const { tutorId } = req.params;
+
+  if (!tutorId) {
+    return res.status(400).json({ success: false, message: "Tutor ID is required" });
+  }
+
+  const sql = `
+    SELECT DISTINCT dayOfWeek
+    FROM tutorAvailability
+    WHERE tutorId = ?
+    ORDER BY FIELD(dayOfWeek,'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday')
+  `;
+
+  db.query(sql, [tutorId], (err, rows) => {
+    if (err) {
+      return res.status(500).json({ success: false, message: err.message });
+    }
+
+    const availableDays = rows.map((row) => row.dayOfWeek);
+    res.json({ success: true, availableDays });
   });
 });
 

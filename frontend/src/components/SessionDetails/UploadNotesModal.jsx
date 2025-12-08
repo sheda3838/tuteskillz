@@ -39,20 +39,15 @@ function UploadNotesModal({ isOpen, onClose, onSubmit }) {
     setError("");
 
     try {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onloadend = async () => {
-        const base64File = reader.result;
+      await onSubmit({ title, file });
 
-        await onSubmit({ title, file: base64File });
-
-        setTitle("");
-        setFile(null);
-        setUploading(false);
-        onClose();
-      };
+      setTitle("");
+      setFile(null);
+      setUploading(false);
+      onClose();
     } catch (err) {
-      notifyError(err);
+      console.error(err);
+      notifyError(err.message || "Upload failed");
       setError("Upload failed. Try again.");
       setUploading(false);
     }
@@ -87,7 +82,8 @@ function UploadNotesModal({ isOpen, onClose, onSubmit }) {
                 <p className="file-name">{file.name}</p>
               ) : (
                 <p>
-                  Drag and drop or <span className="browse-text">Browse</span> your files
+                  Drag and drop or <span className="browse-text">Browse</span>{" "}
+                  your files
                 </p>
               )}
               <input

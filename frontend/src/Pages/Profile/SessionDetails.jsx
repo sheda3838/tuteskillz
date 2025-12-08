@@ -201,12 +201,16 @@ function SessionDetails() {
               onClose={() => setShowUploadModal(false)}
               onSubmit={async ({ title, file }) => {
                 try {
+                  const formData = new FormData();
+                  formData.append("sessionId", sessionId);
+                  formData.append("title", title);
+                  formData.append("file", file);
+
                   await axios.post(
                     `${import.meta.env.VITE_BACKEND_URL}/notes/upload`,
+                    formData,
                     {
-                      sessionId,
-                      title,
-                      file,
+                      headers: { "Content-Type": "multipart/form-data" },
                     }
                   );
                   notifySuccess("Notes uploaded successfully!");
@@ -233,7 +237,7 @@ function SessionDetails() {
             />
           </div>
         )}
-        
+
         {/* Join Meeting Button */}
         {status === "Paid" && session.meetingUrl && (
           <JoinMeetingButton

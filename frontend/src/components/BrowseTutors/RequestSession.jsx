@@ -58,6 +58,34 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
         notifyError("Failed to fetch tutor info");
       });
   }, [visible, tutorSubjectId]);
+  const [availableDays, setAvailableDays] = useState([]);
+
+  // Fetch available days when modal opens and tutor info is loaded
+  useEffect(() => {
+    if (!visible || !tutorInfo) {
+      setAvailableDays([]);
+      return;
+    }
+
+    axios
+      .get(
+        `${import.meta.env.VITE_BACKEND_URL}/tutor/availability/${
+          tutorInfo.tutorId
+        }`
+      )
+      .then((res) => {
+        if (res.data.success) {
+          const uniqueDays = [
+            ...new Set(res.data.availability.map((slot) => slot.dayOfWeek)),
+          ];
+          setAvailableDays(uniqueDays);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        notifyError("Failed to fetch available days");
+      });
+  }, [visible, tutorInfo]);
 
   // Fetch availability when date is selected
   useEffect(() => {
@@ -139,6 +167,13 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
         return notifyError("Selected time is not within tutor availability");
       }
 
+      const oneWeekFromNow = new Date();
+      oneWeekFromNow.setDate(oneWeekFromNow.getDate() + 7);
+      if (selectedDateTime > oneWeekFromNow) {
+        setIsRequesting(false);
+        return notifyError("Sessions can only be booked up to one week in advance");
+      }
+
       // Check student conflict
       const conflictRes = await axios.get(
         `${
@@ -184,7 +219,7 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
 
   if (!visible) return null;
 
-  const amount = [6, 7].includes(Number(tutorInfo?.grade)) ? 500 : 700;
+  const amount = 1000;
 
   return (
     <div className="request-session-modal">
@@ -239,6 +274,16 @@ const RequestSessionModal = ({ visible, onClose, tutorSubjectId }) => {
             />
           </div>
         </div>
+        {availableDays.length > 0 && (
+          <div className="form-grp">
+            <label>Available Days:</label>
+            <ul>
+              {availableDays.map((day, idx) => (
+                <li key={idx}>{day}</li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* Availability */}
         {selectedDate && availability.length > 0 ? (

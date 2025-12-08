@@ -29,7 +29,7 @@ router.post("/payhere/webhook", (req, resp) => {
   } = data;
 
   // Use correct App ID
-  if (merchant_id !== process.env.PAYHERE_APP_ID) {
+  if (merchant_id !== process.env.PAYHERE_MERCHANT_ID) {
     return resp.status(400).send("Invalid Merchant ID");
   }
 
@@ -89,23 +89,29 @@ router.post("/payhere/webhook", (req, resp) => {
 router.post("/payhere/create", (req, res) => {
   const { student, sessionId } = req.body;
 
-  const merchantId = process.env.PAYHERE_APP_ID;
-  const merchantSecret = process.env.PAYHERE_APP_SECRET;
+  const merchantId = process.env.PAYHERE_MERCHANT_ID;
+  const merchantSecret = process.env.PAYHERE_MERCHANT_SECRET;
 
-  const amount = "500.00";
+  if (!merchantId || !merchantSecret) {
+    console.error("PayHere credentials missing in .env");
+    return res.status(500).json({ error: "Server configuration error" });
+  }
+
+  const amount = "1000.00";
   const currency = "LKR";
 
-  const raw = merchantId + sessionId + amount + currency + merchantSecret;
+  const hashedSecret = CryptoJS.MD5(merchantSecret).toString().toUpperCase();
+  const raw = merchantId + String(sessionId) + amount + currency + hashedSecret;
+
   const hash = CryptoJS.MD5(raw).toString().toUpperCase();
 
   const paymentData = {
-    sandbox: true,
     merchant_id: merchantId,
-    return_url: "http://localhost:5173/payment-success",
-    cancel_url: "http://localhost:5173/payment-cancel",
+    return_url: `http://localhost:5173/session/${sessionId}`,
+    cancel_url: `http://localhost:5173/session/${sessionId}`,
     notify_url:
-      "https://chokingly-dandiacal-kiesha.ngrok-free.dev/api/payment/payhere/webhook", // 🔥 ngrok here
-    order_id: sessionId,
+      "https://chokingly-dandiacal-kiesha.ngrok-free.dev/api/payment/payhere/webhook",
+    order_id: String(sessionId),
     items: "TuteSkillz Session Fee",
     amount,
     currency,
