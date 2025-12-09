@@ -247,7 +247,7 @@
 /* Make the actions container fill the card and allow its children to stretch */
 .session-actions {
   width: 100%;
-  align-self: stretch;      /* ensure it stretches inside .session-card (which centers children) */
+  align-self: stretch; /* ensure it stretches inside .session-card (which centers children) */
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -269,8 +269,8 @@
 
 /* Make each button share available space exactly (and guard against min-width overflow) */
 .session-actions-clean button {
-  flex: 1 1 0;    /* grow, shrink, basis 0 to evenly share */
-  min-width: 0;   /* IMPORTANT: allows buttons to shrink when needed */
+  flex: 1 1 0; /* grow, shrink, basis 0 to evenly share */
+  min-width: 0; /* IMPORTANT: allows buttons to shrink when needed */
   padding: 10px 0;
   border-radius: 25px;
   font-size: 14px;
@@ -286,10 +286,20 @@
 }
 
 /* Accept / Reject colors (unchanged) */
-.accept-btn { background: #01cc1a; color: #fff; }
-.accept-btn:hover { background: #00a314; }
-.reject-btn { background: #ff2e2e; color: #fff; }
-.reject-btn:hover { background: #d12222; }
+.accept-btn {
+  background: #01cc1a;
+  color: #fff;
+}
+.accept-btn:hover {
+  background: #00a314;
+}
+.reject-btn {
+  background: #ff2e2e;
+  color: #fff;
+}
+.reject-btn:hover {
+  background: #d12222;
+}
 
 /* Mobile: stack buttons vertically and remove side-by-side gaps */
 @media (max-width: 480px) {
@@ -322,7 +332,7 @@
 }
 
 .btn-view {
-  width: 100%;                     /* FULL WIDTH */
+  width: 100%; /* FULL WIDTH */
   padding: 12px 0;
   background: var(--primary-color);
   color: #ffffff;
@@ -338,7 +348,6 @@
 .btn-view:hover {
   background: var(--primary-hover);
 }
-
 
 /* ================================
    Filter Bar (Search + Date)
@@ -402,7 +411,9 @@
   border: none;
 }
 
-
+/* ================================
+   Tabs (Today | Requested | All)
+================================= */
 /* ================================
    Tabs (Today | Requested | All)
 ================================= */
@@ -410,32 +421,60 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  gap: 12px;
-  margin: 15px 0 30px;
+  gap: 10px;
+  margin: 20px 0 35px;
+  flex-wrap: wrap;
 }
 
 .myclasses-tabs button {
-  padding: 10px 18px;
-  border-radius: 20px;
-  border: 2px solid var(--primary-color);
-  background: #fff;
-  color: var(--primary-color);
+  padding: 10px 24px;
+  border-radius: 30px;
+  border: 1px solid transparent;
+  background: #ffffff;
+  color: var(--text-light);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
-  transition: 0.25s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  white-space: nowrap;
 }
 
 .myclasses-tabs button:hover {
-  background: var(--primary-color);
-  color: #fff;
+  background: #f0fafa;
+  color: var(--primary-color);
+  transform: translateY(-1px);
 }
 
 .myclasses-tabs .active {
   background: var(--primary-color);
   color: #fff;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(1, 163, 164, 0.3);
+  transform: translateY(-1px);
 }
 
+/* Scrollable tabs on mobile */
+@media (max-width: 768px) {
+  .myclasses-tabs {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 10px; /* Space for scrollbar if visible */
+    margin-bottom: 20px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .myclasses-tabs::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+  }
+
+  .myclasses-tabs button {
+    flex: 0 0 auto; /* Don't shrink */
+    padding: 8px 20px;
+    font-size: 13px;
+  }
+}
 
 /* ================================
    Page Layout Wrapper
@@ -448,14 +487,15 @@
   align-items: center;
 }
 
-
 /* ================================
    No Sessions Image
 ================================= */
 .no-sessions {
-  height: 90vh;
-  width: 60vw;
-  border-radius: 50px;
+  height: auto;
+  max-height: 400px;
+  width: 100%;
+  max-width: 500px;
+  border-radius: 20px;
   object-fit: contain;
   margin-top: 30px;
 }
@@ -464,7 +504,6 @@
    Responsive 
 ================================= */
 @media (max-width: 600px) {
-
   /* Make cards full width on mobile */
   .session-card {
     width: 100%;

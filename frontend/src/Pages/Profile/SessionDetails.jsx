@@ -8,6 +8,7 @@ import UploadNotesModal from "../../components/SessionDetails/UploadNotesModal";
 import DownloadNotesModal from "../../components/SessionDetails/DownloadNotesModal";
 import JoinMeetingButton from "../../components/SessionDetails/JoinMeetingButton";
 import FeedbackComponent from "../../components/SessionDetails/FeedbackComponent";
+import CancelSessionButton from "../../components/SessionDetails/CancelSessionButton";
 import Loading from "../../utils/Loading";
 import { localAuthGuard } from "../../utils/LocalAuthGuard";
 
@@ -166,6 +167,13 @@ function SessionDetails() {
   return (
     <div className="session-details-page">
       <div className="session-details-wrapper">
+        <button
+          className="btn-back-nav"
+          onClick={() => navigate("/my-classes")}
+        >
+          &larr; Back to My Classes
+        </button>
+
         {/* Header */}
         <SessionHeader
           student={{
@@ -287,6 +295,16 @@ function SessionDetails() {
             </p>
           </div>
         )}
+
+        {/* Cancel Session Button (Visible for Requested, Accepted, Paid) */}
+        <CancelSessionButton
+          sessionId={sessionId}
+          sessionStatus={status}
+          onSessionCancelled={() => {
+            // Reload session data
+            window.location.reload();
+          }}
+        />
       </div>
     </div>
   );

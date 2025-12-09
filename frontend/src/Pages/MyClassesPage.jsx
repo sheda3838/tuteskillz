@@ -17,7 +17,7 @@ const MyClassesPage = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
-  const [activeTab, setActiveTab] = useState("all"); // 'today' | 'requested' | 'all'
+  const [statusFilter, setStatusFilter] = useState("All"); // Default 'All'
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,10 +32,11 @@ const MyClassesPage = () => {
   useEffect(() => {
     if (!currentUser) return;
     fetchSessions();
-  }, [currentUser]);
+  }, [currentUser, statusFilter]); // Re-fetch when status changes
 
   const fetchSessions = async () => {
     if (!currentUser) return;
+    setLoading(true);
     try {
       const endpoint =
         currentUser.role === "tutor"
@@ -46,7 +47,13 @@ const MyClassesPage = () => {
               currentUser.userId
             }/sessions`;
 
-      const res = await axios.get(endpoint);
+      // Pass status query param if not 'All'
+      const params = {};
+      if (statusFilter !== "All") {
+        params.status = statusFilter;
+      }
+
+      const res = await axios.get(endpoint, { params });
       setSessions(res.data?.data || []);
     } catch (err) {
       notifyError("Failed to load sessions");
@@ -102,7 +109,7 @@ const MyClassesPage = () => {
     navigate(`/session/${sessionId}`);
   };
 
-  // Filter sessions by search, date, and tab
+  // Filter sessions by search and date (Status is handled by backend)
   const filteredSessions = useMemo(() => {
     let filtered = [...sessions];
 
@@ -127,18 +134,18 @@ const MyClassesPage = () => {
       );
     }
 
-    // Tab filter
-    const todayStr = new Date().toDateString();
-    if (activeTab === "today") {
-      filtered = filtered.filter(
-        (s) => new Date(s.date).toDateString() === todayStr
-      );
-    } else if (activeTab === "requested") {
-      filtered = filtered.filter((s) => s.sessionStatus === "Requested");
-    }
-
     return filtered;
-  }, [sessions, searchTerm, selectedDate, activeTab]);
+  }, [sessions, searchTerm, selectedDate]);
+
+  const statuses = [
+    "All",
+    "Requested",
+    "Accepted",
+    "Paid",
+    "Completed",
+    "Cancelled",
+    "Declined",
+  ];
 
   return (
     <div>
@@ -178,43 +185,39 @@ const MyClassesPage = () => {
           </div>
         </div>
 
-        {/* Tabs */}
+        {/* Status Tabs */}
         <div className="myclasses-tabs">
-          <button
-            className={activeTab === "today" ? "active" : ""}
-            onClick={() => setActiveTab("today")}
-          >
-            Today's Sessions
-          </button>
-          <button
-            className={activeTab === "requested" ? "active" : ""}
-            onClick={() => setActiveTab("requested")}
-          >
-            Requested Sessions
-          </button>
-          <button
-            className={activeTab === "all" ? "active" : ""}
-            onClick={() => setActiveTab("all")}
-          >
-            All
-          </button>
+          {statuses.map((status) => (
+            <button
+              key={status}
+              className={statusFilter === status ? "active" : ""}
+              onClick={() => setStatusFilter(status)}
+            >
+              {status}
+            </button>
+          ))}
         </div>
 
         {/* Session Cards */}
         {loading ? (
           <Loading />
         ) : filteredSessions.length === 0 ? (
-          <motion.p
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="no-sessions"
+            className="no-sessions-container"
+            style={{ textAlign: "center", marginTop: "50px" }}
           >
             <img
               className="no-sessions"
               src="/no-sessions.png"
               alt="No Sessions"
+              style={{ maxWidth: "300px", opacity: 0.8 }}
             />
-          </motion.p>
+            <p style={{ color: "#888", marginTop: "10px" }}>
+              No sessions found for this status.
+            </p>
+          </motion.div>
         ) : (
           <div className="my-classes-grid">
             <AnimatePresence>

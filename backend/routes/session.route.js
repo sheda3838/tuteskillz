@@ -1,5 +1,7 @@
 import { Router } from "express";
 import db from "../config/db.js";
+import { sendEmail } from "../utils/email.js";
+import { generateEmailHTML } from "../utils/emailTemplate.js";
 
 const sessionRouter = Router();
 
@@ -94,8 +96,7 @@ sessionRouter.get("/tutor/:tutorId/sessions", (req, res) => {
       s.studentNote,
       s.tutorNote,
 
-      -- verification status (no verifiedAt)
-      v.status AS verificationStatus,
+
 
       -- Tutor info (just ID & name maybe)
 t.userId AS tutorId,
@@ -119,7 +120,7 @@ su.profilePhoto AS studentProfilePhoto,
     JOIN users tu ON t.userId = tu.userId
     JOIN student stu ON s.studentId = stu.userId
     JOIN users su ON stu.userId = su.userId
-    LEFT JOIN verification v ON s.verificationId = v.verificationId
+
     WHERE ts.tutorId = ?
   `;
 
@@ -143,31 +144,234 @@ su.profilePhoto AS studentProfilePhoto,
   });
 });
 
-// Accept or Reject a session
+// Accept, Reject, or Cancel a session
 sessionRouter.put("/:sessionId/status", (req, res) => {
   const sessionId = parseInt(req.params.sessionId, 10);
-  const { status, tutorNote } = req.body;
+  const { status, reason, tutorNote } = req.body; // 'reason' for cancellation
 
   if (isNaN(sessionId)) {
-    return res.status(400).json({ success: false, message: "Invalid sessionId" });
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid sessionId" });
   }
 
-  if (!status || !["Accepted", "Declined"].includes(status)) {
+  if (!status || !["Accepted", "Declined", "Cancelled"].includes(status)) {
     return res.status(400).json({ success: false, message: "Invalid status" });
   }
 
-  const sql = `
-    UPDATE session
-    SET sessionStatus = ?, tutorNote = ?
-    WHERE sessionId = ?
+  // 1. Fetch current session details first
+  const fetchSql = `
+    SELECT s.*, ts.tutorId, s.studentId, 
+           stu_u.email as studentEmail, stu_u.fullName as studentName,
+           tut_u.email as tutorEmail, tut_u.fullName as tutorName
+    FROM session s
+    JOIN tutorSubject ts ON s.tutorSubjectId = ts.tutorSubjectId
+    JOIN student stu ON s.studentId = stu.userId
+    JOIN users stu_u ON stu.userId = stu_u.userId
+    JOIN tutor t ON ts.tutorId = t.userId
+    JOIN users tut_u ON t.userId = tut_u.userId
+    WHERE s.sessionId = ?
   `;
 
-  db.query(sql, [status, tutorNote || null, sessionId], (err, result) => {
-    if (err) return res.status(500).json({ success: false, message: err.message });
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ success: false, message: "Session not found" });
+  db.query(fetchSql, [sessionId], (err, rows) => {
+    if (err)
+      return res.status(500).json({ success: false, message: err.message });
+    if (rows.length === 0)
+      return res
+        .status(404)
+        .json({ success: false, message: "Session not found" });
+
+    const session = rows[0];
+    const { studentId, studentEmail, studentName, tutorEmail, tutorName } =
+      session;
+
+    // --- CANCELLATION LOGIC ---
+    if (status === "Cancelled") {
+      let updateSql =
+        "UPDATE session SET sessionStatus = 'Cancelled' WHERE sessionId = ?";
+      let updateParams = [sessionId];
+      let creditGiven = false;
+
+      // If Paid, give credit
+      if (session.sessionStatus === "Paid") {
+        const updateSessionSql =
+          "UPDATE session SET sessionStatus = 'Cancelled' WHERE sessionId = ?";
+        const updateStudentSql =
+          "UPDATE student SET freeSessionCredit = 1 WHERE userId = ?";
+
+        db.query(updateSessionSql, [sessionId], (err2) => {
+          if (err2)
+            return res
+              .status(500)
+              .json({ success: false, message: err2.message });
+
+          db.query(updateStudentSql, [studentId], async (err3) => {
+            if (err3) console.error("Failed to update student credit", err3); // Log but don't fail the whole request if possible, or handle better
+
+            // Send Emails
+            const emailSubject = "Session Cancelled - TuteSkillz";
+            const emailBody = `
+                <p>The session scheduled for ${session.date} at ${
+              session.startTime
+            } has been cancelled.</p>
+                <p><strong>Reason:</strong> ${
+                  reason || "No reason provided."
+                }</p>
+                <p><strong>Note:</strong> A free session credit has been applied to the student's account.</p>
+              `;
+
+            try {
+              await sendEmail(studentEmail, emailSubject, emailBody);
+              await sendEmail(tutorEmail, emailSubject, emailBody);
+            } catch (e) {
+              console.error("Email sending failed", e);
+            }
+
+            return res.json({
+              success: true,
+              message: "Session cancelled successfully",
+            });
+          });
+        });
+        return; // Return early to avoid running the else block
+      }
+
+      // Standard Cancellation (Not Paid)
+      db.query(updateSql, updateParams, async (err2) => {
+        if (err2)
+          return res
+            .status(500)
+            .json({ success: false, message: err2.message });
+
+        // Send Emails
+        const emailSubject = "Session Cancelled - TuteSkillz";
+        const emailBody = `
+          <p>The session scheduled for ${session.date} at ${
+          session.startTime
+        } has been cancelled.</p>
+          <p><strong>Reason:</strong> ${reason || "No reason provided."}</p>
+        `;
+
+        try {
+          await sendEmail(studentEmail, emailSubject, emailBody);
+          await sendEmail(tutorEmail, emailSubject, emailBody);
+        } catch (e) {
+          console.error("Email sending failed", e);
+        }
+
+        return res.json({
+          success: true,
+          message: "Session cancelled successfully",
+        });
+      });
     }
-    res.json({ success: true, message: `Session ${status.toLowerCase()} successfully` });
+
+    // --- ACCEPTANCE LOGIC (Check for Credit) ---
+    else if (status === "Accepted") {
+      // Check if student has credit
+      db.query(
+        "SELECT freeSessionCredit FROM student WHERE userId = ?",
+        [studentId],
+        (err3, stuRows) => {
+          if (err3)
+            return res
+              .status(500)
+              .json({ success: false, message: err3.message });
+
+          const hasCredit = stuRows[0]?.freeSessionCredit;
+
+          if (hasCredit) {
+            // Redeem Credit: Mark as Paid immediately
+            const meetingUrl = `https://meet.jit.si/session_${sessionId}_${Date.now()}`;
+            const txnId = `CREDIT-${Date.now()}`;
+
+            // 1. Update Session
+            const updateSessionSql =
+              "UPDATE session SET sessionStatus = 'Paid', meetingUrl = ? WHERE sessionId = ?";
+            db.query(updateSessionSql, [meetingUrl, sessionId], (err4) => {
+              if (err4)
+                return res
+                  .status(500)
+                  .json({ success: false, message: err4.message });
+
+              // 2. Update Student Credit
+              const updateStudentSql =
+                "UPDATE student SET freeSessionCredit = 0 WHERE userId = ?";
+              db.query(updateStudentSql, [studentId], (err5) => {
+                if (err5) console.error("Failed to reset student credit", err5);
+
+                // 3. Insert Payment
+                const insertPaymentSql = `
+                    INSERT INTO payment (sessionId, amount, currency, paymentStatus, paymentMethod, provider, transactionId) 
+                    VALUES (?, 0, 'LKR', 'Paid', 'Credit', 'System', ?)
+                  `;
+                db.query(insertPaymentSql, [sessionId, txnId], async (err6) => {
+                  if (err6)
+                    console.error(
+                      "Failed to insert credit payment record",
+                      err6
+                    );
+
+                  // Notify Student
+                  await sendEmail(
+                    studentEmail,
+                    "Session Accepted & Credit Applied",
+                    `<p>Your session has been accepted. Your free session credit was applied automatically.</p>
+                        <p>Meeting Link: <a href="${meetingUrl}">${meetingUrl}</a></p>`
+                  );
+
+                  return res.json({
+                    success: true,
+                    message: "Session accepted and credit applied.",
+                  });
+                });
+              });
+            });
+          } else {
+            // Standard Accept
+            const updateSql =
+              "UPDATE session SET sessionStatus = 'Accepted', tutorNote = ? WHERE sessionId = ?";
+            db.query(
+              updateSql,
+              [tutorNote || null, sessionId],
+              async (err5) => {
+                if (err5)
+                  return res
+                    .status(500)
+                    .json({ success: false, message: err5.message });
+
+                await sendEmail(
+                  studentEmail,
+                  "Session Request Accepted",
+                  `<p>Your session request has been accepted. Please proceed to payment.</p>`
+                );
+
+                return res.json({
+                  success: true,
+                  message: "Session accepted successfully",
+                });
+              }
+            );
+          }
+        }
+      );
+    }
+
+    // --- DECLINE LOGIC ---
+    else {
+      const updateSql =
+        "UPDATE session SET sessionStatus = ? WHERE sessionId = ?";
+      db.query(updateSql, [status, sessionId], (err6) => {
+        if (err6)
+          return res
+            .status(500)
+            .json({ success: false, message: err6.message });
+        return res.json({
+          success: true,
+          message: `Session ${status.toLowerCase()} successfully`,
+        });
+      });
+    }
   });
 });
 
@@ -177,7 +381,9 @@ sessionRouter.get("/student/:studentId/sessions", (req, res) => {
   const { status } = req.query;
 
   if (isNaN(studentId)) {
-    return res.status(400).json({ success: false, message: "Invalid studentId" });
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid studentId" });
   }
 
   // Optional: auth check, make sure req.user.userId === studentId or admin
@@ -224,7 +430,8 @@ sessionRouter.get("/student/:studentId/sessions", (req, res) => {
   sql += " ORDER BY s.date ASC, s.startTime ASC";
 
   db.query(sql, params, (err, rows) => {
-    if (err) return res.status(500).json({ success: false, message: err.message });
+    if (err)
+      return res.status(500).json({ success: false, message: err.message });
     res.json({ success: true, data: rows });
   });
 });
@@ -258,8 +465,12 @@ WHERE s.sessionId = ?;
   `;
 
   db.query(sql, [sessionId], (err, sessions) => {
-    if (err) return res.status(500).json({ success: false, message: err.message });
-    if (sessions.length === 0) return res.status(404).json({ success: false, message: "Session not found" });
+    if (err)
+      return res.status(500).json({ success: false, message: err.message });
+    if (sessions.length === 0)
+      return res
+        .status(404)
+        .json({ success: false, message: "Session not found" });
 
     res.json({ success: true, data: sessions[0] });
   });
@@ -275,7 +486,7 @@ sessionRouter.get("/student/:studentId/check-conflict", (req, res) => {
   if (!studentId || !date || !startTime) {
     return res.status(400).json({
       success: false,
-      message: "Missing required fields (studentId, date, startTime)"
+      message: "Missing required fields (studentId, date, startTime)",
     });
   }
 
@@ -317,7 +528,7 @@ sessionRouter.get("/student/:studentId/check-conflict", (req, res) => {
           success: true,
           conflict: true,
           message: "You already have a session at this time on the same date.",
-          conflictingSession: session
+          conflictingSession: session,
         });
       }
     }
@@ -336,7 +547,7 @@ sessionRouter.get("/tutor/:tutorId/check-conflict", (req, res) => {
   if (!tutorId || !date || !startTime) {
     return res.status(400).json({
       success: false,
-      message: "Missing required fields (tutorId, date, startTime)"
+      message: "Missing required fields (tutorId, date, startTime)",
     });
   }
 
@@ -356,7 +567,8 @@ sessionRouter.get("/tutor/:tutorId/check-conflict", (req, res) => {
   `;
 
   db.query(sql, [tutorId, date], (err, rows) => {
-    if (err) return res.status(500).json({ success: false, message: err.message });
+    if (err)
+      return res.status(500).json({ success: false, message: err.message });
 
     if (rows.length === 0) return res.json({ success: true, conflict: false });
 
@@ -371,7 +583,7 @@ sessionRouter.get("/tutor/:tutorId/check-conflict", (req, res) => {
           success: true,
           conflict: true,
           message: "You already have an accepted session at this time.",
-          conflictingSession: session
+          conflictingSession: session,
         });
       }
     }
@@ -379,7 +591,5 @@ sessionRouter.get("/tutor/:tutorId/check-conflict", (req, res) => {
     return res.json({ success: true, conflict: false });
   });
 });
-
-
 
 export default sessionRouter;
