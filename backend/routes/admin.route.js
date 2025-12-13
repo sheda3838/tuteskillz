@@ -54,7 +54,9 @@ adminRouter.get("/allStudents", (req, resp) => {
       return resp.status(500).json({ success: false, message: err.message });
     }
 
-    return resp.status(200).json({ success: true, students: studentRows || [] });
+    return resp
+      .status(200)
+      .json({ success: true, students: studentRows || [] });
   });
 });
 
@@ -83,7 +85,9 @@ adminRouter.get("/allSessions", (req, resp) => {
       return resp.status(500).json({ success: false, message: err.message });
     }
 
-    return resp.status(200).json({ success: true, sessions: sessionRows || [] });
+    return resp
+      .status(200)
+      .json({ success: true, sessions: sessionRows || [] });
   });
 });
 
@@ -134,7 +138,6 @@ adminRouter.get("/allNotes", (req, resp) => {
   });
 });
 
-
 // Get counts for dashboard
 adminRouter.get("/counts", (req, resp) => {
   console.log("SESSION:", req.session);
@@ -156,7 +159,6 @@ adminRouter.get("/counts", (req, resp) => {
     return resp.status(200).json({ success: true, counts: rows[0] });
   });
 });
-
 
 // Extract subjects table from tutor transcripts
 adminRouter.post("/tutor/parse-text", async (req, resp) => {
@@ -451,6 +453,138 @@ adminRouter.post("/reject-tutor/:tutorId", (req, res) => {
         );
       }
     );
+  });
+});
+// --------------------------------------------------------------------------------
+// ADMIN DASHBOARD REPORTS
+// --------------------------------------------------------------------------------
+
+// 1. Best Tutors
+adminRouter.get("/reports/best-tutors", (req, res) => {
+  const query = `
+    SELECT
+      u.userId,
+      u.fullName,
+      u.profilePhoto,
+      u.email,
+      COUNT(DISTINCT s.sessionId) AS completedSessions,
+      IFNULL(AVG(f.rating), 0) AS averageRating,
+      -- Simple Rank Score: (AvgRating * 10) + (CompletedSessions * 2)
+      ((IFNULL(AVG(f.rating), 0) * 10) + (COUNT(DISTINCT s.sessionId) * 2)) AS rankScore
+    FROM tutor t
+    JOIN users u ON t.userId = u.userId
+    LEFT JOIN tutorSubject ts ON t.userId = ts.tutorId
+    LEFT JOIN session s ON ts.tutorSubjectId = s.tutorSubjectId AND s.sessionStatus = 'Completed'
+    LEFT JOIN feedback f ON s.sessionId = f.sessionId AND f.givenBy = 'student'
+    GROUP BY t.userId
+    ORDER BY rankScore DESC
+    LIMIT 5;
+  `;
+
+  db.query(query, (err, rows) => {
+    if (err)
+      return res.status(500).json({ success: false, message: err.message });
+    return res.json({ success: true, data: rows });
+  });
+});
+
+// 2. Top 5 Tutors by Revenue (Last 30 days)
+adminRouter.get("/reports/top-revenue-tutors", (req, res) => {
+  const query = `
+    SELECT
+      u.userId,
+      u.fullName,
+      u.profilePhoto,
+      SUM(p.amount) AS totalRevenue
+    FROM payment p
+    JOIN session s ON p.sessionId = s.sessionId
+    JOIN tutorSubject ts ON s.tutorSubjectId = ts.tutorSubjectId
+    JOIN tutor t ON ts.tutorId = t.userId
+    JOIN users u ON t.userId = u.userId
+    WHERE p.paymentStatus = 'Paid' 
+      AND p.paidAt >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+    GROUP BY t.userId
+    ORDER BY totalRevenue DESC
+    LIMIT 5;
+  `;
+
+  db.query(query, (err, rows) => {
+    if (err)
+      return res.status(500).json({ success: false, message: err.message });
+    return res.json({ success: true, data: rows });
+  });
+});
+
+// 3. Highest Revenue Subject (Last 30 days)
+adminRouter.get("/reports/top-subject-revenue", (req, res) => {
+  const query = `
+    SELECT
+      sub.subjectName,
+      SUM(p.amount) AS totalRevenue
+    FROM payment p
+    JOIN session s ON p.sessionId = s.sessionId
+    JOIN tutorSubject ts ON s.tutorSubjectId = ts.tutorSubjectId
+    JOIN subject sub ON ts.subjectId = sub.subjectId
+    WHERE p.paymentStatus = 'Paid' 
+      AND p.paidAt >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+    GROUP BY sub.subjectId
+    ORDER BY totalRevenue DESC
+    LIMIT 5;
+  `;
+
+  db.query(query, (err, rows) => {
+    if (err)
+      return res.status(500).json({ success: false, message: err.message });
+    return res.json({ success: true, data: rows });
+  });
+});
+
+// 4. Most Active Students
+adminRouter.get("/reports/most-active-students", (req, res) => {
+  const query = `
+    SELECT
+      u.userId,
+      u.fullName,
+      u.profilePhoto,
+      u.email,
+      COUNT(DISTINCT s.sessionId) AS sessionsJoined,
+      IFNULL(AVG(f.rating), 0) AS avgGivenRating
+    FROM student st
+    JOIN users u ON st.userId = u.userId
+    JOIN session s ON st.userId = s.studentId
+    LEFT JOIN feedback f ON s.sessionId = f.sessionId AND f.givenBy = 'student'
+    WHERE s.sessionStatus IN ('Completed', 'Paid', 'Accepted')
+    GROUP BY st.userId
+    ORDER BY sessionsJoined DESC
+    LIMIT 5;
+  `;
+
+  db.query(query, (err, rows) => {
+    if (err)
+      return res.status(500).json({ success: false, message: err.message });
+    return res.json({ success: true, data: rows });
+  });
+});
+
+// 5. Admin Workload
+adminRouter.get("/reports/admin-workload", (req, res) => {
+  const query = `
+    SELECT
+      u.userId,
+      u.fullName,
+      u.profilePhoto,
+      COUNT(v.verificationId) AS verificationsHandled
+    FROM admin a
+    JOIN users u ON a.userId = u.userId
+    LEFT JOIN verification v ON a.userId = v.verifiedByAdminId
+    GROUP BY a.userId
+    ORDER BY verificationsHandled DESC;
+  `;
+
+  db.query(query, (err, rows) => {
+    if (err)
+      return res.status(500).json({ success: false, message: err.message });
+    return res.json({ success: true, data: rows });
   });
 });
 

@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  FaTimes,
-  FaFileUpload,
-  FaCheckCircle,
-  FaShieldAlt,
-  FaSpinner,
-} from "react-icons/fa";
+import { FaTimes, FaFileUpload } from "react-icons/fa";
 import "../../styles/SessionDetails/UploadNotesModal.css";
 import { notifyError, notifySuccess } from "../../utils/toast";
 
@@ -15,7 +9,6 @@ function UploadNotesModal({ isOpen, onClose, onSubmit }) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const [progress, setProgress] = useState(0);
-  const [currentStep, setCurrentStep] = useState(0); // 0: Uploading, 1: Scanning, 2: Finalizing
 
   useEffect(() => {
     if (!isOpen) {
@@ -25,7 +18,6 @@ function UploadNotesModal({ isOpen, onClose, onSubmit }) {
       setUploading(false);
       setError("");
       setProgress(0);
-      setCurrentStep(0);
     }
   }, [isOpen]);
 
@@ -58,56 +50,41 @@ function UploadNotesModal({ isOpen, onClose, onSubmit }) {
     setUploading(true);
     setError("");
     setProgress(0);
-    setCurrentStep(0);
 
     // Simulate progress
     const progressInterval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 90) return prev;
-        return prev + 5; // Increment progress
+        return prev + 10; // Increment progress faster since backend is fast
       });
-    }, 200);
-
-    // Simulate steps
-    const stepTimer1 = setTimeout(() => setCurrentStep(1), 2000); // Switch to Scanning after 2s
+    }, 500);
 
     try {
       await onSubmit({ title, file });
 
       clearInterval(progressInterval);
-      clearTimeout(stepTimer1);
-
       setProgress(100);
-      setCurrentStep(2); // Finalizing/Done
 
       setTimeout(() => {
-        notifySuccess("Notes uploaded successfully!");
+        notifySuccess("Upload successful");
         onClose();
-      }, 1000); // Close after 1s of showing 100%
+      }, 1000);
     } catch (err) {
       clearInterval(progressInterval);
-      clearTimeout(stepTimer1);
       console.error(err);
 
-      const errMsg =
-        err.response?.data?.message || err.message || "Upload failed";
+      const errMsg = "File upload failed. Please try again.";
       notifyError(errMsg);
       setError(errMsg);
       setUploading(false);
     }
   };
 
-  const steps = [
-    { label: "Uploading File...", icon: <FaFileUpload /> },
-    { label: "Scanning for Viruses...", icon: <FaShieldAlt /> },
-    { label: "Finalizing...", icon: <FaCheckCircle /> },
-  ];
-
   return (
     <div className="modal-overlay upload-notes-modal">
       <div className="upload-modal-container">
         <div className="upload-modal-header">
-          <h2>{uploading ? "Processing..." : "Upload Notes"}</h2>
+          <h2>{uploading ? "Uploading..." : "Upload Notes"}</h2>
           {!uploading && <FaTimes className="close-icon" onClick={onClose} />}
         </div>
 
@@ -120,28 +97,7 @@ function UploadNotesModal({ isOpen, onClose, onSubmit }) {
               ></div>
             </div>
             <p className="progress-percentage">{progress}%</p>
-
-            <div className="steps-container">
-              {steps.map((step, index) => (
-                <div
-                  key={index}
-                  className={`step-item ${
-                    index <= currentStep ? "active" : ""
-                  } ${index < currentStep ? "completed" : ""}`}
-                >
-                  <div className="step-icon">
-                    {index < currentStep ? (
-                      <FaCheckCircle />
-                    ) : index === currentStep ? (
-                      <FaSpinner className="spinner" />
-                    ) : (
-                      step.icon
-                    )}
-                  </div>
-                  <span className="step-label">{step.label}</span>
-                </div>
-              ))}
-            </div>
+            <p className="upload-status-text">Uploading your file...</p>
           </div>
         ) : (
           <form className="upload-notes-form" onSubmit={handleSubmit}>

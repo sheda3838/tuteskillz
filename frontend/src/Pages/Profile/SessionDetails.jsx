@@ -279,6 +279,7 @@ function SessionDetails() {
             <FeedbackComponent
               role={role}
               sessionStatus={status}
+              sessionId={sessionId}
               feedbackData={{
                 studentFeedback: session.studentFeedback || null,
                 tutorFeedback: session.tutorFeedback || null,

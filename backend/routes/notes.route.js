@@ -57,32 +57,13 @@ router.post("/upload", upload.single("file"), async (req, res) => {
   const safePath = path.join(SAFE_DIR, file.filename);
 
   try {
-    // 1. Fake Scanning Delay (5-10 seconds)
-    console.log(`Scanning file: ${tmpPath}`);
-    await new Promise((resolve) => setTimeout(resolve, 7000)); // 7 seconds delay
-
-    // 2. Check for "virus" in title or filename
-    const hasVirusKeyword =
-      title.toLowerCase().includes("virus") ||
-      file.originalname.toLowerCase().includes("virus");
-
-    if (hasVirusKeyword) {
-      // Delete "infected" file
-      if (fs.existsSync(tmpPath)) fs.unlinkSync(tmpPath);
-
-      return res.status(400).json({
-        success: false,
-        message: "Infected file blocked by Virus Scanner",
-      });
-    }
-
-    // 3. Move to safe directory
+    // Move to safe directory
     fs.renameSync(tmpPath, safePath);
 
-    // 4. Read file buffer for DB (Legacy compatibility)
+    // Read file buffer for DB (Legacy compatibility)
     const fileBuffer = fs.readFileSync(safePath);
 
-    // 5. Insert into DB
+    // Insert into DB
     const query =
       "INSERT INTO notes (sessionId, title, document) VALUES (?, ?, ?)";
     db.query(query, [sessionId, title, fileBuffer], (err, result) => {
@@ -95,7 +76,7 @@ router.post("/upload", upload.single("file"), async (req, res) => {
 
       return res.status(200).json({
         success: true,
-        message: "File safe and uploaded successfully",
+        message: "File uploaded successfully",
         noteId: result.insertId,
       });
     });

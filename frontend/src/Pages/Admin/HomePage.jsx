@@ -1,4 +1,3 @@
-// src/pages/admin/HomePage.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -8,6 +7,8 @@ import {
   FaClipboardList,
   FaUserShield,
   FaPlus,
+  FaStar,
+  FaTrophy,
 } from "react-icons/fa";
 import axios from "axios";
 import "../../styles/Admin/admin.css";
@@ -15,6 +16,7 @@ import "../../styles/Admin/admin.css";
 function HomePage() {
   axios.defaults.withCredentials = true;
   const navigate = useNavigate();
+
   const [counts, setCounts] = useState({
     tutors: 0,
     students: 0,
@@ -23,15 +25,77 @@ function HomePage() {
     admins: 0,
   });
 
+  const [reports, setReports] = useState({
+    bestTutors: [],
+    topRevenueTutors: [],
+    topSubjects: [],
+    activeStudents: [],
+    adminWorkload: [],
+  });
+
+  // Helper to convert Buffer to Base64
+  const bufferToBase64 = (buffer) => {
+    if (!buffer || !buffer.data) return "https://via.placeholder.com/40";
+    try {
+      const binary = String.fromCharCode(...new Uint8Array(buffer.data));
+      return `data:image/jpeg;base64,${window.btoa(binary)}`;
+    } catch (e) {
+      return "https://via.placeholder.com/40";
+    }
+  };
+
   useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_BACKEND_URL}/admin/counts`)
-      .then((res) => {
-        if (res.data.success) {
-          setCounts(res.data.counts);
-        }
-      })
-      .catch((err) => console.error(err));
+    const fetchData = async () => {
+      try {
+        const [
+          countsRes,
+          bestTutorsRes,
+          revTutorsRes,
+          subjectsRes,
+          studentsRes,
+          workloadRes,
+        ] = await Promise.all([
+          axios.get(`${import.meta.env.VITE_BACKEND_URL}/admin/counts`),
+          axios.get(
+            `${import.meta.env.VITE_BACKEND_URL}/admin/reports/best-tutors`
+          ),
+          axios.get(
+            `${
+              import.meta.env.VITE_BACKEND_URL
+            }/admin/reports/top-revenue-tutors`
+          ),
+          axios.get(
+            `${
+              import.meta.env.VITE_BACKEND_URL
+            }/admin/reports/top-subject-revenue`
+          ),
+          axios.get(
+            `${
+              import.meta.env.VITE_BACKEND_URL
+            }/admin/reports/most-active-students`
+          ),
+          axios.get(
+            `${import.meta.env.VITE_BACKEND_URL}/admin/reports/admin-workload`
+          ),
+        ]);
+
+        if (countsRes.data.success) setCounts(countsRes.data.counts);
+
+        setReports({
+          bestTutors: bestTutorsRes.data.success ? bestTutorsRes.data.data : [],
+          topRevenueTutors: revTutorsRes.data.success
+            ? revTutorsRes.data.data
+            : [],
+          topSubjects: subjectsRes.data.success ? subjectsRes.data.data : [],
+          activeStudents: studentsRes.data.success ? studentsRes.data.data : [],
+          adminWorkload: workloadRes.data.success ? workloadRes.data.data : [],
+        });
+      } catch (err) {
+        console.error("Error fetching dashboard data:", err);
+      }
+    };
+
+    fetchData();
   }, []);
 
   const statData = [
@@ -76,8 +140,8 @@ function HomePage() {
     <div className="dashboard-home">
       {/* Header Section */}
       <div className="dashboard-header">
-        <h1>Welcome Zaid</h1>
-        <p>Manage Your Platform With Ease</p>
+        <h1>Welcome Admin</h1>
+        <p>Overview of platform performance and key metrics</p>
       </div>
 
       {/* Stats Grid */}
@@ -87,7 +151,6 @@ function HomePage() {
             key={index}
             className={`stat-card ${item.className}`}
             onClick={() => navigate(item.path)}
-            style={{ cursor: "pointer" }}
           >
             <div className="card-icon-wrapper">
               <item.icon />
@@ -99,6 +162,151 @@ function HomePage() {
             </h2>
           </div>
         ))}
+      </div>
+
+      {/* REPORTS GRID */}
+      <div className="reports-grid">
+        {/* 1. BEST TUTORS */}
+        <div className="report-card">
+          <h3>🏆 Top Performing Tutors</h3>
+          {reports.bestTutors.length === 0 ? (
+            <p className="no-data">No data available</p>
+          ) : (
+            reports.bestTutors.map((tutor, idx) => (
+              <div className="list-item" key={tutor.userId}>
+                <div className="list-info">
+                  <span
+                    style={{ fontWeight: "bold", color: "#ccc", width: "15px" }}
+                  >
+                    #{idx + 1}
+                  </span>
+                  <img
+                    src={bufferToBase64(tutor.profilePhoto)}
+                    alt={tutor.fullName}
+                    className="list-img"
+                  />
+                  <div className="list-text">
+                    <h4>{tutor.fullName}</h4>
+                    <p>
+                      {tutor.completedSessions} sessions •{" "}
+                      {Number(tutor.averageRating).toFixed(1)}{" "}
+                      <FaStar color="#f1c40f" size={10} />
+                    </p>
+                  </div>
+                </div>
+                <div className="rank-badge">
+                  <FaTrophy size={10} /> {Number(tutor.rankScore).toFixed(0)}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* 2. TOP REVENUE TUTORS */}
+        <div className="report-card">
+          <h3>💰 Top Revenue Tutors (30 Days)</h3>
+          {reports.topRevenueTutors.length === 0 ? (
+            <p className="no-data">No revenue yet</p>
+          ) : (
+            reports.topRevenueTutors.map((tutor) => (
+              <div className="list-item" key={tutor.userId}>
+                <div className="list-info">
+                  <img
+                    src={bufferToBase64(tutor.profilePhoto)}
+                    alt={tutor.fullName}
+                    className="list-img"
+                  />
+                  <div className="list-text">
+                    <h4>{tutor.fullName}</h4>
+                    <p>Revenue Generated</p>
+                  </div>
+                </div>
+                <span className="revenue-badge">
+                  LKR {Number(tutor.totalRevenue).toLocaleString()}
+                </span>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* 3. MOST ACTIVE STUDENTS */}
+        <div className="report-card">
+          <h3>🎓 Most Active Students</h3>
+          {reports.activeStudents.length === 0 ? (
+            <p className="no-data">No active students</p>
+          ) : (
+            reports.activeStudents.map((student) => (
+              <div className="list-item" key={student.userId}>
+                <div className="list-info">
+                  <img
+                    src={bufferToBase64(student.profilePhoto)}
+                    alt={student.fullName}
+                    className="list-img"
+                  />
+                  <div className="list-text">
+                    <h4>{student.fullName}</h4>
+                    <p>{student.sessionsJoined} sessions joined</p>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* 4. SUBJECT REVENUE */}
+        <div className="report-card">
+          <h3>📚 Top Subjects by Revenue</h3>
+          {reports.topSubjects.length === 0 ? (
+            <p className="no-data">No data available</p>
+          ) : (
+            reports.topSubjects.map((sub, idx) => {
+              // Calc max for bar width
+              const maxRev = Math.max(
+                ...reports.topSubjects.map((s) => Number(s.totalRevenue))
+              );
+              const width = (Number(sub.totalRevenue) / maxRev) * 100;
+
+              return (
+                <div className="bar-item" key={idx}>
+                  <div className="bar-header">
+                    <span>{sub.subjectName}</span>
+                    <span>LKR {Number(sub.totalRevenue).toLocaleString()}</span>
+                  </div>
+                  <div className="bar-bg">
+                    <div
+                      className="bar-fill"
+                      style={{ width: `${width}%` }}
+                    ></div>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        {/* 5. ADMIN WORKLOAD */}
+        <div className="report-card">
+          <h3>🛡️ Admin Workload</h3>
+          {reports.adminWorkload.length === 0 ? (
+            <p className="no-data">No data available</p>
+          ) : (
+            reports.adminWorkload.map((admin) => (
+              <div className="list-item" key={admin.userId}>
+                <div className="list-info">
+                  <img
+                    src={bufferToBase64(admin.profilePhoto)}
+                    alt={admin.fullName}
+                    className="list-img"
+                  />
+                  <div className="list-text">
+                    <h4>{admin.fullName}</h4>
+                    <p>{admin.verificationsHandled} verifications handled</p>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </div>
     </div>
   );

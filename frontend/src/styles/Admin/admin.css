@@ -150,7 +150,6 @@
   flex-direction: row;
 }
 
-
 .admin-table-title {
   font-size: 1.4rem;
   font-weight: 600;
@@ -202,7 +201,7 @@
 .filter-btn.active {
   background-color: var(--primary-color);
   color: white;
-  box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 /* Table */
@@ -355,7 +354,6 @@
   transition: margin-left 0.3s ease;
 }
 
-
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .admin-main-content {
@@ -398,7 +396,6 @@
   grid-template-columns: repeat(3, 1fr); /* <-- FIX */
   gap: 1.5rem;
 }
-
 
 /* Individual Card */
 .stat-card {
@@ -540,4 +537,126 @@
 
 .sidebar-bottom .logout-btn {
   width: 100%;
+}
+
+/* ================= REPORTS SECTION ================= */
+.reports-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.report-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-light);
+}
+
+.report-card h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1.5px solid #f0f0f0;
+}
+
+/* List Items */
+.list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.list-item:last-child {
+  border-bottom: none;
+}
+
+.list-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.list-img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.list-text h4 {
+  font-size: 0.95rem;
+  color: var(--text-dark);
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.list-text p {
+  font-size: 0.8rem;
+  color: var(--text-light);
+}
+
+/* Revenue & Scores */
+.revenue-badge {
+  background-color: #e3fcef;
+  color: #00a86b;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.rank-badge {
+  background-color: #fff8e1;
+  color: #ffa000;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Simple Bar Chart Style for Subjects */
+.bar-item {
+  margin-bottom: 1rem;
+}
+
+.bar-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+.bar-bg {
+  width: 100%;
+  height: 8px;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  background-color: var(--primary-color);
+  border-radius: 10px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .reports-grid {
+    grid-template-columns: 1fr;
+  }
 }

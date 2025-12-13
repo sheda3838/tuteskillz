@@ -13,6 +13,8 @@ import profileRouter from "./routes/profile.route.js";
 import sessionRouter from "./routes/session.route.js";
 import paymentRouter from "./routes/payment.route.js";
 import notesRouter from "./routes/notes.route.js";
+import feedbackRouter from "./routes/feedback.route.js";
+import setupSessionCron from "./jobs/session.cron.js";
 
 dotenv.config();
 const app = express();
@@ -41,14 +43,13 @@ app.use(
     saveUninitialized: false,
     store: sessionStore,
     cookie: {
-      secure: false,      // MUST be false on localhost
+      secure: false, // MUST be false on localhost
       httpOnly: true,
-      sameSite: "lax",    // local dev should NOT be "none"
+      sameSite: "lax", // local dev should NOT be "none"
       maxAge: 1000 * 60 * 60 * 24,
     },
   })
 );
-
 
 app.use("/api", userRouter);
 app.use("/api/student", studentRouter);
@@ -59,6 +60,10 @@ app.use("/api/profile", profileRouter);
 app.use("/api/session", sessionRouter);
 app.use("/api/payment", paymentRouter);
 app.use("/api/notes", notesRouter);
+app.use("/api/feedback", feedbackRouter);
+
+// Start Cron Jobs
+setupSessionCron();
 
 app.listen(3000, () => {
   console.log("Server is running on http://localhost:3000");
