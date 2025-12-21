@@ -46,24 +46,17 @@ function DownloadNotesModal({ isOpen, onClose, sessionId, role }) {
         { responseType: "blob" } // blob instead of arraybuffer
       );
 
+      // Create a URL for the blob
       const url = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute("download", `${noteTitle}.pdf`);
       document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link);
 
-      if (res.data) {
-        const buffer = res.data?.note?.document?.data || res.data; // depending on your backend blob structure
-        downloadArrayBufferAsFile(
-          buffer,
-          `${noteTitle}.pdf`,
-          "application/pdf"
-        );
-      } else {
-        notifyError("Failed to download note");
-      }
+      // Cleanup
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
     } catch (err) {
       notifyError(err?.response?.data?.message || err.message);
     } finally {

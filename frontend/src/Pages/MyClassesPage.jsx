@@ -93,7 +93,7 @@ const MyClassesPage = () => {
   };
 
   const handleReject = (sessionId, tutorNote = null) => {
-    axios
+    return axios
       .put(`${import.meta.env.VITE_BACKEND_URL}/session/${sessionId}/status`, {
         status: "Declined",
         tutorNote,

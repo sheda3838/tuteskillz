@@ -12,17 +12,30 @@ const SessionActions = ({
 }) => {
   const [tutorNote, setTutorNote] = useState(initialNote || "");
 
+  const [isAccepting, setIsAccepting] = useState(false);
+  const [isRejecting, setIsRejecting] = useState(false);
 
-  const handleAcceptClick = () => {
+  const handleAcceptClick = async () => {
     if (!tutorNote.trim()) {
       notifyError("Please enter a tutor note before accepting!");
       return;
     }
-    onAccept(tutorNote);
+
+    setIsAccepting(true);
+    try {
+      await onAccept(tutorNote);
+    } finally {
+      setIsAccepting(false);
+    }
   };
 
-  const handleRejectClick = () => {
-    onReject();
+  const handleRejectClick = async () => {
+    setIsRejecting(true);
+    try {
+      await onReject();
+    } finally {
+      setIsRejecting(false);
+    }
   };
 
   // Tutor actions for Requested sessions
@@ -34,14 +47,23 @@ const SessionActions = ({
           placeholder="Enter your note..."
           value={tutorNote}
           onChange={(e) => setTutorNote(e.target.value)}
+          disabled={isAccepting || isRejecting}
         ></textarea>
 
         <div className="session-actions-clean">
-          <button className="accept-btn" onClick={handleAcceptClick}>
-            Accept
+          <button
+            className="accept-btn"
+            onClick={handleAcceptClick}
+            disabled={isAccepting || isRejecting}
+          >
+            {isAccepting ? "Accepting..." : "Accept"}
           </button>
-          <button className="reject-btn" onClick={handleRejectClick}>
-            Reject
+          <button
+            className="reject-btn"
+            onClick={handleRejectClick}
+            disabled={isAccepting || isRejecting}
+          >
+            {isRejecting ? "Rejecting..." : "Reject"}
           </button>
         </div>
       </div>
