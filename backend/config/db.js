@@ -12,6 +12,7 @@ const db = mysql.createConnection({
   database: process.env.DB_NAME,
   ssl: {
     ca: fs.readFileSync(process.env.CA)
+
   }
 });
 
