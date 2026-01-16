@@ -22,16 +22,18 @@ const app = express();
 app.use(
   cors({
     origin: [
-      "http://localhost:5173", // your local frontend
+      "http://localhost:5173",
+      "https://tuteskillz.vercel.app",
     ],
     credentials: true,
   })
 );
 
+
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
-// app.set("trust proxy", true);
+app.set("trust proxy", true);
 
 const MySQLSessionStore = MySQLStore(session);
 const sessionStore = new MySQLSessionStore({}, db.promise());
@@ -43,13 +45,14 @@ app.use(
     saveUninitialized: false,
     store: sessionStore,
     cookie: {
-      secure: false, // MUST be false on localhost
+      secure: true,        // MUST be true on Railway
       httpOnly: true,
-      sameSite: "lax", // local dev should NOT be "none"
+      sameSite: "none",    // REQUIRED for cross-site cookies
       maxAge: 1000 * 60 * 60 * 24,
     },
   })
 );
+
 
 app.use("/api", userRouter);
 app.use("/api/student", studentRouter);
@@ -65,9 +68,12 @@ app.use("/api/feedback", feedbackRouter);
 // Start Cron Jobs
 setupSessionCron();
 
-app.listen(3000, () => {
-  console.log("Server is running on http://localhost:3000");
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
+
 
 // Trigger restart
 
