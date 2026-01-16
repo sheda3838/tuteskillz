@@ -1,0 +1,50 @@
+.make-payment {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* Main CTA Button */
+.btn-make-payment {
+  background-color: var(--primary-color);
+  color: #fff;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: all 0.25s ease;
+}
+
+.btn-make-payment:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.15);
+}
+
+.btn-make-payment:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow);
+}
+
+.btn-make-payment:disabled {
+  background: #bfbfbf;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+@media (max-width: 600px) {
+  .make-payment {
+    margin-top: 15px;
+    padding: 0 15px; /* Add some horizontal padding to prevent button from touching edges */
+  }
+
+  .btn-make-payment {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    width: 100%; /* Make button full width on small screens for better tap target */
+    max-width: 300px; /* Limit max width even if full width */
+  }
+}
+

@@ -1,0 +1,253 @@
+/* =========================================
+   TEAM SECTION
+========================================= */
+.team-section {
+  padding: 70px 0;
+  background-color: #f7eef7;
+  text-align: center;
+}
+
+.team-heading {
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-bottom: 40px;
+  color: var(--primary-color);
+}
+
+/* =========================================
+   GRID
+========================================= */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 30px;
+  padding: 0 40px;
+  justify-items: center;
+}
+
+/* =========================================
+   CARD WRAPPER
+========================================= */
+.card-container {
+  perspective: 1000px;
+  display: flex;
+  justify-content: center;
+}
+
+/* =========================================
+   FLIP CARD
+========================================= */
+.card {
+  width: 300px;
+  height: 420px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.7s ease;
+}
+
+.card-container:hover .card {
+  transform: rotateY(180deg);
+}
+
+/* =========================================
+   CARD SHARED SIDES
+========================================= */
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  padding: 25px;
+  border-radius: 25px;
+  backface-visibility: hidden;
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* =========================================
+   FRONT SIDE
+========================================= */
+.card-front {
+  text-align: center;
+  justify-content: flex-start;
+}
+
+.card-image {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 22px;
+  margin-bottom: 15px;
+}
+
+.card-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0px;
+}
+
+.card-role {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0094ba;
+  text-transform: uppercase;
+}
+
+.card-bio {
+  font-size: 0.85rem;
+  color: #555;
+  max-width: 220px;
+  margin: 0px;
+}
+
+/* =========================================
+   BACK SIDE
+========================================= */
+.card-back {
+  background-color: var(--primary-color);
+  color: #fff;
+  transform: rotateY(180deg);
+  justify-content: center;
+  text-align: center;
+  padding: 30px;
+}
+
+.back-title {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.card-socials {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.card-socials a {
+  font-size: 1.3rem;
+  margin: 0 10px;
+  color: #fff;
+  transition: 0.3s;
+}
+
+.card-socials a:hover {
+  color: #f8f11a;
+}
+
+/* =========================================
+   LINKEDIN BUTTON
+========================================= */
+.linkedin-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 25px;
+  background: #0a66c2;
+  color: #fff;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  margin-top: 15px;
+  transition: 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.linkedin-button:hover {
+  background: #004182;
+  transform: translateY(-3px) scale(1.05);
+}
+
+/* =========================================
+   MOBILE RESPONSIVE
+========================================= */
+/* =========================================
+   MOBILE RESPONSIVE FIXED CARDS
+========================================= */
+@media (max-width: 600px) {
+
+  .team-section {
+    padding: 50px 15px;
+  }
+
+  .team-heading {
+    font-size: 1.9rem;
+    margin-bottom: 30px;
+  }
+
+  .team-grid {
+    grid-template-columns: 1fr;
+    gap: 25px;
+    padding: 0 10px;
+  }
+
+  /* Adjust card size & perspective */
+  .card-container {
+    width: 100%;
+    max-width: 280px;   /* constrain max width */
+    perspective: 900px; /* maintain flip perspective */
+    margin: 0 auto;
+  }
+
+  .card {
+    width: 100%;
+    height: 380px;       /* slightly shorter for mobile */
+  }
+
+  /* Front and back sides padding & alignment */
+  .card-front,
+  .card-back {
+    padding: 20px;
+    height: 100%;
+    border-radius: 20px;
+  }
+
+  .card-front {
+    justify-content: flex-start;
+  }
+
+  .card-back {
+    justify-content: center;
+    text-align: center;
+    transform: rotateY(180deg);
+  }
+
+  /* Image resize */
+  .card-image {
+    width: 140px;
+    height: 140px;
+    border-radius: 18px;
+    margin-bottom: 12px;
+    object-fit: cover;
+  }
+
+  /* Text resizing */
+  .card-name {
+    font-size: 1.1rem;
+  }
+
+  .card-role {
+    font-size: 0.85rem;
+  }
+
+  .card-bio {
+    font-size: 0.8rem;
+    max-width: 180px;
+    margin: 0px;
+  }
+
+  /* LinkedIn button */
+  .linkedin-button {
+    width: 80%;
+    padding: 10px 0;
+    font-size: 0.9rem;
+  }
+
+  /* Social icons spacing */
+  .card-socials a {
+    font-size: 1.2rem;
+    margin: 0 8px;
+  }
+}

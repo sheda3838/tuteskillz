@@ -1,0 +1,135 @@
+/* ======= Stats Section ======= */
+.stats-section {
+  padding: 80px 20px;
+  text-align: center;
+  background: #f8ffff;
+}
+
+.stats-title {
+  font-size: 2.6rem;
+  font-weight: 700;
+  margin-bottom: 50px;
+  color: var(--primary-color);
+}
+
+/* ---- Grid ---- */
+.stats-grid {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 60px;
+  flex-wrap: wrap;
+}
+
+/* ---- Card ---- */
+.stats-card {
+  background: white;
+  text-align: center;
+  padding: 40px 35px;
+  width: 320px;
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stats-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.13);
+}
+
+/* ---- Icon ---- */
+.icon {
+  width: 170px;
+  height: 170px;
+  margin-bottom: 20px;
+
+  background-size: 70%;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  border-radius: 35%;
+  background-color: #ffffff;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Custom icons */
+.tutors-icon {
+  background-image: url("/tutor.png");
+}
+
+.students-icon {
+  background-image: url("/student.png");
+}
+
+.sessions-icon {
+  background-image: url("/session.png");
+}
+
+/* ---- Text ---- */
+.stats-card h3 {
+  font-size: 3rem;
+  color: var(--primary-color);
+  margin-bottom: 8px;
+  font-weight: 900;
+}
+
+.stats-card p {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #444;
+}
+
+/* ======= Mobile Responsive ======= */
+@media (max-width: 900px) {
+  .stats-grid {
+    gap: 40px;
+  }
+
+  .stats-card {
+    width: 280px;
+  }
+
+  .icon {
+    width: 150px;
+    height: 150px;
+    background-size: 65%;
+  }
+}
+
+@media (max-width: 600px) {
+  .stats-grid {
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+  }
+
+  .stats-card {
+    width: 90%;
+    padding: 30px 25px;
+  }
+
+  .stats-title {
+    font-size: 2rem;
+    margin-bottom: 35px;
+  }
+
+  .icon {
+    width: 140px;
+    height: 140px;
+    background-size: 60%;
+  }
+
+  .stats-card h3 {
+    font-size: 2.4rem;
+  }
+
+  .stats-card p {
+    font-size: 1rem;
+  }
+}

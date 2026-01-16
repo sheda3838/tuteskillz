@@ -1,0 +1,67 @@
+/* Improved and cleaner responsive CSS */
+:root {
+  --primary-lime: #c2f060;
+  --text-dark: #1f2937;
+  --text-light: #4b5563;
+}
+
+.feature-overlap {
+  position: relative;
+  margin-top: -120px;
+  z-index: 10;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: none !important;
+  padding-top: 0;
+}
+
+.card-row {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;
+  background-color: white;
+  padding: 30px;
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.feature-card {
+  padding: 5px 20px;
+  border-radius: 20px;
+}
+
+.feature-card.green {
+  background-color: var(--primary-lime);
+}
+
+.card-description {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  line-height: 1.5;
+}
+
+.feature-card.green .card-description {
+  color: #374151;
+}
+/* MOBILE - hide entire feature cards section */
+@media (max-width: 600px) {
+  .feature-overlap,
+  .card-row,
+  .feature-card {
+    display: none !important;
+  }
+}
+/* MOBILE - hide entire feature cards section */
+@media (max-width: 900px) {
+  .feature-overlap,
+  .card-row,
+  .feature-card {
+    display: none !important;
+  }
+}

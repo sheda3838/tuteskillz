@@ -1,0 +1,44 @@
+.tutor-profile-page {
+  width: 90%;
+  max-width: 1100px;
+  margin: auto;
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.section {
+  background: #fff;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+}
+
+.header-section {
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* 2 column layout */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* 3 column layout */
+.three-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .two-col,
+  .three-col {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,178 @@
+.session-header-container {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  width: 100%;
+}
+
+/* ---------------- PARTICIPANTS CARD ---------------- */
+.participants-card {
+  background: #fff;
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+}
+
+.participant {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.participant-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--primary-color);
+}
+
+.participant-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.participant-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.participant-name svg {
+  color: var(--primary-color);
+}
+
+.participant-role {
+  font-size: 0.85rem;
+  color: var(--text-light);
+}
+
+.vs-divider {
+  font-size: 0.9rem;
+  background: var(--background-light);
+  padding: 6px 14px;
+  border-radius: 20px;
+  color: var(--text-dark);
+  font-weight: 600;
+}
+
+/* ---------------- SESSION INFO ---------------- */
+.session-info-card {
+  background: #fff;
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+
+.section-title {
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.info-row {
+  font-size: 0.95rem;
+  display: flex;
+  gap: 8px;
+  color: var(--text-dark);
+}
+
+.info-row span {
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+/* STATUS BADGES (your original styles reused, but cleaner) */
+.session-status {
+  margin-top: 10px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 20px;
+  display: inline-block;
+  border: 1.5px solid #333;
+}
+
+
+/* ---------------- NOTES SECTION ---------------- */
+.session-notes-card {
+  background: #fff;
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.note-box {
+  background: var(--background-light);
+  border-radius: 10px;
+  padding: 14px;
+  border: 1px solid var(--border-light);
+}
+
+.note-box strong {
+  color: var(--text-dark);
+}
+
+.note-box p {
+  margin-top: 4px;
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+@media (max-width: 850px) {
+  .participants-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .participant {
+    flex-direction: column;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .info-row {
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 480px) {
+  .participant-img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .participant-name {
+    font-size: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.2rem;
+  }
+
+  .note-box p {
+    font-size: 0.9rem;
+  }
+}

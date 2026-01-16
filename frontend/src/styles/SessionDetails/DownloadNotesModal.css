@@ -1,0 +1,264 @@
+/* ---------- Modal Container ---------- */
+.notes-modal {
+  width: 480px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+/* ---------- Top Header Bar ---------- */
+.notes-header-bar {
+  background: var(--primary-color);
+  color: #fff;
+  text-align: center;
+  padding: 14px 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-radius: 0;
+}
+
+/* ---------- Notes List ---------- */
+.notes-list {
+  background: #e6fbff; /* Light aqua like screenshot */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ---------- Each Note Row ---------- */
+.note-item {
+  background: #e6fbff;
+  border-radius: 18px;
+  padding: 14px 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border: 2px solid #def7fb;
+}
+
+.note-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.note-icon {
+  width: 35px;
+  height: 35px;
+}
+
+.note-title {
+  font-size: 1rem;
+  color: var(--text-dark);
+  font-weight: 500;
+}
+
+/* ---------- Download Button ---------- */
+.btn-download-note {
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 25px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.25s ease;
+}
+
+.btn-download-note:hover {
+  background: var(--primary-hover);
+}
+
+/* ---------- No Notes Message ---------- */
+.no-notes {
+  text-align: center;
+  color: var(--text-light);
+  padding: 15px 0;
+}
+
+/* ---------- Bottom Actions ---------- */
+.modal-actions {
+  padding: 16px 20px;
+  display: flex;
+  justify-content: flex-end;
+  background: #fff;
+}
+
+.btn-close {
+  background: #bbb;
+  border: none;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-close:hover {
+  opacity: 0.85;
+}
+
+@media (max-width: 600px) {
+  .notes-modal {
+    width: calc(100% - 40px);
+    margin: 20px auto;
+  }
+
+  .notes-header-bar {
+    font-size: 1.1rem;
+    padding: 12px 0;
+  }
+
+  .notes-list {
+    padding: 15px;
+    gap: 10px;
+  }
+
+  .note-item {
+    padding: 12px 15px;
+  }
+
+  .note-left {
+    gap: 10px;
+  }
+
+  .note-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .note-title {
+    font-size: 0.9rem;
+  }
+
+  .btn-download-note {
+    padding: 8px 18px;
+    font-size: 0.85rem;
+  }
+
+  .modal-actions {
+    padding: 12px 15px;
+  }
+
+  .btn-close {
+    padding: 8px 18px;
+  }
+}
+
+/* Delete Button */
+.note-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-delete-note {
+  background: transparent;
+  border: none;
+  color: #ff4d4d;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-delete-note:hover {
+  background-color: rgba(255, 77, 77, 0.1);
+  transform: scale(1.1);
+}
+
+/* Delete Confirmation Overlay */
+.delete-confirm-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.delete-confirm-box {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  width: 80%;
+  max-width: 350px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  animation: scaleIn 0.2s ease-out;
+}
+
+.delete-confirm-box h3 {
+  color: var(--text-dark);
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+}
+
+.delete-confirm-box p {
+  color: var(--text-light);
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+}
+
+.delete-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.btn-cancel {
+  background: #e0e0e0;
+  color: var(--text-dark);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.btn-cancel:hover {
+  background: #d0d0d0;
+}
+
+.btn-confirm-delete {
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.btn-confirm-delete:hover {
+  background: #e60000;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

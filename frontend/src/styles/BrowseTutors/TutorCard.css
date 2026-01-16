@@ -1,0 +1,130 @@
+.tutor-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  border: 2px solid #17c7c0;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 25px;
+  background: #ffffff;
+  transition: 0.3s ease;
+  margin: 0 auto;
+  border-bottom-right-radius: 100px;
+}
+
+.tutor-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+}
+
+/* Image container */
+.tutor-card-img img {
+  width: 130px;
+  height: 130px;
+  border-radius: 15px;
+  object-fit: cover;
+}
+
+/* Details */
+.tutor-card-details {
+  flex: 1;
+}
+
+.tutor-name {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.tutor-bio {
+  font-size: 15px;
+  line-height: 1.5;
+  color: #555;
+  margin-bottom: 12px;
+}
+
+/* ---------- Mobile Responsive ---------- */
+@media (max-width: 600px) {
+  .tutor-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 15px;
+  }
+
+  .tutor-card-img img {
+    width: 100%;
+    height: 180px;
+    border-radius: 12px;
+  }
+
+  .tutor-name {
+    margin-top: 10px;
+  }
+}
+
+/* Tutor list container */
+.tutor-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: flex-start; /* Fix centering issue */
+  text-align: left; /* Override global center alignment */
+}
+
+/* Small screens */
+@media (max-width: 600px) {
+  .tutor-list {
+    justify-content: center; /* Mobile looks better centered */
+  }
+}
+
+
+/* Scroll reveal animation states */
+.tutor-card.hidden {
+  opacity: 0;
+  transform: translateY(40px) scale(0.97);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.tutor-card.show {
+  opacity: 1;
+  transform: translateY(0px) scale(1);
+}
+
+/* Upgrade hover effect */
+.tutor-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.15);
+}
+
+/* Make the card clickable */
+.tutor-card {
+  cursor: pointer;
+}
+
+.tutor-list-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.tutor-search-input {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px 15px;
+  margin-bottom: 25px;
+  border-radius: 12px;
+  border: 2px solid #17c7c0;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.tutor-search-input:focus {
+  border-color: #13a9a4;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}

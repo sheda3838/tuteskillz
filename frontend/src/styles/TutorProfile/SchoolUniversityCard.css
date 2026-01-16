@@ -1,0 +1,70 @@
+/* Main Card Wrapper */
+.school-university-card {
+  background: #ffffff;
+  border: 2px solid var(--border-light);
+  border-radius: 18px;
+  padding: 24px;
+  margin-top: 20px;
+  box-shadow: var(--shadow);
+}
+
+/* Title */
+.card-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-bottom: 16px;
+}
+
+/* Row that contains both School & University */
+.edu-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Make both boxes equal width */
+.edu-item {
+  flex: 1;
+}
+
+
+/* Icons */
+.edu-icon {
+  font-size: 22px;
+  color: var(--primary-color);
+}
+
+/* Text block */
+.edu-text {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Label */
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-light);
+}
+
+/* Value */
+.value {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+
+/* ===============================
+   MOBILE RESPONSIVE
+================================= */
+@media (max-width: 768px) {
+  .card-title {
+    text-align: center;
+  }
+
+  .edu-item {
+    justify-content: center;
+  }
+}

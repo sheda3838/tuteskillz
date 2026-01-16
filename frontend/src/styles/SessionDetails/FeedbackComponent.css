@@ -1,0 +1,192 @@
+/* ---------------- FEEDBACK CARD ---------------- */
+.feedback-card {
+  background: #fff;
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Header */
+.feedback-header {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 5px;
+}
+
+.feedback-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.feedback-header-row h4 {
+  font-size: 1rem;
+  color: var(--text-dark);
+}
+
+/* ---------------- STAR RATING ---------------- */
+.star-rating {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.star {
+  transition: 0.2s ease;
+}
+
+.star.interactive:hover {
+  transform: scale(1.1);
+}
+
+/* ---------------- TEXTAREA ---------------- */
+.feedback-textarea {
+  width: 100%;
+  height: 100px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border-light);
+  outline: none;
+  resize: none;
+  font-size: 0.9rem;
+  background: var(--background-light);
+  color: var(--text-dark);
+  margin-bottom: 12px;
+}
+
+.feedback-textarea:focus {
+  border-color: var(--primary-color);
+}
+
+/* ---------------- BUTTONS ---------------- */
+.form-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-submit {
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.btn-submit:hover {
+  background: var(--primary-hover);
+}
+
+.btn-cancel {
+  background: transparent;
+  border: 1px solid var(--text-light);
+  color: var(--text-light);
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.btn-cancel:hover {
+  border-color: var(--text-dark);
+  color: var(--text-dark);
+}
+
+.btn-edit-feedback {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(1, 163, 164, 0.1);
+  color: var(--primary-color);
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-edit-feedback:hover {
+  background: rgba(1, 163, 164, 0.2);
+}
+
+/* ---------------- DISPLAY SECTIONS ---------------- */
+.submitted-feedback {
+  background: #f8f9fa;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border-light);
+}
+
+.feedback-divider {
+  border: none;
+  height: 1px;
+  background: var(--border-light);
+  margin: 10px 0;
+}
+
+.partner-feedback-section h4 {
+  font-size: 1rem;
+  color: var(--text-dark);
+  margin-bottom: 12px;
+}
+
+.partner-feedback-content {
+  background: #f8f9fa;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border-light);
+}
+
+.feedback-text {
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.5;
+  margin-top: 8px;
+  font-style: italic;
+}
+
+.no-feedback {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  font-style: italic;
+}
+
+/* ---------------- ADMIN VIEW ---------------- */
+.feedback-admin-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.admin-block {
+  background: #f8f9fa;
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.admin-block h4 {
+  margin-bottom: 12px;
+  color: var(--text-dark);
+  font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+  .feedback-admin-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+}

@@ -1,0 +1,14 @@
+.ratings-card p {
+  margin: 6px 0;
+  font-size: 14px;
+  color: #444;
+}
+
+.avg-rating strong {
+  font-weight: 600;
+}
+
+.no-ratings {
+  color: #777;
+  font-style: italic;
+}

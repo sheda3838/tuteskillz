@@ -1,0 +1,233 @@
+/* Modal overlay */
+.upload-notes-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.file-name {
+  color: var(--text-dark);
+  font-weight: 500;
+  font-size: 14px;
+  word-break: break-word;
+}
+
+/* Modal wrapper */
+.upload-modal-container {
+  width: 480px;
+  background: white;
+  border-radius: 18px;
+  padding: 25px 30px;
+  box-shadow: var(--shadow);
+  position: relative;
+  animation: fadeIn 0.25s ease-out;
+}
+
+/* Header */
+.upload-modal-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.upload-modal-header h2 {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.close-icon {
+  position: absolute;
+  right: 0;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--text-dark);
+  transition: 0.25s;
+}
+
+.close-icon:hover {
+  color: var(--primary-color);
+}
+
+/* Form fields */
+.form-group {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  color: var(--text-dark);
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.input-field {
+  padding: 10px 14px;
+  border: 1.8px solid var(--primary-color);
+  border-radius: 10px;
+  font-size: 15px;
+  outline: none;
+  transition: 0.25s ease;
+}
+
+.input-field:focus {
+  border-color: var(--primary-hover);
+  box-shadow: 0 0 0 3px rgba(1, 163, 164, 0.15);
+}
+
+.textarea {
+  height: 110px;
+  resize: none;
+}
+
+/* Upload Box */
+.upload-box {
+  border: 2px dashed var(--primary-color);
+  background: var(--background-light);
+  border-radius: 14px;
+  height: 170px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  transition: 0.25s;
+}
+
+.upload-box:hover {
+  background: #e0f4f4;
+  border-color: var(--primary-hover);
+}
+
+.upload-icon {
+  font-size: 40px;
+  color: var(--primary-color);
+}
+
+.upload-box p {
+  color: var(--text-dark);
+  font-size: 14px;
+}
+
+.browse-text {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+/* Hidden file input */
+.file-input {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Upload button */
+.btn-upload {
+  width: 100%;
+  margin-top: 25px;
+  padding: 12px;
+  background: var(--primary-color);
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.btn-upload:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+}
+
+/* Fade animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.93);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@media (max-width: 768px) {
+  /* Adjustments for the main modal container */
+  .upload-notes-modal {
+    /* Assuming a class for the modal's main wrapper */
+    width: 90%; /* Make the modal take up more width on smaller screens */
+    max-width: none; /* Remove any fixed max-width */
+    margin: 20px auto; /* Center it with some vertical margin */
+    padding: 15px; /* Adjust internal padding */
+  }
+
+  /* Adjustments for the upload button */
+  .btn-upload {
+    padding: 10px; /* Slightly reduce button padding */
+    font-size: 15px; /* Slightly reduce button font size */
+  }
+
+  /* Adjustments for the browse text or its container if needed */
+  .browse-text {
+    font-size: 14px; /* Example: adjust font size if it's too large */
+  }
+}
+
+/* Progress UI */
+.upload-progress-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+  animation: fadeIn 0.3s ease;
+  width: 100%;
+}
+
+.progress-bar-wrapper {
+  width: 100%;
+  height: 12px;
+  background-color: #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--primary-color),
+    var(--primary-hover)
+  );
+  transition: width 0.3s ease;
+  border-radius: 6px;
+}
+
+.progress-percentage {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 15px;
+}
+
+.upload-status-text {
+  font-size: 16px;
+  color: var(--text-dark);
+  font-weight: 500;
+}

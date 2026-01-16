@@ -1,0 +1,471 @@
+/* =========================================================
+   STUDENT / TUTOR REGISTER PAGE - CLEANED & CONSISTENT
+   ========================================================= */
+
+/* ---------- Container ---------- */
+.student-register-container {
+  max-width: 900px;
+  margin: 60px auto;
+  background: #fff;
+  border-radius: 28px;
+  box-shadow: 0 20px 60px rgba(1, 163, 164, 0.15);
+  padding: 60px;
+  border: 1px solid rgba(1, 163, 164, 0.08);
+  transition: all 0.3s ease;
+}
+
+/* ---------- Stepper ---------- */
+.stepper-wrapper {
+  margin-bottom: 40px;
+}
+.stepper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.step-progress-bar {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 4px;
+  background-color: var(--primary-color, #01a3a4);
+  transform: translateY(-50%);
+  transition: width 0.3s ease;
+  z-index: 0;
+  border-radius: 2px;
+}
+.step {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  color: #fff;
+  font-weight: 700;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  transition: all 0.25s ease;
+}
+.step.active {
+  background-color: var(--primary-color, #01a3a4);
+  box-shadow: 0 8px 18px rgba(1, 163, 164, 0.25);
+}
+.step-header {
+  text-align: center;
+  color: var(--primary-color, #01a3a4);
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 50px;
+}
+
+/* =========================================================
+   FORM GRID
+   ========================================================= */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px 35px;
+}
+.form-grid.single-column {
+  grid-template-columns: 1fr;
+}
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+/* ---------- Form Group & Inputs ---------- */
+.form-group {
+  position: relative;
+}
+.form-group input,
+.form-group select,
+.form-group textarea,
+.file-input-mimic {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e3e6e8;
+  border-radius: 25px;
+  font-size: 15px;
+  outline: none;
+  background: transparent;
+  transition: all 0.25s ease;
+  cursor: text;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus,
+.file-input-mimic:focus {
+  border-color: var(--primary-color, #01a3a4);
+  box-shadow: 0 0 0 3px rgba(1, 163, 164, 0.15);
+}
+
+.form-group.invalid input,
+.form-group.invalid select,
+.form-group.invalid textarea {
+  border-color: #e63946;
+  box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.08);
+}
+
+/* ---------- Floating Labels ---------- */
+.form-group label {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  transform: translateY(-50%);
+  background: #fff;
+  padding: 0 6px;
+  font-size: 15px;
+  color: #aaa;
+  pointer-events: none;
+  transition: all 0.2s ease;
+}
+.form-group input[list]:not(:placeholder-shown) + label {
+  top: -10px;
+  font-size: 13px;
+  color: var(--primary-color, #01a3a4);
+  font-weight: 500;
+}
+
+.form-group input:focus + label,
+.form-group input:not(:placeholder-shown) + label,
+.form-group select:focus + label,
+.form-group select:not([value=""]) + label,
+.form-group textarea:focus + label,
+.form-group textarea:not(:placeholder-shown) + label,
+.file-input-mimic:focus + label,
+.file-input-mimic:not(:placeholder-shown) + label {
+  top: -4px;
+  font-size: 13px;
+  color: var(--primary-color, #01a3a4);
+  font-weight: 500;
+}
+
+/* Textarea specific */
+.form-group textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Select placeholder fix */
+.form-group select option[value=""] {
+  color: #aaa;
+}
+
+/* Date input padding fix */
+.form-group input[type="date"] {
+  padding-top: 14px;
+  padding-bottom: 12px;
+}
+
+/* =========================================================
+   RADIO GROUPS
+   ========================================================= */
+.radio-group-container {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+.radio-label {
+  font-weight: 600;
+  color: var(--primary-color, #01a3a4);
+  margin-right: 10px;
+}
+.radio-options {
+  display: flex;
+  gap: 25px;
+}
+.select-wrapper {
+  position: relative;
+}
+
+.select-wrapper label {
+  position: absolute;
+  left: 12px;
+  top:4px;
+  color: #777;
+  transition: 0.2s ease;
+  pointer-events: none;
+}
+
+
+/* Optional: simulate a scrollable list (for custom dropdowns) */
+.select-wrapper datalist {
+  max-height: 120px; /* show only ~5-6 items */
+  overflow-y: auto;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  color: #333;
+}
+.radio-option input[type="radio"] {
+  accent-color: var(--primary-color, #01a3a4);
+  transform: scale(1.1);
+}
+
+/* =========================================================
+   FILE UPLOADS
+   ========================================================= */
+.hidden-file-input {
+  display: none;
+}
+.file-input-mimic {
+  cursor: pointer;
+  background-color: #fafafa;
+}
+.file-upload-group {
+  position: relative;
+  border: 2px dashed #c8c8c8;
+  border-radius: 16px;
+  text-align: center;
+  padding: 40px 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.file-upload-group:hover {
+  border-color: var(--primary-color, #01a3a4);
+  background: #f9ffff;
+}
+.file-label {
+  font-size: 15px;
+  font-weight: 500;
+  color: #555;
+  cursor: pointer;
+}
+.upload-note {
+  font-size: 13px;
+  color: #888;
+  text-align: center;
+  margin-top: -10px;
+}
+
+/* =========================================================
+   TEACHING SUBJECTS ROWS
+   ========================================================= */
+.teaching-set-row {
+  display: flex;
+  align-items: center;
+  gap: 2px 40px;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  padding: 5px 18px;
+  background-color: #fafafa;
+  transition: all 0.25s ease;
+}
+.teaching-set-row:hover {
+  background-color: #f9ffff;
+  border-color: var(--primary-color, #01a3a4);
+  box-shadow: 0 4px 12px rgba(1, 163, 164, 0.08);
+}
+.teaching-set-row .form-group {
+  flex: 1;
+  margin: 0;
+}
+.btn-remove-set {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  color: #ff4d4f;
+  height: 38px;
+  width: 38px;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+.btn-remove-set:hover {
+  background-color: rgba(255, 77, 79, 0.08);
+  transform: scale(1.1);
+}
+.btn-add-set {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: var(--primary-color, #01a3a4);
+  color: #fff;
+  border: none;
+  padding: 12px 26px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  transition: all 0.25s ease;
+  margin-top: 10px;
+}
+.btn-add-set:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 18px rgba(1, 163, 164, 0.25);
+}
+
+/* =========================================================
+   BUTTONS / NAVIGATION
+   ========================================================= */
+.form-navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 40px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+.profile-preview {
+  width: 250px;
+  height: 250px;
+  object-fit: cover;
+  margin: 10px auto;
+  display: block;
+}
+.transcript-upload {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #28a745;
+  font-weight: 600;
+}
+
+.btn-back,
+.btn-next,
+.btn-submit {
+  border: none;
+  padding: 12px 28px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.3px;
+  transition: all 0.25s ease;
+}
+.btn-back {
+  background-color: #f1f1f1;
+  color: #444;
+}
+.btn-back:hover {
+  background-color: #e8e8e8;
+}
+.btn-next,
+.btn-submit {
+  background-color: var(--primary-color, #01a3a4);
+  color: #fff;
+}
+.btn-next:hover,
+.btn-submit:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 20px rgba(1, 163, 164, 0.25);
+}
+.btn-next:disabled {
+  background-color: #bdbdbd;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* =========================================================
+   RESPONSIVE DESIGN
+   ========================================================= */
+@media (max-width: 900px) {
+  .student-register-container {
+    padding: 40px 30px;
+    margin: 30px 15px;
+  }
+  .form-grid {
+    gap: 20px;
+  }
+}
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .form-navigation {
+    flex-direction: column;
+  }
+  .btn-back,
+  .btn-next,
+  .btn-submit {
+    width: 100%;
+  }
+}
+/* =========================================================
+   RESPONSIVE DESIGN (EXTENDED FOR TEACHING SETS)
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .student-register-container {
+    padding: 40px 30px;
+    margin: 30px 15px;
+  }
+  .form-grid {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .teaching-set-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 20px;
+    padding: 15px;
+  }
+
+  .teaching-set-row .form-group {
+    width: 100%;
+  }
+
+  .btn-remove-set {
+    align-self: flex-end;
+    margin-top: -10px;
+  }
+
+  .btn-add-set {
+    width: 100%;
+  }
+
+  .form-navigation {
+    flex-direction: column;
+  }
+
+  .btn-back,
+  .btn-next,
+  .btn-submit {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .student-register-container {
+    padding: 25px 20px;
+  }
+
+  .step-header {
+    font-size: 18px;
+  }
+
+  .btn-add-set {
+    font-size: 14px;
+    padding: 10px 20px;
+  }
+
+  .teaching-set-row {
+    padding: 12px;
+    gap: 16px;
+  }
+}

@@ -1,0 +1,145 @@
+/* Main Container */
+.verification-container {
+  padding: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 16px;
+  border: 2px solid var(--border-light);
+  box-shadow: var(--shadow);
+}
+
+/* Title */
+.verification-container h2 {
+  margin-bottom: 20px;
+  color: var(--primary-color);
+  font-size: 24px;
+  font-weight: 700;
+}
+
+/* Section Title */
+.section-title {
+  color: var(--text-dark);
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+/* Textarea */
+.verification-textarea {
+  width: 100%;
+  border: 2px solid var(--border-light);
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 15px;
+  color: var(--text-dark);
+  outline: none;
+  resize: vertical;
+}
+
+.verification-textarea:focus {
+  border-color: var(--primary-color);
+}
+
+/* Parse Button */
+.parse-btn {
+  margin-top: 10px;
+  padding: 10px 18px;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.parse-btn:hover {
+  opacity: 0.85;
+}
+
+/* Tables */
+.results-table {
+  margin-top: 20px;
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Table Header */
+.results-table th {
+  background: var(--primary-color);
+  color: white;
+  padding: 10px;
+  font-size: 15px;
+  text-align: left;
+}
+
+/* Table Cells */
+.results-table td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  background: #fafafa;
+}
+
+.results-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Inputs inside table */
+.results-table input,
+.results-table select {
+  width: 100%;
+  padding: 8px;
+  border: 2px solid var(--border-light);
+  border-radius: 8px;
+  outline: none;
+}
+
+.results-table input:focus,
+.results-table select:focus {
+  border-color: var(--primary-color);
+}
+
+/* Approve Button */
+.approve-btn {
+  margin-top: 30px;
+  padding: 12px 22px;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.approve-btn:hover {
+  opacity: 0.85;
+}
+
+/* Section spacing */
+.section-block {
+  margin-bottom: 40px;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .verification-container {
+    padding: 16px;
+  }
+
+  .results-table th,
+  .results-table td {
+    font-size: 14px;
+  }
+
+  .parse-btn,
+  .approve-btn {
+    width: 100%;
+  }
+}

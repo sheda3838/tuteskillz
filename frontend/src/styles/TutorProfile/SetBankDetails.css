@@ -1,0 +1,105 @@
+/* Modal styling */
+.bank-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.primary-btn {
+  padding: 10px 12px;
+  border-radius: 25px;
+  border: 2px solid var(--primary-color);
+  background: #fff;
+  color: var(--primary-color);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.primary-btn.active {
+  background: var(--primary-color);
+  color: #fff;
+}
+
+.primary-btn:hover {
+  background: var(--primary-hover);
+  color: #fff;
+}
+
+.remove-btn {
+  padding: 10px 12px;
+  border-radius: 25px;
+  border: 2px solid #e63946;
+  background: #fff;
+  color: #e63946;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.remove-btn:hover {
+  background: #e63946;
+  color: #fff;
+}
+
+.addBtn {
+  padding: 12px 18px;
+  margin: 10px 0;
+  border-radius: 25px;
+  border: 2px solid var(--primary-color);
+  background: #fff;
+  color: var(--primary-color);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.addBtn:hover {
+  background: var(--primary-hover);
+  color: #fff;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.submit-btn {
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 25px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.cancel-btn {
+  padding: 12px 12px;
+  border-radius: 25px;
+  border: 2px solid var(--text-dark);
+  background: #fff;
+  color: var(--text-dark);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.cancel-btn:hover {
+  background: #333;
+  color: #fff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .bank-row {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,88 @@
+/* FORM CONTAINER */
+form {
+  width: 100%;
+  /* ⛔ removed max-width: 100%; because it locks grid layout */
+}
+
+/* FORM GROUP / FLOATING LABEL */
+.form-group {
+  position: relative;
+  margin-bottom: 25px;
+  /* ⛔ remove width: 100%; let grid control the width */
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid var(--border-light);
+  border-radius: 25px;
+  font-size: 15px;
+  outline: none;
+  background: transparent;
+  transition: all 0.25s ease;
+}
+
+.form-group label {
+  position: absolute;
+  top: 50%;
+  left: 18px;
+  transform: translateY(-50%);
+  background: #fff;
+  padding: 0 8px;
+  font-size: 15px;
+  color: #aaa;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  border-radius: 10px;
+  box-shadow: 0 0 0 1px #fff;
+  z-index: 1;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(1, 163, 164, 0.15);
+}
+
+.form-group input:focus + label,
+.form-group input:not(:placeholder-shown) + label,
+.form-group select:focus + label,
+.form-group select:not([value=""]) + label {
+  top: -10px;
+  font-size: 13px;
+  color: var(--primary-color);
+  font-weight: 500;
+  background: #fff;
+  padding: 0 10px;
+  border-radius: 10px;
+  box-shadow: 0 0 0 2px #fff;
+}
+
+.form-group input:focus,
+.form-group input:not(:placeholder-shown) {
+  padding-top: 20px;
+  padding-bottom: 12px;
+}
+
+/* FORM BUTTON */
+form button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 15px rgba(1, 163, 164, 0.3);
+}
+
+form button[type="submit"]:hover {
+  background-color: var(--primary-hover);
+  box-shadow: 0 6px 20px rgba(1, 163, 164, 0.4);
+  transform: translateY(-2px);
+}
+

@@ -1,0 +1,238 @@
+
+.auth-container {
+  display: flex;
+  max-width: 900px;
+  width: 90%;
+  min-height: 550px;
+  background-color: #fff;
+  border-radius: 40px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  margin: 20px auto;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+ }
+
+.auth-container::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateY(-50%);
+  width: 1.5px;
+  height: 60%;
+  background: linear-gradient(to bottom, #00b4b4, #00a0a0, #009292);
+  border-radius: 2px;
+}
+
+.auth-container:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 25px 70px rgba(1, 163, 164, 0.18);
+}
+
+.auth-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 40px;
+  gap: 70px; 
+}
+
+.auth-image img {
+  width: 100%;
+  max-width: 350px;
+  height: auto;
+  object-fit: contain;
+  animation: float 3s ease-in-out infinite;
+}
+
+.auth-image h1{
+  text-align: center;
+  font-size: 30px;
+  font-weight: 500;
+  color: var(--primary-color);
+}
+
+
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.auth-box {
+  flex: 1;
+  padding: 40px 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  min-height: 550px;
+}
+
+.auth-box .logo {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  transition: transform 0.3s ease;
+}
+
+.auth-box .logo:hover {
+  transform: scale(1.05);
+}
+
+.auth-box h1 {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--primary-color);
+}
+
+.auth-subtitle {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--text-light);
+  margin-bottom: 35px;
+}
+
+
+
+.show-password-check {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  margin-top: 8px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  color: var(--text-light);
+}
+
+.show-password-check input[type="checkbox"] {
+  margin-right: 6px;
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary-color);
+  cursor: pointer;
+}
+
+.show-password-check label {
+  cursor: pointer;
+  user-select: none;
+}
+form button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 15px rgba(1, 163, 164, 0.3);
+}
+
+form button[type="submit"]:hover {
+  background-color: var(--primary-hover);
+  box-shadow: 0 6px 20px rgba(1, 163, 164, 0.4);
+  transform: translateY(-2px);
+}
+.google-login {
+  margin-top: 20px;
+  width: 100%;
+  max-width: 380px;
+}
+@media (max-width: 768px) {
+  .auth-container {
+    flex-direction: column;
+    width: 95%;
+    max-width: 450px;
+    border-radius: 30px;
+  }
+
+  .auth-container::before {
+    display: none;
+  }
+
+  .auth-image {
+    display: none;
+  }
+
+  .auth-box {
+    padding: 40px 25px;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-container {
+    border-radius: 20px;
+  }
+
+  .auth-box {
+    padding: 30px 20px;
+  }
+
+  .auth-box h1 {
+    font-size: 26px;
+  }
+
+  input {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+
+  form button[type="submit"] {
+    padding: 14px;
+    font-size: 16px;
+  }
+}
+/* --- Bottom Links (Improved) --- */
+.bottom-links {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  justify-content: center;           /* Center align instead of space-between */
+  align-items: center;
+  margin-top: 20px;                  /* Slightly tighter spacing */
+  font-size: 14px;
+  color: var(--text-light);
+  gap: 5px;                          /* Small gap between text and link */
+}
+
+.bottom-links span {
+  color: var(--text-light);
+}
+
+.bottom-links a {
+  color: var(--primary-color);
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.bottom-links a:hover {
+  text-decoration: underline;
+  color: var(--primary-dark);        /* A slightly darker shade if you have it */
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-container {
+  animation: fadeInUp 0.6s ease both;
+}
+

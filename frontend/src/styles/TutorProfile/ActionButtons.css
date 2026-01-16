@@ -1,0 +1,85 @@
+/* Container */
+.action-buttons-admin {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  
+}
+
+/* Title */
+.action-buttons-admin h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--primary-color);
+  border-bottom: 1px solid #eaeaea;
+  padding-bottom: 8px;
+}
+
+/* Button layout: 2 per row */
+.action-button-group {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  
+}
+
+/* Base button */
+.action-btn {
+  width: 100%;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Neutral button background */
+  background:var(--primary-color);
+  color: #ffffff;
+}
+
+.action-btn:hover {
+  background: var(--primary-hover);
+}
+
+/* Primary button */
+.action-btn.primary {
+  background: var(--primary-color);
+  color: white;
+}
+
+.action-btn.primary:hover {
+  background: var(--primary-hover);
+}
+
+/* Danger button */
+.action-btn.danger {
+  background: #ff3b3b;
+  color: white;
+}
+
+.action-btn.danger:hover {
+  background: #d82f2f;
+}
+
+/* Mobile: stack into 1 column */
+@media (max-width: 600px) {
+  .action-button-group {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* If the number of buttons is odd → make the last one span full width */
+.action-button-group > :nth-last-child(1):nth-child(odd) {
+  grid-column: span 2;
+}
