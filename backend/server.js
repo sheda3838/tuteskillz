@@ -34,6 +34,7 @@ app.set("trust proxy", true);
 const MySQLSessionStore = MySQLStore(session);
 const sessionStore = new MySQLSessionStore({}, db.promise());
 
+//Using sessions 
 app.use(
   session({
     secret: process.env.SECRET_KEY,
