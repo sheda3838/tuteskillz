@@ -18,11 +18,11 @@ function HomePage() {
   const navigate = useNavigate();
 
   const [counts, setCounts] = useState({
-    tutors: 0,
-    students: 0,
-    sessions: 0,
-    notes: 0,
-    admins: 0,
+    tutorCount: 0,
+    studentCount: 0,
+    sessionCount: 0,
+    notesCount: 0,
+    adminCount: 0,
   });
 
   const [reports, setReports] = useState({
@@ -78,38 +78,61 @@ function HomePage() {
         ] = await Promise.all([
           axios.get(`${import.meta.env.VITE_BACKEND_URL}/admin/counts`),
           axios.get(
-            `${import.meta.env.VITE_BACKEND_URL}/admin/reports/best-tutors`
+            `${import.meta.env.VITE_BACKEND_URL}/admin/reports/best-tutors`,
           ),
           axios.get(
             `${
               import.meta.env.VITE_BACKEND_URL
-            }/admin/reports/top-revenue-tutors`
+            }/admin/reports/top-revenue-tutors`,
           ),
           axios.get(
             `${
               import.meta.env.VITE_BACKEND_URL
-            }/admin/reports/top-subject-revenue`
+            }/admin/reports/top-subject-revenue`,
           ),
           axios.get(
             `${
               import.meta.env.VITE_BACKEND_URL
-            }/admin/reports/most-active-students`
+            }/admin/reports/most-active-students`,
           ),
           axios.get(
-            `${import.meta.env.VITE_BACKEND_URL}/admin/reports/admin-workload`
+            `${import.meta.env.VITE_BACKEND_URL}/admin/reports/admin-workload`,
           ),
         ]);
 
-        if (countsRes.data.success) setCounts(countsRes.data.counts);
+        if (countsRes.data.success) {
+          setCounts(
+            countsRes.data.counts || {
+              tutorCount: 0,
+              studentCount: 0,
+              sessionCount: 0,
+              notesCount: 0,
+              adminCount: 0,
+            },
+          );
+        }
 
         setReports({
-          bestTutors: bestTutorsRes.data.success ? bestTutorsRes.data.data : [],
-          topRevenueTutors: revTutorsRes.data.success
-            ? revTutorsRes.data.data
-            : [],
-          topSubjects: subjectsRes.data.success ? subjectsRes.data.data : [],
-          activeStudents: studentsRes.data.success ? studentsRes.data.data : [],
-          adminWorkload: workloadRes.data.success ? workloadRes.data.data : [],
+          bestTutors:
+            bestTutorsRes.data.success && Array.isArray(bestTutorsRes.data.data)
+              ? bestTutorsRes.data.data
+              : [],
+          topRevenueTutors:
+            revTutorsRes.data.success && Array.isArray(revTutorsRes.data.data)
+              ? revTutorsRes.data.data
+              : [],
+          topSubjects:
+            subjectsRes.data.success && Array.isArray(subjectsRes.data.data)
+              ? subjectsRes.data.data
+              : [],
+          activeStudents:
+            studentsRes.data.success && Array.isArray(studentsRes.data.data)
+              ? studentsRes.data.data
+              : [],
+          adminWorkload:
+            workloadRes.data.success && Array.isArray(workloadRes.data.data)
+              ? workloadRes.data.data
+              : [],
         });
       } catch (err) {
         console.error("Error fetching dashboard data:", err);
@@ -206,7 +229,7 @@ function HomePage() {
             getSortedData(
               reports.bestTutors,
               "averageRating",
-              sortOptions.bestTutors
+              sortOptions.bestTutors,
             ).map((tutor, idx) => (
               <div className="list-item" key={tutor.userId}>
                 <div className="list-info">
@@ -230,7 +253,8 @@ function HomePage() {
                   </div>
                 </div>
                 <div className="rank-badge">
-                  <FaTrophy size={10} /> {Number(tutor.rankScore).toFixed(0)}
+                  <FaTrophy size={10} />{" "}
+                  {Number(tutor.rankScore || 0).toFixed(0)}
                 </div>
               </div>
             ))
@@ -258,7 +282,7 @@ function HomePage() {
             getSortedData(
               reports.topRevenueTutors,
               "totalRevenue",
-              sortOptions.topRevenueTutors
+              sortOptions.topRevenueTutors,
             ).map((tutor) => (
               <div className="list-item" key={tutor.userId}>
                 <div className="list-info">
@@ -273,7 +297,7 @@ function HomePage() {
                   </div>
                 </div>
                 <span className="revenue-badge">
-                  LKR {Number(tutor.totalRevenue).toLocaleString()}
+                  LKR {Number(tutor.totalRevenue || 0).toLocaleString()}
                 </span>
               </div>
             ))
@@ -301,7 +325,7 @@ function HomePage() {
             getSortedData(
               reports.activeStudents,
               "sessionsJoined",
-              sortOptions.activeStudents
+              sortOptions.activeStudents,
             ).map((student) => (
               <div className="list-item" key={student.userId}>
                 <div className="list-info">
@@ -312,7 +336,7 @@ function HomePage() {
                   />
                   <div className="list-text">
                     <h4>{student.fullName}</h4>
-                    <p>{student.sessionsJoined} sessions joined</p>
+                    <p>{student.sessionsJoined || 0} sessions joined</p>
                   </div>
                 </div>
               </div>
@@ -339,11 +363,11 @@ function HomePage() {
             getSortedData(
               reports.topSubjects,
               "totalRevenue",
-              sortOptions.topSubjects
+              sortOptions.topSubjects,
             ).map((sub, idx) => {
               // Calc max for bar width
               const maxRev = Math.max(
-                ...reports.topSubjects.map((s) => Number(s.totalRevenue))
+                ...reports.topSubjects.map((s) => Number(s.totalRevenue)),
               );
               const width = (Number(sub.totalRevenue) / maxRev) * 100;
 
@@ -351,7 +375,9 @@ function HomePage() {
                 <div className="bar-item" key={idx}>
                   <div className="bar-header">
                     <span>{sub.subjectName}</span>
-                    <span>LKR {Number(sub.totalRevenue).toLocaleString()}</span>
+                    <span>
+                      LKR {Number(sub.totalRevenue || 0).toLocaleString()}
+                    </span>
                   </div>
                   <div className="bar-bg">
                     <div
@@ -381,7 +407,9 @@ function HomePage() {
                   />
                   <div className="list-text">
                     <h4>{admin.fullName}</h4>
-                    <p>{admin.verificationsHandled} verifications handled</p>
+                    <p>
+                      {admin.verificationsHandled || 0} verifications handled
+                    </p>
                   </div>
                 </div>
               </div>
