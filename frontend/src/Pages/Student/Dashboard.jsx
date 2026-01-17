@@ -35,7 +35,7 @@ const StudentDashboard = () => {
         }
 
         const res = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/student/dashboard/${user.userId}`
+          `${import.meta.env.VITE_BACKEND_URL}/student/dashboard/${user.userId}`,
         );
 
         if (res.data.success) {
@@ -43,7 +43,7 @@ const StudentDashboard = () => {
         }
       } catch (err) {
         notifyError(
-          err.response?.data?.message || "Failed to load dashboard data"
+          err.response?.data?.message || "Failed to load dashboard data",
         );
       } finally {
         setLoading(false);
@@ -58,7 +58,7 @@ const StudentDashboard = () => {
     return <div className="text-center p-10">Failed to load data.</div>;
 
   const { overall, subjects, peakTimes, trends, recommendations } = data;
-  const maxTrend = Math.max(...trends.map((t) => t.sessionCount), 1);
+  const maxTrend = Math.max(...trends.map((t) => Number(t.sessionCount)), 1);
 
   return (
     <>
@@ -143,8 +143,8 @@ const StudentDashboard = () => {
                               Number(sub.avgRating) >= 4.5
                                 ? "good"
                                 : Number(sub.avgRating) >= 3
-                                ? "avg"
-                                : "low"
+                                  ? "avg"
+                                  : "low"
                             }`}
                           >
                             {Number(sub.avgRating).toFixed(1)} ★
@@ -197,8 +197,8 @@ const StudentDashboard = () => {
               </p>
             ) : (
               <div className="rec-list">
-                {recommendations.map((rec, idx) => (
-                  <div key={idx} className="rec-item">
+                {recommendations.map((rec) => (
+                  <div key={rec.userId} className="rec-item">
                     <img
                       src={
                         rec.profilePhoto
@@ -226,35 +226,52 @@ const StudentDashboard = () => {
             <div className="flex items-center gap-2 mb-4">
               <FaCalendarAlt size={20} className="text-gray-600" />
               <h2 className="section-title mb-0">
-                Learning Trends (Last 7 Days)
+                Weekly Activity (Last 30 Days)
               </h2>
             </div>
             {trends.length === 0 ||
             trends.every((t) => t.sessionCount === 0) ? (
               <p className="no-data py-8">No activity in the last 7 days.</p>
             ) : (
-              <div className="chart-wrapper">
-                <div className="custom-chart">
+              <div className="chart-wrapper pie-container">
+                <div
+                  className="pie-chart"
+                  style={{
+                    background: `conic-gradient(
+                      #4facfe 0% ${((trends[0].sessionCount / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}%,
+                      #43e97b ${((trends[0].sessionCount / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}% ${(((trends[0].sessionCount + trends[1].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}%,
+                      #a18cd1 ${(((trends[0].sessionCount + trends[1].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}% ${(((trends[0].sessionCount + trends[1].sessionCount + trends[2].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}%,
+                      #fbc2eb ${(((trends[0].sessionCount + trends[1].sessionCount + trends[2].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}% ${(((trends[0].sessionCount + trends[1].sessionCount + trends[2].sessionCount + trends[3].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}%,
+                      #f093fb ${(((trends[0].sessionCount + trends[1].sessionCount + trends[2].sessionCount + trends[3].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}% ${(((trends[0].sessionCount + trends[1].sessionCount + trends[2].sessionCount + trends[3].sessionCount + trends[4].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}%,
+                      #81ecec ${(((trends[0].sessionCount + trends[1].sessionCount + trends[2].sessionCount + trends[3].sessionCount + trends[4].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}% ${(((trends[0].sessionCount + trends[1].sessionCount + trends[2].sessionCount + trends[3].sessionCount + trends[4].sessionCount + trends[5].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}%,
+                      #fab1a0 ${(((trends[0].sessionCount + trends[1].sessionCount + trends[2].sessionCount + trends[3].sessionCount + trends[4].sessionCount + trends[5].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}% 100%
+                    )`,
+                  }}
+                ></div>
+                <div className="pie-legend">
                   {trends.map((t, idx) => {
-                    const heightPercent =
-                      maxTrend > 0 ? (t.sessionCount / maxTrend) * 100 : 0;
+                    const colors = [
+                      "#4facfe",
+                      "#43e97b",
+                      "#a18cd1",
+                      "#fbc2eb",
+                      "#f093fb",
+                      "#81ecec",
+                      "#fab1a0",
+                    ];
+                    const percent = (
+                      (t.sessionCount /
+                        trends.reduce((a, b) => a + b.sessionCount, 0)) *
+                      100
+                    ).toFixed(1);
                     return (
-                      <div key={idx} className="bar-group">
-                        <div className="bar-container">
-                          <div
-                            className="bar"
-                            style={{ height: `${heightPercent}%` }}
-                          >
-                            <div className="tooltip">
-                              {new Date(t.date).toLocaleDateString()} <br />
-                              <strong>{t.sessionCount}</strong> sessions
-                            </div>
-                          </div>
-                        </div>
-                        <span className="bar-label">
-                          {new Date(t.date).toLocaleDateString("en-US", {
-                            weekday: "short",
-                          })}
+                      <div key={idx} className="legend-item">
+                        <span
+                          className="dot"
+                          style={{ backgroundColor: colors[idx] }}
+                        ></span>
+                        <span className="label">
+                          {t.day}: {percent}%
                         </span>
                       </div>
                     );

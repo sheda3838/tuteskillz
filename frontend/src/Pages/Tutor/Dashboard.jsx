@@ -35,7 +35,7 @@ const TutorDashboard = () => {
         }
 
         const res = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/tutor/dashboard/${user.userId}`
+          `${import.meta.env.VITE_BACKEND_URL}/tutor/dashboard/${user.userId}`,
         );
 
         if (res.data.success) {
@@ -43,7 +43,7 @@ const TutorDashboard = () => {
         }
       } catch (err) {
         notifyError(
-          err.response?.data?.message || "Failed to load dashboard data"
+          err.response?.data?.message || "Failed to load dashboard data",
         );
       } finally {
         setLoading(false);
@@ -147,8 +147,8 @@ const TutorDashboard = () => {
                               Number(sub.avgRating) >= 4.5
                                 ? "good"
                                 : Number(sub.avgRating) >= 3
-                                ? "avg"
-                                : "low"
+                                  ? "avg"
+                                  : "low"
                             }`}
                           >
                             {Number(sub.avgRating).toFixed(1)} ★
@@ -192,34 +192,49 @@ const TutorDashboard = () => {
         <div className="dashboard-section card-box full-width">
           <div className="flex items-center gap-2 mb-4">
             <FaCalendarAlt size={20} className="text-gray-600" />
-            <h2 className="section-title mb-0">Booking Trends (Last 7 Days)</h2>
+            <h2 className="section-title mb-0">Weekly Booking Distribution</h2>
           </div>
           {/* Note: We handle empty states in backend now by returning 0-filled arrays, but check just in case */}
           {trends.length === 0 ? (
             <p className="no-data py-8">No booking history yet.</p>
           ) : (
-            <div className="chart-wrapper">
-              <div className="custom-chart">
+            <div className="chart-wrapper pie-container">
+              <div
+                className="pie-chart"
+                style={{
+                  background: `conic-gradient(
+                    #4facfe 0% ${((trends[0].sessionCount / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}%,
+                    #43e97b ${((trends[0].sessionCount / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}% ${(((trends[0].sessionCount + trends[1].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}%,
+                    #a18cd1 ${(((trends[0].sessionCount + trends[1].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}% ${(((trends[0].sessionCount + trends[1].sessionCount + trends[2].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}%,
+                    #fbc2eb ${(((trends[0].sessionCount + trends[1].sessionCount + trends[2].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}% ${(((trends[0].sessionCount + trends[1].sessionCount + trends[2].sessionCount + trends[3].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}%,
+                    #f093fb ${(((trends[0].sessionCount + trends[1].sessionCount + trends[2].sessionCount + trends[3].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}% ${(((trends[0].sessionCount + trends[1].sessionCount + trends[2].sessionCount + trends[3].sessionCount + trends[4].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}%,
+                    #81ecec ${(((trends[0].sessionCount + trends[1].sessionCount + trends[2].sessionCount + trends[3].sessionCount + trends[4].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}% ${(((trends[0].sessionCount + trends[1].sessionCount + trends[2].sessionCount + trends[3].sessionCount + trends[4].sessionCount + trends[5].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}%,
+                    #fab1a0 ${(((trends[0].sessionCount + trends[1].sessionCount + trends[2].sessionCount + trends[3].sessionCount + trends[4].sessionCount + trends[5].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}% 100%
+                  )`,
+                }}
+              ></div>
+              <div className="pie-legend">
                 {trends.map((t, idx) => {
-                  const heightPercent =
-                    maxTrend > 0 ? (t.sessionCount / maxTrend) * 100 : 0;
+                  const colors = [
+                    "#4facfe",
+                    "#43e97b",
+                    "#a18cd1",
+                    "#fbc2eb",
+                    "#f093fb",
+                    "#81ecec",
+                    "#fab1a0",
+                  ];
+                  const total = trends.reduce((a, b) => a + b.sessionCount, 0);
+                  const percent =
+                    total > 0 ? ((t.sessionCount / total) * 100).toFixed(1) : 0;
                   return (
-                    <div key={idx} className="bar-group">
-                      <div className="bar-container">
-                        <div
-                          className="bar"
-                          style={{ height: `${heightPercent}%` }}
-                        >
-                          <div className="tooltip">
-                            {new Date(t.date).toLocaleDateString()} <br />
-                            <strong>{t.sessionCount}</strong> sessions
-                          </div>
-                        </div>
-                      </div>
-                      <span className="bar-label">
-                        {new Date(t.date).toLocaleDateString("en-US", {
-                          weekday: "short",
-                        })}
+                    <div key={idx} className="legend-item">
+                      <span
+                        className="dot"
+                        style={{ backgroundColor: colors[idx] }}
+                      ></span>
+                      <span className="label">
+                        {t.day}: {percent}%
                       </span>
                     </div>
                   );
