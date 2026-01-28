@@ -9,8 +9,6 @@ import {
   FaChalkboardTeacher,
   FaStar,
   FaBook,
-  FaClock,
-  FaCalendarAlt,
   FaUserGraduate,
 } from "react-icons/fa";
 
@@ -57,8 +55,7 @@ const StudentDashboard = () => {
   if (!data)
     return <div className="text-center p-10">Failed to load data.</div>;
 
-  const { overall, subjects, peakTimes, trends, recommendations } = data;
-  const maxTrend = Math.max(...trends.map((t) => Number(t.sessionCount)), 1);
+  const { overall, subjects, recommendations } = data;
 
   return (
     <>
@@ -157,31 +154,6 @@ const StudentDashboard = () => {
               </div>
             )}
           </div>
-
-          {/* 3. Peak Learning Times */}
-          <div className="dashboard-section card-box">
-            <div className="flex items-center gap-2 mb-4">
-              <FaClock size={20} className="text-gray-600" />
-              <h2 className="section-title mb-0">Peak Learning Times</h2>
-            </div>
-            {peakTimes.length === 0 ? (
-              <p className="no-data">No data available.</p>
-            ) : (
-              <ul className="peak-time-list">
-                {peakTimes.map((time, idx) => (
-                  <li key={idx} className="peak-time-item">
-                    <div className="time-info">
-                      <span className="time-icon">⏰</span>
-                      <span className="time-slot">{time.startTime}</span>
-                    </div>
-                    <span className="time-count">
-                      {time.sessionCount} sessions
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
         </div>
 
         <div className="viz-grid-2">
@@ -217,66 +189,6 @@ const StudentDashboard = () => {
                     </div>
                   </div>
                 ))}
-              </div>
-            )}
-          </div>
-
-          {/* 5. Learning Trends (Last 7 Days) */}
-          <div className="dashboard-section card-box">
-            <div className="flex items-center gap-2 mb-4">
-              <FaCalendarAlt size={20} className="text-gray-600" />
-              <h2 className="section-title mb-0">
-                Weekly Activity (Last 30 Days)
-              </h2>
-            </div>
-            {trends.length === 0 ||
-            trends.every((t) => t.sessionCount === 0) ? (
-              <p className="no-data py-8">No activity in the last 7 days.</p>
-            ) : (
-              <div className="chart-wrapper pie-container">
-                <div
-                  className="pie-chart"
-                  style={{
-                    background: `conic-gradient(
-                      #4facfe 0% ${((trends[0].sessionCount / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}%,
-                      #43e97b ${((trends[0].sessionCount / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}% ${(((trends[0].sessionCount + trends[1].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}%,
-                      #a18cd1 ${(((trends[0].sessionCount + trends[1].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}% ${(((trends[0].sessionCount + trends[1].sessionCount + trends[2].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}%,
-                      #fbc2eb ${(((trends[0].sessionCount + trends[1].sessionCount + trends[2].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}% ${(((trends[0].sessionCount + trends[1].sessionCount + trends[2].sessionCount + trends[3].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}%,
-                      #f093fb ${(((trends[0].sessionCount + trends[1].sessionCount + trends[2].sessionCount + trends[3].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}% ${(((trends[0].sessionCount + trends[1].sessionCount + trends[2].sessionCount + trends[3].sessionCount + trends[4].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}%,
-                      #81ecec ${(((trends[0].sessionCount + trends[1].sessionCount + trends[2].sessionCount + trends[3].sessionCount + trends[4].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}% ${(((trends[0].sessionCount + trends[1].sessionCount + trends[2].sessionCount + trends[3].sessionCount + trends[4].sessionCount + trends[5].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}%,
-                      #fab1a0 ${(((trends[0].sessionCount + trends[1].sessionCount + trends[2].sessionCount + trends[3].sessionCount + trends[4].sessionCount + trends[5].sessionCount) / trends.reduce((a, b) => a + b.sessionCount, 0)) * 100).toFixed(2)}% 100%
-                    )`,
-                  }}
-                ></div>
-                <div className="pie-legend">
-                  {trends.map((t, idx) => {
-                    const colors = [
-                      "#4facfe",
-                      "#43e97b",
-                      "#a18cd1",
-                      "#fbc2eb",
-                      "#f093fb",
-                      "#81ecec",
-                      "#fab1a0",
-                    ];
-                    const percent = (
-                      (t.sessionCount /
-                        trends.reduce((a, b) => a + b.sessionCount, 0)) *
-                      100
-                    ).toFixed(1);
-                    return (
-                      <div key={idx} className="legend-item">
-                        <span
-                          className="dot"
-                          style={{ backgroundColor: colors[idx] }}
-                        ></span>
-                        <span className="label">
-                          {t.day}: {percent}%
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
               </div>
             )}
           </div>
