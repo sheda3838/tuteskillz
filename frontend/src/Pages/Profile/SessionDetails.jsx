@@ -60,14 +60,14 @@ function SessionDetails() {
               {
                 order_id: orderId,
                 amount: "1000.00", // Default amount
-              }
+              },
             );
             notifySuccess("Payment verified successfully!");
             // Clear query params to avoid re-triggering
             window.history.replaceState(
               {},
               document.title,
-              window.location.pathname
+              window.location.pathname,
             );
           } catch (simErr) {
             console.error("Payment verification failed:", simErr);
@@ -75,17 +75,17 @@ function SessionDetails() {
         }
 
         const res = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/session/${sessionId}`
+          `${import.meta.env.VITE_BACKEND_URL}/session/${sessionId}`,
         );
         const data = res.data.data;
         setSession(data);
 
         // Load student & tutor info
         const studentReq = axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/student/${data.studentId}`
+          `${import.meta.env.VITE_BACKEND_URL}/student/${data.studentId}`,
         );
         const tutorReq = axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/tutor/${data.tutorId}`
+          `${import.meta.env.VITE_BACKEND_URL}/tutor/${data.tutorId}`,
         );
 
         const [studentRes, tutorRes] = await Promise.all([
@@ -169,9 +169,22 @@ function SessionDetails() {
       <div className="session-details-wrapper">
         <button
           className="btn-back-nav"
-          onClick={() => navigate("/my-classes")}
+          onClick={() => {
+            if (role === "admin") {
+              navigate("/admin/sessions");
+            } else if (role === "tutor") {
+              navigate("/tutor/dashboard");
+            } else {
+              navigate("/my-classes");
+            }
+          }}
         >
-          &larr; Back to My Classes
+          &larr;{" "}
+          {role === "admin"
+            ? "Back to Sessions"
+            : role === "tutor"
+              ? "Back to Dashboard"
+              : "Back to My Classes"}
         </button>
 
         {/* Header */}
@@ -244,12 +257,12 @@ function SessionDetails() {
                   formData,
                   {
                     headers: { "Content-Type": "multipart/form-data" },
-                  }
+                  },
                 );
 
                 // Refresh session to show new notes
                 const res = await axios.get(
-                  `${import.meta.env.VITE_BACKEND_URL}/session/${sessionId}`
+                  `${import.meta.env.VITE_BACKEND_URL}/session/${sessionId}`,
                 );
                 setSession(res.data.data);
               }}
