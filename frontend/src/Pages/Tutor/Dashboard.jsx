@@ -4,13 +4,23 @@ import { useNavigate } from "react-router-dom";
 import "../../styles/Tutor/Dashboard.css";
 import Loading from "../../utils/Loading";
 import { notifyError } from "../../utils/toast";
-import { FaChalkboardTeacher, FaStar, FaHistory } from "react-icons/fa";
+import {
+  FaChalkboardTeacher,
+  FaStar,
+  FaHistory,
+  FaChevronDown,
+  FaChevronUp,
+  FaCommentAlt,
+  FaCalendarAlt,
+  FaRegStar,
+} from "react-icons/fa";
 
 import Header from "../../components/Home/Header";
 
 const TutorDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
+  const [expandedSubjects, setExpandedSubjects] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -51,7 +61,26 @@ const TutorDashboard = () => {
   if (!data)
     return <div className="text-center p-10">Failed to load data.</div>;
 
-  const { overall, subjects } = data;
+  const { overall, subjects, feedbackAnalytics } = data;
+
+  const toggleSubject = (subjectName) => {
+    setExpandedSubjects((prev) => ({
+      ...prev,
+      [subjectName]: !prev[subjectName],
+    }));
+  };
+
+  const renderStars = (rating) => {
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      if (i <= Math.round(rating)) {
+        stars.push(<FaStar key={i} className="star filled" />);
+      } else {
+        stars.push(<FaRegStar key={i} className="star empty" />);
+      }
+    }
+    return stars;
+  };
 
   return (
     <>
@@ -69,7 +98,7 @@ const TutorDashboard = () => {
       />
 
       <div className="tutor-dashboard">
-        {/* 🎯 Overall Summary (Enhanced Cards) */}
+        {/* 🎯 Overall Summary */}
         <div className="stats-grid">
           <div className="stat-card gradient-blue">
             <div className="icon-box">
@@ -87,7 +116,8 @@ const TutorDashboard = () => {
             </div>
             <div className="stat-text">
               <span className="stat-value">
-                {overall.avgRating} <span className="sub-text">/ 5.0</span>
+                {Number(overall.avgRating).toFixed(1)}{" "}
+                <span className="sub-text">/ 5.0</span>
               </span>
               <span className="stat-label">Average Rating</span>
             </div>
@@ -105,11 +135,13 @@ const TutorDashboard = () => {
         </div>
 
         <div className="viz-grid">
-          {/* 📚 Subject Performance */}
+          {/* 📚 Subject Performance Summary */}
           <div className="dashboard-section card-box full-width">
             <div className="flex items-center gap-2 mb-4">
               <FaChalkboardTeacher size={20} className="text-gray-600" />
-              <h2 className="section-title mb-0">Subject Performance</h2>
+              <h2 className="section-title mb-0">
+                Subject Performance Summary
+              </h2>
             </div>
             {subjects.length === 0 ? (
               <p className="no-data">No session data available yet.</p>
@@ -149,6 +181,98 @@ const TutorDashboard = () => {
                     ))}
                   </tbody>
                 </table>
+              </div>
+            )}
+          </div>
+
+          {/* ⭐ Detailed Ratings & Feedback Analytics */}
+          <div className="dashboard-section card-box full-width">
+            <div className="flex items-center gap-2 mb-6 border-b pb-4">
+              <FaStar size={20} className="text-yellow-500" />
+              <h2 className="section-title mb-0">
+                Ratings & Feedback Analytics
+              </h2>
+            </div>
+
+            {subjects.length === 0 ? (
+              <p className="no-data">No feedback available yet.</p>
+            ) : (
+              <div className="feedback-analytics">
+                {subjects.map((sub, idx) => {
+                  const subjectFeedback =
+                    feedbackAnalytics[sub.subjectName] || [];
+                  const isExpanded = expandedSubjects[sub.subjectName];
+
+                  return (
+                    <div
+                      key={idx}
+                      className={`subject-feedback-group ${isExpanded ? "expanded" : ""}`}
+                    >
+                      <div
+                        className="subject-feedback-header"
+                        onClick={() => toggleSubject(sub.subjectName)}
+                      >
+                        <div className="subject-info">
+                          <h3>{sub.subjectName}</h3>
+                          <div className="subject-meta">
+                            <span className="meta-item">
+                              {renderStars(sub.avgRating)}
+                              <span className="rating-num">
+                                {Number(sub.avgRating).toFixed(1)}
+                              </span>
+                            </span>
+                            <span className="dot-separator">•</span>
+                            <span className="meta-item">
+                              {sub.totalSessions} Sessions
+                            </span>
+                          </div>
+                        </div>
+                        <div className="expand-icon">
+                          {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
+                        </div>
+                      </div>
+
+                      {isExpanded && (
+                        <div className="feedback-list">
+                          {subjectFeedback.length === 0 ? (
+                            <p className="no-feedback">
+                              No detailed feedback provided for this subject
+                              yet.
+                            </p>
+                          ) : (
+                            subjectFeedback.map((fb, fbIdx) => (
+                              <div key={fbIdx} className="feedback-card">
+                                <div className="feedback-top">
+                                  <div className="session-id">
+                                    Session #{fb.sessionId}
+                                  </div>
+                                  <div className="session-date">
+                                    <FaCalendarAlt size={12} />
+                                    {new Date(
+                                      fb.date,
+                                    ).toLocaleDateString()} at {fb.startTime}
+                                  </div>
+                                </div>
+                                <div className="feedback-rating">
+                                  {renderStars(fb.rating)}
+                                </div>
+                                {fb.comment && (
+                                  <div className="feedback-comment">
+                                    <FaCommentAlt
+                                      size={12}
+                                      className="quote-icon"
+                                    />
+                                    <p>{fb.comment}</p>
+                                  </div>
+                                )}
+                              </div>
+                            ))
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>

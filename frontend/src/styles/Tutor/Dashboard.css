@@ -111,6 +111,7 @@
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: 2rem;
   margin-bottom: 2rem;
+  align-items: start;
 }
 
 .card-box {
@@ -270,4 +271,166 @@
 }
 .font-medium {
   font-weight: 500;
+}
+
+/* --- Feedback Analytics --- */
+.feedback-analytics {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.subject-feedback-group {
+  border: 1px solid #edf2f7;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.subject-feedback-header {
+  padding: 1.25rem 1.5rem;
+  background: #f8fafc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.subject-feedback-header:hover {
+  background: #f1f5f9;
+}
+
+.subject-feedback-group.expanded {
+  border-color: #4facfe;
+  box-shadow: 0 4px 12px rgba(79, 172, 254, 0.1);
+}
+
+.subject-info h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #2d3748;
+  font-weight: 600;
+}
+
+.subject-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+  font-size: 0.9rem;
+  color: #718096;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.star {
+  font-size: 0.85rem;
+}
+
+.star.filled {
+  color: #f59e0b;
+}
+
+.star.empty {
+  color: #cbd5e0;
+}
+
+.rating-num {
+  font-weight: 700;
+  color: #2d3748;
+  margin-left: 0.25rem;
+}
+
+.dot-separator {
+  color: #cbd5e0;
+}
+
+.expand-icon {
+  color: #718096;
+  font-size: 1.1rem;
+}
+
+.feedback-list {
+  padding: 1.5rem;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.feedback-card {
+  padding: 1.25rem;
+  background: #fcfcfd;
+  border: 1px solid #f1f5f9;
+  border-radius: 10px;
+  transition: transform 0.2s;
+}
+
+.feedback-card:hover {
+  transform: translateX(4px);
+  border-color: #e2e8f0;
+}
+
+.feedback-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.session-id {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4a5568;
+  background: #edf2f7;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.session-date {
+  font-size: 0.85rem;
+  color: #a0aec0;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.feedback-rating {
+  margin-bottom: 0.75rem;
+  display: flex;
+  gap: 2px;
+}
+
+.feedback-comment {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.quote-icon {
+  position: absolute;
+  left: 0;
+  top: 4px;
+  color: #cbd5e0;
+}
+
+.feedback-comment p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #4a5568;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.no-feedback {
+  text-align: center;
+  color: #a0aec0;
+  font-style: italic;
+  padding: 1rem 0;
 }
