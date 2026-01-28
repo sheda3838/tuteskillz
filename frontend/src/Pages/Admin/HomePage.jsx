@@ -31,6 +31,7 @@ function HomePage() {
     topSubjects: [],
     activeStudents: [],
     adminWorkload: [],
+    weeklyFeedback: null,
   });
 
   const [sortOptions, setSortOptions] = useState({
@@ -75,6 +76,7 @@ function HomePage() {
           subjectsRes,
           studentsRes,
           workloadRes,
+          weeklyFeedbackRes,
         ] = await Promise.all([
           axios.get(`${import.meta.env.VITE_BACKEND_URL}/admin/counts`),
           axios.get(
@@ -97,6 +99,11 @@ function HomePage() {
           ),
           axios.get(
             `${import.meta.env.VITE_BACKEND_URL}/admin/reports/admin-workload`,
+          ),
+          axios.get(
+            `${
+              import.meta.env.VITE_BACKEND_URL
+            }/admin/reports/weekly-feedback-analytics`,
           ),
         ]);
 
@@ -133,6 +140,9 @@ function HomePage() {
             workloadRes.data.success && Array.isArray(workloadRes.data.data)
               ? workloadRes.data.data
               : [],
+          weeklyFeedback: weeklyFeedbackRes.data.success
+            ? weeklyFeedbackRes.data.data
+            : null,
         });
       } catch (err) {
         console.error("Error fetching dashboard data:", err);
@@ -416,6 +426,139 @@ function HomePage() {
             ))
           )}
         </div>
+      </div>
+      {/* WEEKLY RATINGS & FEEDBACK ANALYTICS (Last 7 Days) */}
+      <div className="feedback-analytics-section">
+        <div className="feedback-section-header">
+          <h2>
+            <FaStar className="text-orange" /> Ratings & Feedback – Last 7 Days
+          </h2>
+        </div>
+
+        {/* LOADING / ERROR / CONTENT */}
+        {!reports.weeklyFeedback ? (
+          <p className="no-data">Loading feedback analytics...</p>
+        ) : (
+          <>
+            {/* 1. ALERTS GRID */}
+            <div className="feedback-alert-grid">
+              {/* Lowest Rated Tutor */}
+              {reports.weeklyFeedback.lowestTutor ? (
+                <div className="alert-card danger">
+                  <h4>Lowest Rated Tutor</h4>
+                  <div className="alert-main">
+                    {reports.weeklyFeedback.lowestTutor.fullName}
+                  </div>
+                  <div className="alert-stats">
+                    <span className="alert-rating text-red">
+                      {Number(
+                        reports.weeklyFeedback.lowestTutor.avgRating,
+                      ).toFixed(1)}{" "}
+                      <FaStar size={12} />
+                    </span>
+                    <span>
+                      • {reports.weeklyFeedback.lowestTutor.count} Sessions
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div className="alert-card warning">
+                  <h4>Lowest Rated Tutor</h4>
+                  <p className="no-data" style={{ padding: 0 }}>
+                    No critical data
+                  </p>
+                </div>
+              )}
+
+              {/* Lowest Rated Subject */}
+              {reports.weeklyFeedback.lowestSubject ? (
+                <div className="alert-card danger">
+                  <h4>Lowest Rated Subject</h4>
+                  <div className="alert-main">
+                    {reports.weeklyFeedback.lowestSubject.subjectName}
+                  </div>
+                  <div className="alert-stats">
+                    <span className="alert-rating text-red">
+                      {Number(
+                        reports.weeklyFeedback.lowestSubject.avgRating,
+                      ).toFixed(1)}{" "}
+                      <FaStar size={12} />
+                    </span>
+                    <span>
+                      • {reports.weeklyFeedback.lowestSubject.count} Sessions
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div className="alert-card warning">
+                  <h4>Lowest Rated Subject</h4>
+                  <p className="no-data" style={{ padding: 0 }}>
+                    No critical data
+                  </p>
+                </div>
+              )}
+
+              {/* Lowest Rated Session */}
+              {reports.weeklyFeedback.lowestSession ? (
+                <div className="alert-card danger">
+                  <h4>Lowest Rated Session</h4>
+                  <div className="alert-main">
+                    Session #{reports.weeklyFeedback.lowestSession.sessionId}
+                  </div>
+                  <div className="alert-stats">
+                    <span className="alert-rating text-red">
+                      {Number(
+                        reports.weeklyFeedback.lowestSession.rating,
+                      ).toFixed(1)}{" "}
+                      <FaStar size={12} />
+                    </span>
+                    <span>
+                      • {reports.weeklyFeedback.lowestSession.tutorName}
+                    </span>
+                  </div>
+                  <small style={{ color: "#aaa" }}>
+                    {reports.weeklyFeedback.lowestSession.subjectName}
+                  </small>
+                </div>
+              ) : (
+                <div className="alert-card warning">
+                  <h4>Lowest Rated Session</h4>
+                  <p className="no-data" style={{ padding: 0 }}>
+                    No critical data
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* 2. RECENT NEGATIVE FEEDBACK PREVIEW */}
+            <h3>Recent Negative Feedback</h3>
+            <div className="negative-feedback-list">
+              {reports.weeklyFeedback.negativeFeedback.length === 0 ? (
+                <div className="no-issues-banner">
+                  🎉 No negative feedback in the last 7 days!
+                </div>
+              ) : (
+                reports.weeklyFeedback.negativeFeedback.map((fb, idx) => (
+                  <div className="neg-feedback-item" key={idx}>
+                    <div className="neg-feedback-header">
+                      <strong>
+                        {fb.tutorName} • {fb.subjectName}
+                      </strong>
+                      <span className="alert-rating text-orange">
+                        {fb.rating} <FaStar size={12} />
+                      </span>
+                    </div>
+                    <p className="neg-feedback-text">"{fb.comments}"</p>
+                    <div className="neg-feedback-meta">
+                      <span>Session #{fb.sessionId}</span>
+                      <span>{new Date(fb.date).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
