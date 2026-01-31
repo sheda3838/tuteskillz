@@ -10,7 +10,7 @@ import "../../styles/BrowseTutors/BrowseTutors.css";
 import Header from "../../components/Home/Header";
 import Footer from "../../components/Home/Footer";
 
-import Loading from "../../utils/Loading"
+import Loading from "../../utils/Loading";
 
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -60,7 +60,7 @@ const BrowseTutors = () => {
       .get(
         `${
           import.meta.env.VITE_BACKEND_URL
-        }/student/tutors/grades?medium=${selectedMedium}`
+        }/student/tutors/grades?medium=${selectedMedium}`,
       )
       .then((res) => res.data.success && setGrades(res.data.data));
   }, [selectedMedium]);
@@ -74,7 +74,7 @@ const BrowseTutors = () => {
       .get(
         `${
           import.meta.env.VITE_BACKEND_URL
-        }/student/tutors/subjects?medium=${selectedMedium}&grade=${selectedGrade}`
+        }/student/tutors/subjects?medium=${selectedMedium}&grade=${selectedGrade}`,
       )
       .then((res) => res.data.success && setSubjects(res.data.data));
   }, [selectedGrade]);
@@ -87,7 +87,7 @@ const BrowseTutors = () => {
       .get(
         `${
           import.meta.env.VITE_BACKEND_URL
-        }/student/tutors?medium=${selectedMedium}&grade=${selectedGrade}&subjectId=${selectedSubject}`
+        }/student/tutors?medium=${selectedMedium}&grade=${selectedGrade}&subjectId=${selectedSubject}`,
       )
       .then((res) => {
         if (res.data.success) setTutors(res.data.data);
@@ -199,7 +199,12 @@ const BrowseTutors = () => {
               {loadingTutors ? (
                 <Loading />
               ) : tutors.length > 0 ? (
-                <TutorList tutors={tutors} />
+                <TutorList
+                  tutors={tutors}
+                  selectedMedium={selectedMedium}
+                  selectedGrade={selectedGrade}
+                  selectedSubject={selectedSubject}
+                />
               ) : (
                 <p className="no-tutors-msg">No tutors found</p>
               )}

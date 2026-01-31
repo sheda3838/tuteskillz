@@ -2,14 +2,19 @@ import React, { useState, useMemo } from "react";
 import TutorCard from "./TutorCard";
 import "../../styles/BrowseTutors/TutorCard.css";
 
-const TutorList = ({ tutors }) => {
+const TutorList = ({
+  tutors,
+  selectedMedium,
+  selectedGrade,
+  selectedSubject,
+}) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   // Filter tutors based on search query (case-insensitive)
   const filteredTutors = useMemo(() => {
     if (!tutors) return [];
     return tutors.filter((tutor) =>
-      tutor.fullName.toLowerCase().includes(searchQuery.toLowerCase())
+      tutor.fullName.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [tutors, searchQuery]);
 
@@ -30,7 +35,13 @@ const TutorList = ({ tutors }) => {
       ) : (
         <div className="tutor-list">
           {filteredTutors.map((tutor) => (
-            <TutorCard key={tutor.userId} tutor={tutor} />
+            <TutorCard
+              key={tutor.userId}
+              tutor={tutor}
+              selectedMedium={selectedMedium}
+              selectedGrade={selectedGrade}
+              selectedSubject={selectedSubject}
+            />
           ))}
         </div>
       )}

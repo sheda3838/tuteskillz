@@ -31,7 +31,7 @@ function LoggedinHome() {
       try {
         const res = await axios.post(
           `${import.meta.env.VITE_BACKEND_URL}/user`,
-          { email }
+          { email },
         );
 
         if (!res.data.success) {
@@ -71,7 +71,7 @@ function LoggedinHome() {
           notifySuccess("Please complete your registration!");
           localStorage.setItem(
             "user",
-            JSON.stringify({ email, isNewUser: true, timestamp: Date.now() })
+            JSON.stringify({ email, isNewUser: true, timestamp: Date.now() }),
           );
           navigate("/role-selection", { replace: true });
           return;
@@ -84,8 +84,24 @@ function LoggedinHome() {
 
         // ======== REDIRECT BASED ON ROLE ========
         const role = serverUser.role;
-        if (role === "student") navigate("/", { replace: true });
-        else if (role === "tutor") navigate("/tutor", { replace: true });
+        if (role === "student") {
+          // Check for pending tutor selection
+          const pendingSelection = localStorage.getItem(
+            "pendingTutorSelection",
+          );
+          if (pendingSelection) {
+            try {
+              const { path, state } = JSON.parse(pendingSelection);
+              localStorage.removeItem("pendingTutorSelection");
+              navigate(path, { state, replace: true });
+            } catch (e) {
+              console.error("Failed to parse pendingTutorSelection", e);
+              navigate("/", { replace: true });
+            }
+          } else {
+            navigate("/", { replace: true });
+          }
+        } else if (role === "tutor") navigate("/tutor", { replace: true });
         else if (role === "admin") navigate("/admin", { replace: true });
       } catch (err) {
         notifyError(err.message || "Failed to fetch user info!");
@@ -99,7 +115,7 @@ function LoggedinHome() {
   const handleLogout = async () => {
     try {
       const res = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/logout`
+        `${import.meta.env.VITE_BACKEND_URL}/logout`,
       );
       if (res.data.success) {
         localStorage.removeItem("user");

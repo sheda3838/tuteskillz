@@ -3,7 +3,12 @@ import "../../styles/BrowseTutors/TutorCard.css";
 import { arrayBufferToBase64 } from "../../utils/fileHelper";
 import { useNavigate } from "react-router-dom";
 
-const TutorCard = ({ tutor }) => {
+const TutorCard = ({
+  tutor,
+  selectedMedium,
+  selectedGrade,
+  selectedSubject,
+}) => {
   const navigate = useNavigate();
   const cardRef = useRef();
   const [isVisible, setIsVisible] = useState(false);
@@ -13,9 +18,31 @@ const TutorCard = ({ tutor }) => {
     : null;
 
   const handleClick = () => {
-    navigate(`/tutor-profile/${tutor.userId}`, {
-      state: { tutorSubjectId: tutor.tutorSubjectId }
-    });
+    const user = localStorage.getItem("user");
+    if (user) {
+      // User is logged in, proceed to profile
+      navigate(`/tutor-profile/${tutor.userId}`, {
+        state: { tutorSubjectId: tutor.tutorSubjectId },
+      });
+    } else {
+      // User is NOT logged in, store selection and redirect to login
+      const selectionData = {
+        path: `/tutor-profile/${tutor.userId}`,
+        state: {
+          tutorSubjectId: tutor.tutorSubjectId,
+          medium: selectedMedium,
+          grade: selectedGrade,
+          subject: selectedSubject,
+        },
+      };
+
+      localStorage.setItem(
+        "pendingTutorSelection",
+        JSON.stringify(selectionData),
+      );
+
+      navigate("/signin");
+    }
   };
 
   useEffect(() => {
@@ -26,7 +53,7 @@ const TutorCard = ({ tutor }) => {
           observer.unobserve(cardRef.current);
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.2 },
     );
 
     if (cardRef.current) observer.observe(cardRef.current);
