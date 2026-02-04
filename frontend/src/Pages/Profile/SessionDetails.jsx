@@ -278,11 +278,12 @@ function SessionDetails() {
         )}
 
         {/* Join Meeting Button */}
-        {status === "Paid" && session.meetingUrl && (
+        {status === "Paid" && session.zoomUrl && (
           <JoinMeetingButton
             canJoin={canJoin}
+            sessionId={sessionId}
             countdown={formatCountdown(timeLeft)}
-            meetingLink={session.meetingUrl.trim()}
+            meetingLink={session.zoomUrl.trim()}
           />
         )}
 
