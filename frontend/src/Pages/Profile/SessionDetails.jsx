@@ -48,18 +48,18 @@ function SessionDetails() {
 
     async function loadSession() {
       try {
-        // Check for PayHere return params (order_id)
+        // Check for Stripe return params
         const searchParams = new URLSearchParams(window.location.search);
-        const orderId = searchParams.get("order_id");
+        const paymentDetails = searchParams.get("payment_status");
+        const checkoutSessionId = searchParams.get("session_id");
 
-        if (orderId && orderId === sessionId) {
-          // Simulate Webhook for Localhost Dev
+        if (paymentDetails === "success" && checkoutSessionId) {
           try {
             await axios.post(
-              `${import.meta.env.VITE_BACKEND_URL}/payment/payhere/simulate`,
+              `${import.meta.env.VITE_BACKEND_URL}/payment/stripe/verify-payment`,
               {
-                order_id: orderId,
-                amount: "1000.00", // Default amount
+                sessionId: sessionId,
+                checkoutSessionId: checkoutSessionId,
               },
             );
             notifySuccess("Payment verified successfully!");
@@ -71,6 +71,7 @@ function SessionDetails() {
             );
           } catch (simErr) {
             console.error("Payment verification failed:", simErr);
+            notifyError("Payment verification failed.");
           }
         }
 
