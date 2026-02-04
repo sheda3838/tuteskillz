@@ -278,14 +278,21 @@ function SessionDetails() {
         )}
 
         {/* Join Meeting Button */}
-        {status === "Paid" && session.zoomUrl && (
-          <JoinMeetingButton
-            canJoin={canJoin}
-            sessionId={sessionId}
-            countdown={formatCountdown(timeLeft)}
-            meetingLink={session.zoomUrl.trim()}
-          />
-        )}
+        {status === "Paid" &&
+          (session.zoomUrl ? (
+            <JoinMeetingButton
+              canJoin={canJoin}
+              sessionId={sessionId}
+              countdown={formatCountdown(timeLeft)}
+              meetingLink={session.zoomUrl.trim()}
+            />
+          ) : (
+            <div className="section-card">
+              <p style={{ color: "orange" }}>
+                Meeting link is generating or missing. Please refresh.
+              </p>
+            </div>
+          ))}
 
         {/* COMPLETED */}
         {status === "Completed" && (
